@@ -1,103 +1,84 @@
-import Image from "next/image";
+// src/app/page.js
+import { getServerSession } from "next-auth";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+import authOptions from "@/app/api/auth/[...nextauth]/route";
+
+import { GiChemicalDrop, GiChemicalTank } from "react-icons/gi";
+import { SiConvertio } from "react-icons/si";
+import Link from "next/link";
+
+const NavList = [
+  {
+    name: "Chemical Equation Balancer",
+    icon: <GiChemicalDrop />,
+    path: "/tools/ceb",
+    description: "Balance chemical equations instantly with our intelligent algorithm. Simply input your unbalanced equation and get the correct stoichiometric coefficients.",
+    color: "from-blue-500 to-cyan-400",
+    hoverColor: "hover:from-blue-600 hover:to-cyan-500",
+    iconColor: "text-blue-400"
+  },
+  {
+    name: "Unit Converter",
+    icon: <SiConvertio />,
+    path: "/tools/converter",
+    description: "Convert between different units of measurement including mass, volume, temperature, pressure, and concentration for all your chemistry calculations.",
+    color: "from-emerald-500 to-green-400",
+    hoverColor: "hover:from-emerald-600 hover:to-green-500",
+    iconColor: "text-emerald-400"
+  },
+  {
+    name: "2D Lab",
+    icon: <GiChemicalTank />,
+    path: "/tools/2dlab",
+    description: "Visualize and simulate chemical reactions in a virtual 2D laboratory environment. Perfect for understanding molecular interactions and reaction mechanisms.",
+    color: "from-purple-500 to-pink-400",
+    hoverColor: "hover:from-purple-600 hover:to-pink-500",
+    iconColor: "text-purple-400"
+  }
+];
+
+export default async function Home() {
+  const session = await getServerSession(authOptions);
+
+  if (!session) {
+    redirect("/auth/signin");
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.js
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="font-sans min-h-screen bg-bg p-8 pb-20 sm:p-20">
+      <div className="max-w-6xl mx-auto">
+        <header className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-white mb-4">Chemistry Tools Hub</h1>
+          <p className="text-gray-400 text-lg">Professional chemistry tools for students and researchers</p>
+        </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <main className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+          {NavList.map((item, index) => (
+            <div
+              key={item.name}
+              className="bg-gray-900 rounded-xl p-6 border border-gray-800 hover:border-gray-700 transition-all duration-300 transform hover:scale-105 hover:shadow-2xl"
+            >
+              <div className="flex items-center gap-4 mb-4">
+                <div className={`text-4xl ${item.iconColor} transition-all duration-200`}>
+                  {item.icon}
+                </div>
+                <h2 className="text-xl font-semibold text-white">{item.name}</h2>
+              </div>
+              
+              <p className="text-gray-300 text-sm leading-relaxed mb-6">
+                {item.description}
+              </p>
+              
+              <Link href={item.path}>
+                <button className={`w-full bg-gradient-to-r ${item.color} ${item.hoverColor} text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 focus:ring-blue-500`}>
+                  Launch Tool
+                </button>
+              </Link>
+            </div>
+          ))}
+        </main>
+      </div>
     </div>
   );
 }
