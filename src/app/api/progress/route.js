@@ -2,10 +2,10 @@
 
 import { getServerSession } from 'next-auth'
 import connectDB from '@/lib/mongoose'
-import Progress from '@/models/Progress'
-import Course from '@/models/Course'
-import Section from '@/models/Section'
-import User from '@/models/User'
+import Progress from '../../../models/Progress'
+import Course from '../../../models/Course'
+import Section from '../../../models/Section'
+import User from '../../../models/User'
 
 const handleError = (statusCode, message, error) => {
   console.error(message, error)

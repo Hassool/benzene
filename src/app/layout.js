@@ -1,9 +1,9 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import AuthNavBarWrapper from "@/components/nav/AuthNavBarWrapper";
-import SessionProviderWrapper from "@/components/providers/SessionProvider";
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import NavBar from "@/components/nav/NavBar";
+import Footer from "@/components/Footer/Footer";
+import { TranslationProvider } from "@/lib/TranslationProvider";
+import DynamicMain from "@/components/DynamicMain";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,19 +21,18 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const session = await getServerSession(authOptions);
-  
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} bg-bg dark:bg-bg-dark text-text dark:text-text-dark antialiased`}
       >
-        <SessionProviderWrapper session={session}>
-          <AuthNavBarWrapper />
-          <main className="ml-64">
+        <TranslationProvider>
+          <NavBar />
+          <DynamicMain>
             {children}
-          </main>
-        </SessionProviderWrapper>
+            <Footer />
+          </DynamicMain>
+        </TranslationProvider>
       </body>
     </html>
   );

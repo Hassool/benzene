@@ -1,4 +1,4 @@
-import Ceb from '@/components/Ceb'
+import Ceb from '@/components/tools/Ceb'
 import React from 'react'
 
 function page() {

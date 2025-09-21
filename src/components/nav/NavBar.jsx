@@ -1,90 +1,96 @@
-'use client'
-import React from 'react'
+// src/components/nav/NavBar.jsx
+"use client"
+
+import Image from "next/image";
 import { TbTools } from "react-icons/tb";
-import { MdOutlinePlayLesson, MdOutlineAccountCircle, MdLogin, MdLogout } from "react-icons/md";
+import { MdOutlinePlayLesson } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
-import Link from 'next/link';
-import { useSession, signOut } from 'next-auth/react';
-import Image from 'next/image';
-import { usePathname } from 'next/navigation';
+import { GoHome } from "react-icons/go";
+import NavLink from "./NavLink";
+import ThemeSwitcher from "./ThemeSwitcher";
+import LangSwitcher from "./LanguageSwitcher";
+import { useTranslation } from "@/lib/TranslationProvider";
 
-const NavList = [
-    {name:"Tools", icon: <TbTools/>, path:"/"},
-    {name:"Courses", icon: <MdOutlinePlayLesson/>, path:"/Courses"},
-    {name:"Honor page", icon: <FaRegHeart/>, path:"/Honor"},
-    {name:"Account", icon: <MdOutlineAccountCircle/>, path:"/Account"},
-]
 
-function NavBar() {
-  const path = usePathname();
-  const { data: session, status } = useSession();
 
-  const handleAuthAction = () => {
-    if (session) {
-      signOut();
-    } else {
-      // Redirect to sign in page
-      window.location.href = '/auth/signin';
-    }
-  };
+export default function NavBar() {
+
+  const { t,isRTL, isLoading } = useTranslation();
+  const NavList = [
+    { name: t('nav.home'), icon: <GoHome />, path: '/' },
+    { name: t('nav.tools'), icon: <TbTools />, path: '/tools' },
+    { name: t('nav.courses'), icon: <MdOutlinePlayLesson />, path: '/Courses' },
+    { name: t('nav.honor'), icon: <FaRegHeart />, path: '/Honor' },
+  ];
 
   return (
-    <nav className='bg-bg border-r border-gray-700 fixed left-0 top-0 h-screen w-64 flex flex-col px-3 py-8 z-50'>
-      {/* Logo/Brand section */}
-      <div className='mb-10 px-3 flex gap-4'>
-        <Image className='' src="/benzen.png" alt="benzen logo" width={50} height={50} priority/>
-        <h1 className='text-2xl font-semibold text-white'>BENZENE</h1>
-      </div>
+    <>
+      {/* Desktop sidebar */}
+      <nav className={`hidden md:flex bg-bg dark:bg-bg-dark ${isRTL ? "border-l" : "border-r"} border-border dark:border-border-dark fixed ${isRTL ? "right-0" : "left-0"} top-0 h-screen w-64 flex-col px-3 py-8 z-50 transition-colors duration-300`}>
+        {/* Logo/Brand */}
+        <div className="mb-10 px-3 flex gap-4 items-center">
+          <Image
+            className="rounded-lg"
+            src="/benzen.png"
+            alt="benzen logo"
+            width={50}
+            height={50}
+            priority
+          />
+          <h1 className="text-2xl font-semibold text-text dark:text-text-dark font-montserrat">
+            {t('nav.title')}
+          </h1>
+        </div>
 
-      {/* Navigation Links */}
-      <div className='flex flex-col gap-2'>
-        {NavList.map((item) => (
-          <Link 
-            key={item.name} 
-            href={item.path}
-            className={`flex items-center gap-4 px-3 py-3 rounded-lg text-gray-300 ${path == item.path ? "bg-gray-800" : "hover:bg-gray-800"} transition-colors duration-200 group`}
-          >
-            <div className={`text-2xl group-hover:scale-105  ${path == item.path ? "text-special " : "group-hover:text-special"} transition-all duration-200`}>
-              {item.icon}
-            </div>
-            <span className='text-base font-medium'>{item.name}</span>
-          </Link>
-        ))}
-        
-        {/* Sign In/Out Button */}
-        <button 
-          onClick={handleAuthAction}
-          disabled={status === 'loading'}
-          className='flex items-center gap-4 px-3 py-3 rounded-lg text-gray-300 hover:bg-gray-800 hover:text-white transition-colors duration-200 group disabled:opacity-50'
-        >
-          <div className='text-2xl group-hover:scale-105 group-hover:text-special transition-all duration-200'>
-            {status === 'loading' ? (
-              <div className="animate-spin h-5 w-5 border-2 border-gray-300 border-t-special rounded-full"></div>
-            ) : session ? (
-              <MdLogout />
-            ) : (
-              <MdLogin />
-            )}
+        {/* Navigation Links */}
+        <div className="flex flex-col gap-2">
+          <div className="mb-4 flex justify-around">
+            <ThemeSwitcher />
+            <LangSwitcher />
           </div>
-          <span className='text-base font-medium'>
-            {status === 'loading' ? 'Loading...' : session ? 'Sign Out' : 'Sign In'}
-          </span>
-        </button>
-      </div>
 
-      {/* Bottom section - User info when signed in */}
-      {session && (
-        <div className='mt-auto pt-4 border-t border-gray-700'>
-          <div className='px-3 py-2'>
-            <p className='text-sm text-gray-400'>Welcome back!</p>
-            <p className='text-xs text-special font-medium'>
-              {session.user?.name || session.user?.email || 'User'}
-            </p>
+          {NavList.map((item) => (
+            <NavLink key={item.name} item={item} rr={isRTL} />
+          ))}
+        </div>
+      </nav>
+
+      {/* Mobile dropdown */}
+      <details className="md:hidden bg-bg dark:bg-bg-dark border-b border-border dark:border-border-dark z-50 group">
+        <summary className="flex items-center justify-between px-4 py-3 cursor-pointer list-none">
+          <div className="flex items-center gap-3">
+            <Image
+              className="rounded-lg"
+              src="/benzen.png"
+              alt="benzen logo"
+              width={40}
+              height={40}
+              priority
+            />
+            <span className="font-semibold text-text dark:text-text-dark font-montserrat">
+              BENZENE
+            </span>
+          </div>
+          <span className="text-text dark:text-text-dark">☰</span>
+        </summary>
+
+        {/* Transition wrapper */}
+        <div
+          className="overflow-hidden transition-all transition-ease duration-500 max-h-0 group-open:max-h-[600px]"
+        >
+          <div className="flex flex-col gap-2 px-4 py-3">
+            <div className="mb-4 flex justify-around">
+              <ThemeSwitcher />
+              <LangSwitcher />
+            </div>
+
+            {NavList.map((item) => (
+              <NavLink key={item.name} item={item} r/>
+            ))}
           </div>
         </div>
-      )}
-    </nav>
-  )
-}
+      </details>
 
-export default NavBar
+    </>
+  );
+}

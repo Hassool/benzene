@@ -2,9 +2,9 @@
 
 import { getServerSession } from 'next-auth'
 import connectDB from '@/lib/mongoose'
-import Resource from '@/models/Resource'
-import Section from '@/models/Section'
-import Course from '@/models/Course'
+import Resource from '../../../../models/Resource'
+import Section from '../../../../models/Section'
+import Course from '../../../../models/Course'
 
 const handleError = (statusCode, message, error) => {
   console.error(message, error)

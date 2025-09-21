@@ -1,9 +1,10 @@
 // src/app/api/section/route.js
 
 import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]/route' // ✅ Import authOptions
 import connectDB from '@/lib/mongoose' 
-import Section from '@/models/Section'
-import Course from '@/models/Course'
+import Section from '../../../models/Section'
+import Course from '../../../models/Course'
 import { createCrudRoutes } from '@/lib/crudHandler'
 
 const requiredFields = ['title', 'courseId', 'duration']
@@ -24,19 +25,12 @@ const sectionValidation = async (data, operation) => {
     errors.push('Section description cannot exceed 500 characters');
   }
 
-  // Duration validation
-  if (data.duration !== undefined) {
-    if (data.duration < 1 || data.duration > 600) {
-      errors.push('Section duration must be between 1 and 600 minutes');
-    }
-  }
-
   // Order validation
   if (data.order !== undefined && data.order < 1) {
     errors.push('Section order must be at least 1');
   }
 
-  // Course ownership validation (for create/update operations)
+  // Course validation (without user ownership check)
   if (data.courseId && operation === 'create') {
     const course = await Course.findById(data.courseId);
     if (!course || course.isDeleted || !course.isActive) {
@@ -62,10 +56,17 @@ const routeOptions = {
 
 const routes = createCrudRoutes(Section, requiredFields, routeOptions);
 
-// Custom POST handler with teacher authentication
+// POST handler WITH authentication
 export async function POST(req) {
   try {
-    const session = await getServerSession();
+    // ✅ Pass authOptions to getServerSession
+    const session = await getServerSession(authOptions);
+    
+    console.log('Session check:', { 
+      hasSession: !!session,
+      userId: session?.user?.id,
+      phoneNumber: session?.user?.phoneNumber 
+    });
     
     if (!session?.user?.id) {
       return new Response(
@@ -77,8 +78,9 @@ export async function POST(req) {
     await connectDB();
     
     const data = await req.json();
+    console.log('Creating section with data:', { ...data, courseId: data.courseId });
     
-    // Verify user owns the course
+    // Verify course exists
     const course = await Course.findById(data.courseId);
     if (!course || course.isDeleted) {
       return new Response(
@@ -87,14 +89,17 @@ export async function POST(req) {
       );
     }
 
-    if (!course.canEdit(session.user.id)) {
+    // Check if user can edit this course
+    // Assuming you have a method to check ownership/permissions
+    // If Course model doesn't have canEdit method, use a simple ownership check
+    if (course.userID && course.userID.toString() !== session.user.id) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Not authorized to add sections to this course' }),
+        JSON.stringify({ success: false, msg: 'Not authorized to create sections in this course' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // Set default values
+    // Set default values with user ID
     data.isPublished = data.isPublished || false;
     data.isActive = true;
     data.isDeleted = false;
@@ -108,9 +113,23 @@ export async function POST(req) {
       data.order = maxOrder ? maxOrder.order + 1 : 1;
     }
     
-    return routes.POST(req, connectDB, data);
+    // Create section
+    const section = new Section(data);
+    await section.save();
+    
+    console.log('Section created successfully:', section._id);
+    
+    return new Response(
+      JSON.stringify({
+        success: true,
+        msg: 'Section created successfully',
+        data: section
+      }),
+      { status: 201, headers: { 'Content-Type': 'application/json' } }
+    );
     
   } catch (error) {
+    console.error('Section creation error:', error);
     return new Response(
       JSON.stringify({ 
         success: false, 
@@ -122,7 +141,7 @@ export async function POST(req) {
   }
 }
 
-// Custom GET handler with enhanced filtering
+// GET handler WITHOUT authentication (public access)
 export async function GET(req) {
   try {
     await connectDB();
@@ -132,11 +151,8 @@ export async function GET(req) {
     const courseId = url.searchParams.get('courseId');
     const published = url.searchParams.get('published');
     const includeResources = url.searchParams.get('includeResources') === 'true';
-    const includeProgress = url.searchParams.get('includeProgress') === 'true';
     const page = parseInt(url.searchParams.get('page')) || 1;
     const limit = Math.min(parseInt(url.searchParams.get('limit')) || 10, 50);
-
-    const session = await getServerSession();
 
     if (id) {
       // Get single section
@@ -150,17 +166,8 @@ export async function GET(req) {
           select: 'title type duration isRequired url description'
         });
       }
-
-      // Include progress if user is authenticated and requested
-      if (includeProgress && session?.user?.id) {
-        query = query.populate({
-          path: 'progress',
-          match: { userId: session.user.id },
-          select: 'isCompleted completedAt progress'
-        });
-      }
       
-      query = query.populate('course', 'title teacherId');
+      query = query.populate('courseId', 'title userID');
 
       const section = await query;
 
@@ -195,7 +202,7 @@ export async function GET(req) {
     const skip = (page - 1) * limit;
 
     let findQuery = Section.find(query)
-      .populate('course', 'title teacherId')
+      .populate('courseId', 'title userID')
       .sort({ order: 1, createdAt: 1 })
       .skip(skip)
       .limit(limit);
@@ -206,15 +213,6 @@ export async function GET(req) {
         match: { isPublished: true, isActive: true, isDeleted: false },
         options: { sort: { order: 1 } },
         select: 'title type duration isRequired url description'
-      });
-    }
-
-    // Include progress if user is authenticated and requested
-    if (includeProgress && session?.user?.id) {
-      findQuery = findQuery.populate({
-        path: 'progress',
-        match: { userId: session.user.id },
-        select: 'isCompleted completedAt progress'
       });
     }
 
@@ -256,10 +254,11 @@ export async function GET(req) {
   }
 }
 
-// Custom PATCH handler with ownership verification
+// PATCH handler WITH authentication
 export async function PATCH(req) {
   try {
-    const session = await getServerSession();
+    // ✅ Pass authOptions to getServerSession
+    const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
       return new Response(
@@ -280,8 +279,8 @@ export async function PATCH(req) {
       );
     }
 
-    // Check if section exists and user owns the course
-    const section = await Section.findById(id).populate('course');
+    // Check if section exists and user owns it
+    const section = await Section.findById(id).populate('courseId');
     if (!section || section.isDeleted) {
       return new Response(
         JSON.stringify({ success: false, msg: 'Section not found' }),
@@ -289,14 +288,31 @@ export async function PATCH(req) {
       );
     }
 
-    if (!section.course || !section.course.canEdit(session.user.id)) {
+    // Check if user can edit the course this section belongs to
+    if (section.courseId.userID && section.courseId.userID.toString() !== session.user.id) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Not authorized to edit this section' }),
+        JSON.stringify({ success: false, msg: 'Not authorized to update this section' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    return routes.PATCH(req, connectDB);
+    const data = await req.json();
+    
+    // Update section
+    const updatedSection = await Section.findByIdAndUpdate(
+      id,
+      { ...data, updatedAt: new Date() },
+      { new: true, runValidators: true }
+    );
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        msg: 'Section updated successfully',
+        data: updatedSection
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
 
   } catch (error) {
     return new Response(
@@ -310,10 +326,11 @@ export async function PATCH(req) {
   }
 }
 
-// Custom DELETE handler with ownership verification
+// DELETE handler WITH authentication
 export async function DELETE(req) {
   try {
-    const session = await getServerSession();
+    // ✅ Pass authOptions to getServerSession
+    const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
       return new Response(
@@ -334,8 +351,8 @@ export async function DELETE(req) {
       );
     }
 
-    // Check if section exists and user owns the course
-    const section = await Section.findById(id).populate('course');
+    // Check if section exists and user owns it
+    const section = await Section.findById(id).populate('courseId');
     if (!section || section.isDeleted) {
       return new Response(
         JSON.stringify({ success: false, msg: 'Section not found' }),
@@ -343,14 +360,28 @@ export async function DELETE(req) {
       );
     }
 
-    if (!section.course || !section.course.canEdit(session.user.id)) {
+    // Check if user can edit the course this section belongs to
+    if (section.courseId.userID && section.courseId.userID.toString() !== session.user.id) {
       return new Response(
         JSON.stringify({ success: false, msg: 'Not authorized to delete this section' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    return routes.DELETE(req, connectDB);
+    // Soft delete
+    await Section.findByIdAndUpdate(id, { 
+      isDeleted: true, 
+      isActive: false,
+      deletedAt: new Date() 
+    });
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        msg: 'Section deleted successfully'
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
 
   } catch (error) {
     return new Response(

@@ -2,8 +2,8 @@
 
 import { getServerSession } from 'next-auth'
 import connectDB from '@/lib/mongoose'
-import Course from '@/models/Course'
-import Section from '@/models/Section'
+import Course from '../../../../models/Course'
+import Section from '../../../../models/Section'
 
 const handleError = (statusCode, message, error) => {
   console.error(message, error)
@@ -118,7 +118,7 @@ async function validateCourseForPublishing(courseId) {
 
     // Check if each published section has at least one published resource
     for (const section of publishedSections) {
-      const Resource = require('@/models/Resource').default
+      const Resource = require('../../../../models/Resource').default
       const publishedResources = await Resource.find({
         sectionId: section._id,
         isPublished: true,

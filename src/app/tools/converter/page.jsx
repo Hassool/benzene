@@ -1,4 +1,4 @@
-import UnitConverter from '@/components/UnitConverter'
+import UnitConverter from '@/components/tools/UnitConverter'
 import React from 'react'
 
 function page() {

@@ -14,7 +14,7 @@ const userSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
       required: [true, 'Phone number is required'],
-      unique: true,
+      // Remove unique: true from here
       trim: true,
       validate: {
         validator: function(v) {
@@ -44,121 +44,97 @@ const userSchema = new mongoose.Schema(
     },
     isActive: {
       type: Boolean,
-      default: true
+      default: false
     },
-    role: {
-      type: String,
-      enum: ['user', 'admin', 'teacher'],
-      default: 'user'
+    isDeleted: {
+      type: Boolean,
+      default: false
+    },
+    lastLogin: {
+      type: Date,
+      default: null
     }
   },
-  { 
-    timestamps: true,
-    toJSON: { 
-      transform: function(doc, ret) {
-        delete ret.password;
-        return ret;
-      }
-    }
+  {
+    timestamps: true
   }
 )
 
-// Compound index for better query performance
-userSchema.index({ phoneNumber: 1, isActive: 1 });
-userSchema.index({ email: 1 }, { sparse: true }); // For NextAuth compatibility
+// Compound index: phoneNumber + isDeleted
+// This allows the same phone number only when the previous account is deleted
+userSchema.index(
+  { phoneNumber: 1, isDeleted: 1 }, 
+  { 
+    unique: true,
+    partialFilterExpression: { isDeleted: false } // Only enforce uniqueness for non-deleted users
+  }
+)
 
-// Enhanced password hashing middleware
-userSchema.pre('save', async function (next) {
-  // Only hash if password is modified and exists
-  if (!this.isModified('password') || !this.password) return next()
+// Hash password before saving
+userSchema.pre('save', async function(next) {
+  if (!this.isModified('password')) return next()
   
   try {
-    // Generate salt with higher cost factor for better security
-    const saltRounds = process.env.NODE_ENV === 'production' ? 15 : 12;
-    const salt = await bcrypt.genSalt(saltRounds)
-    
-    // Hash the password
+    const salt = await bcrypt.genSalt(12)
     this.password = await bcrypt.hash(this.password, salt)
-    
-    // Update passwordChangedAt timestamp (except for new documents)
-    if (!this.isNew) {
-      this.passwordChangedAt = Date.now() - 1000; // Subtract 1 second for JWT compatibility
-    }
-    
+    this.passwordChangedAt = new Date()
     next()
-  } catch (err) {
-    next(err)
+  } catch (error) {
+    next(error)
   }
 })
 
-// Enhanced password comparison method
-userSchema.methods.comparePassword = async function (candidatePassword) {
+// Compare password method
+userSchema.methods.comparePassword = async function(candidatePassword) {
   try {
-    if (!this.password) {
-      throw new Error('User password not found');
-    }
-    
     return await bcrypt.compare(candidatePassword, this.password)
   } catch (error) {
-    throw error;
+    throw new Error('Password comparison failed')
   }
 }
 
-// Static method to hash password manually (useful for NextAuth)
-userSchema.statics.hashPassword = async function(password) {
-  if (!password) throw new Error('Password is required');
-  
-  const saltRounds = process.env.NODE_ENV === 'production' ? 15 : 12;
-  const salt = await bcrypt.genSalt(saltRounds);
-  return await bcrypt.hash(password, salt);
+// Update password method
+userSchema.methods.updatePassword = async function(newPassword) {
+  this.password = newPassword
+  this.passwordChangedAt = new Date()
+  return await this.save()
 }
 
-// Static method to verify password strength
+// Static method for password validation
 userSchema.statics.validatePasswordStrength = function(password) {
-  if (!password) return { isValid: false, message: 'Password is required' };
+  const errors = []
   
   if (password.length < 8) {
-    return { isValid: false, message: 'Password must be at least 8 characters long' };
+    errors.push('Password must be at least 8 characters long')
   }
   
-  const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]/;
-  if (!strongPasswordRegex.test(password)) {
-    return { 
-      isValid: false, 
-      message: 'Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character' 
-    };
+  if (!/[a-z]/.test(password)) {
+    errors.push('Password must contain at least one lowercase letter')
   }
   
-  return { isValid: true, message: 'Password is strong' };
+  if (!/[A-Z]/.test(password)) {
+    errors.push('Password must contain at least one uppercase letter')
+  }
+  
+  if (!/\d/.test(password)) {
+    errors.push('Password must contain at least one number')
+  }
+  
+  if (!/[@$!%*?&]/.test(password)) {
+    errors.push('Password must contain at least one special character (@$!%*?&)')
+  }
+  
+  return {
+    isValid: errors.length === 0,
+    message: errors.length > 0 ? errors.join(', ') : 'Password is strong',
+    errors
+  }
 }
 
-// Method to safely update password
-userSchema.methods.updatePassword = async function(newPassword) {
-  const validation = this.constructor.validatePasswordStrength(newPassword);
-  if (!validation.isValid) {
-    throw new Error(validation.message);
-  }
-  
-  this.password = newPassword;
-  this.passwordChangedAt = Date.now();
-  return await this.save();
+// Static method for password hashing
+userSchema.statics.hashPassword = async function(password) {
+  const salt = await bcrypt.genSalt(12)
+  return await bcrypt.hash(password, salt)
 }
-
-// Pre-save middleware to normalize phone number
-userSchema.pre('save', function(next) {
-  if (this.isModified('phoneNumber') && this.phoneNumber) {
-    // Remove spaces, hyphens, and parentheses from phone number
-    this.phoneNumber = this.phoneNumber.replace(/[\s\-\(\)]/g, '');
-  }
-  next();
-});
-
-// Pre-save middleware to normalize email (for NextAuth compatibility)
-userSchema.pre('save', function(next) {
-  if (this.isModified('email') && this.email) {
-    this.email = this.email.toLowerCase().trim();
-  }
-  next();
-});
 
 export default mongoose.models.User || mongoose.model('User', userSchema)

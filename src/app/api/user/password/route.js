@@ -2,7 +2,7 @@
 
 import { getServerSession } from 'next-auth'
 import connectDB from '@/lib/mongoose'
-import User from '@/models/User'
+import User from '../../../../models/User'
 
 const handleError = (statusCode, message, error) => {
   console.error(message, error)

@@ -1,4 +1,4 @@
-// src/components/Ceb.js
+// src/components/Ceb.jsx
 
 "use client";
 
@@ -79,22 +79,22 @@ function Ceb() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-bg via-bg to-blue-900 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-bg to-bg-secondary dark:from-bg-dark dark:to-bg-dark-secondary p-6 transition-colors duration-300">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex justify-center items-center gap-4 mb-6">
-            <div className="p-4 bg-blue-500/20 rounded-full">
-              <GiChemicalDrop className="text-5xl text-blue-400" />
+            <div className="p-4 bg-blue-500/20 dark:bg-blue-400/20 rounded-full">
+              <GiChemicalDrop className="text-5xl text-blue-400 dark:text-blue-300" />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3">
+          <h1 className="text-4xl font-bold text-text dark:text-text-dark mb-3 font-montserrat">
             Chemical Equation Balancer
           </h1>
-          <h3 className="text-s font-thin text-white mb-3">
+          <h3 className="text-sm font-thin text-text-secondary dark:text-text-dark-secondary mb-3 font-inter">
             Powered by webqc.org
           </h3>
-          <p className="text-gray-300 text-lg max-w-2xl mx-auto">
+          <p className="text-text-secondary dark:text-text-dark-secondary text-lg max-w-2xl mx-auto font-inter">
             Balance chemical equations instantly with our intelligent algorithm. 
             Enter your unbalanced equation and get accurate stoichiometric coefficients.
           </p>
@@ -103,10 +103,10 @@ function Ceb() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Input Section */}
           <div className="lg:col-span-2">
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-8 shadow-2xl">
+            <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl p-8 shadow-2xl">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="equation" className="block text-blue-400 font-semibold text-lg mb-3">
+                  <label htmlFor="equation" className="block text-blue-400 dark:text-blue-300 font-semibold text-lg mb-3 font-montserrat">
                     Enter Chemical Equation:
                   </label>
                   <div className="relative">
@@ -115,13 +115,13 @@ function Ceb() {
                       type="text"
                       value={equation}
                       onChange={(e) => setEquation(e.target.value)}
-                      className="w-full px-4 py-4 bg-gray-900/70 border-2 border-gray-600 rounded-xl text-white text-lg focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-400/30 transition-all duration-200 placeholder:text-gray-500"
+                      className="w-full px-4 py-4 bg-bg dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-xl text-text dark:text-text-dark text-lg focus:outline-none focus:border-blue-400 dark:focus:border-blue-300 focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-300/30 transition-all duration-200 placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-mono"
                       placeholder="e.g., H2O2=H2O+O2"
                       disabled={loading}
                     />
                     {loading && (
                       <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
-                        <FiRefreshCw className="text-blue-400 animate-spin text-xl" />
+                        <FiRefreshCw className="text-blue-400 dark:text-blue-300 animate-spin text-xl" />
                       </div>
                     )}
                   </div>
@@ -130,7 +130,7 @@ function Ceb() {
                 <button
                   type="submit"
                   disabled={loading || !equation.trim()}
-                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2"
+                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 dark:hover:shadow-blue-400/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 font-montserrat"
                 >
                   {loading ? (
                     <>
@@ -149,25 +149,25 @@ function Ceb() {
               {/* Result Section */}
               <div className="mt-8">
                 {error && (
-                  <div className="bg-red-900/30 border-l-4 border-red-500 p-6 rounded-lg">
+                  <div className="bg-red-900/30 dark:bg-red-800/20 border-l-4 border-red-500 dark:border-red-400 p-6 rounded-lg">
                     <div className="flex items-start gap-3">
-                      <FiAlertCircle className="text-red-400 text-xl mt-0.5 flex-shrink-0" />
+                      <FiAlertCircle className="text-red-400 dark:text-red-300 text-xl mt-0.5 flex-shrink-0" />
                       <div>
-                        <h3 className="text-red-400 font-semibold text-lg mb-1">Error</h3>
-                        <p className="text-red-300">{error}</p>
+                        <h3 className="text-red-400 dark:text-red-300 font-semibold text-lg mb-1 font-montserrat">Error</h3>
+                        <p className="text-red-300 dark:text-red-200 font-inter">{error}</p>
                       </div>
                     </div>
                   </div>
                 )}
                 
                 {result && !loading && (
-                  <div className="bg-blue-900/30 border-l-4 border-blue-400 p-6 rounded-lg">
+                  <div className="bg-blue-900/30 dark:bg-blue-800/20 border-l-4 border-blue-400 dark:border-blue-300 p-6 rounded-lg">
                     <div className="flex items-start gap-3">
-                      <FiCheck className="text-blue-400 text-xl mt-0.5 flex-shrink-0" />
+                      <FiCheck className="text-blue-400 dark:text-blue-300 text-xl mt-0.5 flex-shrink-0" />
                       <div className="w-full">
-                        <h3 className="text-blue-400 font-semibold text-lg mb-3">Balanced Equation</h3>
-                        <div className="bg-gray-900/50 p-4 rounded-lg border border-gray-700">
-                          <div className="font-mono text-xl text-white break-all">{result}</div>
+                        <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-3 font-montserrat">Balanced Equation</h3>
+                        <div className="bg-bg dark:bg-bg-dark-secondary p-4 rounded-lg border border-border dark:border-border-dark">
+                          <div className="font-mono text-xl text-text dark:text-text-dark break-all">{result}</div>
                         </div>
                       </div>
                     </div>
@@ -178,19 +178,19 @@ function Ceb() {
 
             {/* History */}
             {history.length > 0 && (
-              <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl my-6 p-6">
-                <h3 className="text-blue-400 font-semibold text-lg mb-4">Recent History</h3>
+              <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl my-6 p-6">
+                <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 font-montserrat">Recent History</h3>
                 <div className="space-y-3">
                   {history.map((item) => (
-                    <button
+                    <div
                       key={item.timestamp}
-                      className="p-3 bg-gray-900/50 rounded-lg border border-gray-700"
+                      className="p-3 bg-bg dark:bg-bg-dark-secondary rounded-lg border border-border dark:border-border-dark"
                     >
-                      <div className="text-gray-400 text-xs mb-1">Original:</div>
-                      <div className="font-mono text-sm text-gray-300 mb-2">{item.original}</div>
-                      <div className="text-blue-400 text-xs mb-1">Balanced:</div>
-                      <div className="font-mono text-sm text-blue-300">{item.balanced}</div>
-                    </button>
+                      <div className="text-text-secondary dark:text-text-dark-secondary text-xs mb-1 font-inter">Original:</div>
+                      <div className="font-mono text-sm text-text dark:text-text-dark mb-2">{item.original}</div>
+                      <div className="text-blue-400 dark:text-blue-300 text-xs mb-1 font-inter">Balanced:</div>
+                      <div className="font-mono text-sm text-blue-300 dark:text-blue-200">{item.balanced}</div>
+                    </div>
                   ))}
                 </div>
               </div>
@@ -199,13 +199,10 @@ function Ceb() {
 
           {/* Sidebar */}
           <div className="space-y-6">
-
-
-
             {/* Tips */}
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6">
-              <h3 className="text-blue-400 font-semibold text-lg mb-4">Tips</h3>
-              <ul className="text-gray-300 text-sm space-y-2">
+            <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl p-6">
+              <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 font-montserrat">Tips</h3>
+              <ul className="text-text-secondary dark:text-text-dark-secondary text-sm space-y-2 font-inter">
                 <li>• Use = to separate reactants and products</li>
                 <li>• Write chemical formulas clearly (e.g., H2SO4)</li>
                 <li>• Use parentheses for complex compounds</li>
@@ -214,8 +211,8 @@ function Ceb() {
             </div>  
 
             {/* Example Equations */}
-            <div className="bg-gray-800/50 backdrop-blur-sm border border-gray-700 rounded-2xl p-6">
-              <h3 className="text-blue-400 font-semibold text-lg mb-4 flex items-center gap-2">
+            <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl p-6">
+              <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 flex items-center gap-2 font-montserrat">
                 <GiChemicalDrop className="text-xl" />
                 Example Equations
               </h3>
@@ -224,15 +221,13 @@ function Ceb() {
                   <button
                     key={index}
                     onClick={() => handleExampleClick(eq)}
-                    className="w-full text-left p-3 bg-gray-900/50 hover:bg-blue-900/30 border border-gray-600 hover:border-blue-500 rounded-lg transition-all duration-200 text-gray-300 hover:text-blue-300 font-mono text-sm"
+                    className="w-full text-left p-3 bg-bg dark:bg-bg-dark-secondary hover:bg-blue-900/30 dark:hover:bg-blue-800/20 border border-border dark:border-border-dark hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-text-secondary dark:text-text-dark-secondary hover:text-blue-300 dark:hover:text-blue-200 font-mono text-sm"
                   >
                     {eq}
                   </button>
                 ))}
               </div>
             </div>
-
-            
           </div>
         </div>
       </div>

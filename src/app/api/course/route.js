@@ -1,12 +1,12 @@
 // src/app/api/course/route.js
 
 import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]/route' // Adjust this path to your NextAuth config
 import connectDB from '@/lib/mongoose' 
-import Course from '@/models/Course'
-import User from '@/models/User'
-import { createCrudRoutes } from '@/lib/crudHandler'
+import Course from '../../../models/Course'
+import User from '../../../models/User'
 
-const requiredFields = ['title', 'description', 'category', 'level', 'duration', 'price']
+const requiredFields = ['title', 'description', 'category', 'module']
 
 // Custom validation function for course-specific rules
 const courseValidation = async (data, operation) => {
@@ -26,43 +26,24 @@ const courseValidation = async (data, operation) => {
     }
   }
 
-  // Category validation
-  const validCategories = ['programming', 'design', 'business', 'marketing', 'science', 'mathematics', 'language', 'other'];
+  // Category validation (updated for Algerian educational system)
+  const validCategories = ['1as', '2as', '3as', 'other'];
   if (data.category && !validCategories.includes(data.category)) {
-    errors.push('Invalid course category');
+    errors.push('Invalid course category. Must be: 1as, 2as, 3as, or other');
   }
 
-  // Level validation
-  const validLevels = ['beginner', 'intermediate', 'advanced'];
-  if (data.level && !validLevels.includes(data.level)) {
-    errors.push('Course level must be beginner, intermediate, or advanced');
-  }
-
-  // Duration validation
-  if (data.duration !== undefined) {
-    if (data.duration < 1 || data.duration > 500) {
-      errors.push('Course duration must be between 1 and 500 hours');
+  // Module validation (required field)
+  if (data.module) {
+    if (data.module.length < 2 || data.module.length > 50) {
+      errors.push('Course module must be between 2 and 50 characters');
     }
   }
 
-  // Price validation
-  if (data.price !== undefined) {
-    if (data.price < 0) {
-      errors.push('Course price cannot be negative');
-    }
-  }
-
-  // Learning objectives validation
-  if (data.learningObjectives) {
-    if (!Array.isArray(data.learningObjectives) || data.learningObjectives.length === 0) {
-      errors.push('At least one learning objective is required');
-    }
-  }
-
-  // Tags validation
-  if (data.tags) {
-    if (Array.isArray(data.tags) && data.tags.length > 10) {
-      errors.push('Maximum 10 tags allowed');
+  // Thumbnail validation
+  if (data.thumbnail) {
+    const thumbnailRegex = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp)$/i;
+    if (!thumbnailRegex.test(data.thumbnail)) {
+      errors.push('Thumbnail must be a valid image URL (jpg, jpeg, png, gif, webp)');
     }
   }
 
@@ -73,98 +54,167 @@ const courseValidation = async (data, operation) => {
   };
 };
 
-// Enhanced CRUD route options for courses
-const routeOptions = {
-  excludeFromResponse: [],
-  allowPartialUpdate: true,
-  enableSoftDelete: true,
-  customValidation: courseValidation,
-  requireAuth: true // Custom flag for authentication requirement
-};
-
-const routes = createCrudRoutes(Course, requiredFields, routeOptions);
-
-// Custom POST handler with teacher authentication
+// Custom POST handler with authentication
 export async function POST(req) {
   try {
-    const session = await getServerSession();
+    // IMPORTANT: Pass authOptions to getServerSession
+    const session = await getServerSession(authOptions);
+    
+    console.log('Server session check:', {
+      hasSession: !!session,
+      userId: session?.user?.id,
+      userEmail: session?.user?.email
+    });
     
     if (!session?.user?.id) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Authentication required' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Authentication required. Please log in.',
+          error: 'UNAUTHORIZED',
+          debug: {
+            hasSession: !!session,
+            hasUser: !!session?.user,
+            hasUserId: !!session?.user?.id
+          }
+        }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     await connectDB();
     
-    // Verify user is a teacher
+    // Verify user exists and is active
     const user = await User.findById(session.user.id);
-    if (!user || user.role !== 'teacher') {
+    if (!user || !user.isActive || user.isDeleted) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Only teachers can create courses' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'User not found or inactive',
+          error: 'USER_INACTIVE' 
+        }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     const data = await req.json();
     
-    // Set teacherId from authenticated user
-    data.teacherId = session.user.id;
+    // Validate required fields
+    const missingFields = requiredFields.filter(field => !data[field]);
+    if (missingFields.length > 0) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: `Missing required fields: ${missingFields.join(', ')}`,
+          error: 'VALIDATION_ERROR',
+          missingFields 
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Custom validation
+    const validation = await courseValidation(data, 'create');
+    if (!validation.isValid) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: validation.message,
+          error: 'VALIDATION_ERROR',
+          errors: validation.errors 
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    
+    // Set userID from authenticated user
+    data.userID = session.user.id;
     
     // Set default values
     data.isPublished = data.isPublished || false;
     data.enrollmentCount = 0;
     data.rating = { average: 0, count: 0 };
+    data.isActive = true;
+    data.isDeleted = false;
     
-    return routes.POST(req, connectDB, data);
+    // Normalize category and level to lowercase
+    if (data.category) data.category = data.category.toLowerCase();
+    if (data.level) data.level = data.level.toLowerCase();
+    if (data.module) data.module = data.module.toLowerCase();
+    
+    const course = new Course(data);
+    await course.save();
+    
+    // Populate user information before returning
+    await course.populate('userID', 'fullName phoneNumber email');
+    
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: 'Course created successfully',
+        data: course
+      }),
+      { status: 201, headers: { 'Content-Type': 'application/json' } }
+    );
     
   } catch (error) {
+    console.error('Course creation error:', error);
+    
+    // Handle mongoose validation errors
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Validation failed',
+          error: 'VALIDATION_ERROR',
+          errors
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    
     return new Response(
       JSON.stringify({ 
         success: false, 
-        msg: 'Error creating course', 
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined 
+        message: 'Error creating course',
+        error: 'INTERNAL_ERROR',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined 
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }
 
-// Custom GET handler with enhanced filtering and search
+// Enhanced GET handler with advanced filtering and search
 export async function GET(req) {
   try {
     await connectDB();
     
     const url = new URL(req.url);
     const id = url.searchParams.get('id');
-    const teacherId = url.searchParams.get('teacherId');
+    const userID = url.searchParams.get('userID');
     const category = url.searchParams.get('category');
-    const level = url.searchParams.get('level');
+    const module = url.searchParams.get('module');
     const search = url.searchParams.get('search');
-    const published = url.searchParams.get('published');
-    const minPrice = url.searchParams.get('minPrice');
-    const maxPrice = url.searchParams.get('maxPrice');
-    const tags = url.searchParams.get('tags')?.split(',');
     const sortBy = url.searchParams.get('sortBy') || 'createdAt';
     const sortOrder = url.searchParams.get('sortOrder') === 'asc' ? 1 : -1;
-    const page = parseInt(url.searchParams.get('page')) || 1;
-    const limit = Math.min(parseInt(url.searchParams.get('limit')) || 10, 50);
+    const page = Math.max(parseInt(url.searchParams.get('page')) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(url.searchParams.get('limit')) || 10, 1), 50);
 
     if (id) {
-      // Get single course with teacher info
+      // Get single course with detailed user info
       const course = await Course.findById(id)
-        .populate('teacher', 'fullName phoneNumber')
-        .populate({
-          path: 'sections',
-          match: { isPublished: true, isActive: true, isDeleted: false },
-          options: { sort: { order: 1 } },
-          select: 'title description order duration'
-        });
+        .populate('userID', 'fullName phoneNumber email createdAt')
+        .lean();
 
       if (!course || course.isDeleted) {
         return new Response(
-          JSON.stringify({ success: false, msg: 'Course not found' }),
+          JSON.stringify({ 
+            success: false, 
+            message: 'Course not found',
+            error: 'NOT_FOUND' 
+          }),
           { status: 404, headers: { 'Content-Type': 'application/json' } }
         );
       }
@@ -172,7 +222,7 @@ export async function GET(req) {
       return new Response(
         JSON.stringify({
           success: true,
-          msg: 'Course retrieved successfully',
+          message: 'Course retrieved successfully',
           data: course
         }),
         { status: 200, headers: { 'Content-Type': 'application/json' } }
@@ -182,96 +232,113 @@ export async function GET(req) {
     // Build query for multiple courses
     let query = { isActive: true, isDeleted: false };
 
-    if (teacherId) {
-      query.teacherId = teacherId;
+    // Filter by user
+    if (userID) {
+      query.userID = userID;
     }
 
+    // Filter by category
     if (category) {
-      query.category = category;
+      query.category = category.toLowerCase();
     }
 
-    if (level) {
-      query.level = level;
+    // Filter by module
+    if (module) {
+      query.module = { $regex: module, $options: 'i' };
     }
 
-    if (published !== null && published !== undefined) {
-      query.isPublished = published === 'true';
-    }
-
-    if (minPrice !== null && minPrice !== undefined) {
-      query.price = { $gte: parseFloat(minPrice) };
-    }
-
-    if (maxPrice !== null && maxPrice !== undefined) {
-      query.price = { ...query.price, $lte: parseFloat(maxPrice) };
-    }
-
-    if (tags && tags.length > 0) {
-      query.tags = { $in: tags };
-    }
-
-    // Search functionality
+    // Search functionality across multiple fields
     if (search) {
+      const searchRegex = { $regex: search, $options: 'i' };
       query.$or = [
-        { title: { $regex: search, $options: 'i' } },
-        { description: { $regex: search, $options: 'i' } },
-        { tags: { $regex: search, $options: 'i' } }
+        { title: searchRegex },
+        { description: searchRegex },
+        { module: searchRegex }
       ];
     }
 
     const skip = (page - 1) * limit;
-    const sort = { [sortBy]: sortOrder };
+    
+    // Validate sort field
+    const allowedSortFields = ['title', 'createdAt', 'updatedAt'];
+    const sortField = allowedSortFields.includes(sortBy) ? sortBy : 'createdAt';
+    const sort = { [sortField]: sortOrder };
 
     const [courses, total] = await Promise.all([
       Course.find(query)
-        .populate('teacher', 'fullName')
+        .populate('userID', 'fullName phoneNumber email')
         .sort(sort)
         .skip(skip)
-        .limit(limit),
+        .limit(limit)
+        .lean(),
       Course.countDocuments(query)
     ]);
 
-    const meta = {
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-        hasNext: page < Math.ceil(total / limit),
-        hasPrev: page > 1
-      }
+    const totalPages = Math.ceil(total / limit);
+    
+    const pagination = {
+      page,
+      limit,
+      total,
+      pages: totalPages,
+      hasNext: page < totalPages,
+      hasPrev: page > 1,
+      nextPage: page < totalPages ? page + 1 : null,
+      prevPage: page > 1 ? page - 1 : null
     };
+
+    // Get category statistics for additional insights
+    const categoryStats = await Course.aggregate([
+      { $match: { isActive: true, isDeleted: false, isPublished: true } },
+      { $group: { _id: '$category', count: { $sum: 1 } } },
+      { $sort: { count: -1 } }
+    ]);
 
     return new Response(
       JSON.stringify({
         success: true,
-        msg: 'Courses retrieved successfully',
+        message: 'Courses retrieved successfully',
         data: courses,
-        ...meta
+        pagination,
+        statistics: {
+          categories: categoryStats,
+          totalActive: total
+        },
+        filters: {
+          category,
+          module,
+          search
+        }
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
 
   } catch (error) {
+    console.error('Course retrieval error:', error);
     return new Response(
       JSON.stringify({ 
         success: false, 
-        msg: 'Error retrieving courses', 
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined 
+        message: 'Error retrieving courses',
+        error: 'INTERNAL_ERROR',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined 
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }
 
-// Custom PATCH handler with ownership verification
+// Enhanced PATCH handler with comprehensive ownership and validation checks
 export async function PATCH(req) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Authentication required' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Authentication required',
+          error: 'UNAUTHORIZED' 
+        }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -283,49 +350,120 @@ export async function PATCH(req) {
     
     if (!id) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Course ID is required' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Course ID is required',
+          error: 'MISSING_ID' 
+        }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // Check if course exists and user is the teacher
+    // Check if course exists and user has permission
     const course = await Course.findById(id);
     if (!course || course.isDeleted) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Course not found' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Course not found',
+          error: 'NOT_FOUND' 
+        }),
         { status: 404, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     if (!course.canEdit(session.user.id)) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Not authorized to edit this course' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Not authorized to edit this course',
+          error: 'FORBIDDEN' 
+        }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    return routes.PATCH(req, connectDB);
+    const updateData = await req.json();
+    
+    // Remove fields that shouldn't be updated directly
+    delete updateData.userID;
+    delete updateData._id;
+    delete updateData.createdAt;
+
+    // Custom validation for update
+    const validation = await courseValidation(updateData, 'update');
+    if (!validation.isValid) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: validation.message,
+          error: 'VALIDATION_ERROR',
+          errors: validation.errors 
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Normalize fields
+    if (updateData.category) updateData.category = updateData.category.toLowerCase();
+    if (updateData.module) updateData.module = updateData.module.toLowerCase();
+
+    // Update the course
+    const updatedCourse = await Course.findByIdAndUpdate(
+      id,
+      { ...updateData, updatedAt: new Date() },
+      { new: true, runValidators: true }
+    ).populate('userID', 'fullName phoneNumber email');
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: 'Course updated successfully',
+        data: updatedCourse
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
 
   } catch (error) {
+    console.error('Course update error:', error);
+    
+    if (error.name === 'ValidationError') {
+      const errors = Object.values(error.errors).map(err => err.message);
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Validation failed',
+          error: 'VALIDATION_ERROR',
+          errors
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+    
     return new Response(
       JSON.stringify({ 
         success: false, 
-        msg: 'Error updating course', 
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined 
+        message: 'Error updating course',
+        error: 'INTERNAL_ERROR',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined 
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
   }
 }
 
-// Custom DELETE handler with ownership verification
+// Enhanced DELETE handler with soft delete and comprehensive checks
 export async function DELETE(req) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Authentication required' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Authentication required',
+          error: 'UNAUTHORIZED' 
+        }),
         { status: 401, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -334,38 +472,89 @@ export async function DELETE(req) {
     
     const url = new URL(req.url);
     const id = url.searchParams.get('id');
+    const hardDelete = url.searchParams.get('hard') === 'true';
     
     if (!id) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Course ID is required' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Course ID is required',
+          error: 'MISSING_ID' 
+        }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // Check if course exists and user is the teacher
+    // Check if course exists and user has permission
     const course = await Course.findById(id);
-    if (!course || course.isDeleted) {
+    if (!course) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Course not found' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Course not found',
+          error: 'NOT_FOUND' 
+        }),
         { status: 404, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (course.isDeleted && !hardDelete) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Course already deleted',
+          error: 'ALREADY_DELETED' 
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
     if (!course.canEdit(session.user.id)) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Not authorized to delete this course' }),
+        JSON.stringify({ 
+          success: false, 
+          message: 'Not authorized to delete this course',
+          error: 'FORBIDDEN' 
+        }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    return routes.DELETE(req, connectDB);
+    let result;
+    if (hardDelete) {
+      // Permanent deletion (use with caution)
+      result = await Course.findByIdAndDelete(id);
+    } else {
+      // Soft delete
+      result = await Course.findByIdAndUpdate(
+        id,
+        { 
+          isDeleted: true, 
+          isActive: false, 
+          isPublished: false,
+          deletedAt: new Date() 
+        },
+        { new: true }
+      );
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: hardDelete ? 'Course permanently deleted' : 'Course deleted successfully',
+        data: { id, deletedAt: new Date() }
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
 
   } catch (error) {
+    console.error('Course deletion error:', error);
     return new Response(
       JSON.stringify({ 
         success: false, 
-        msg: 'Error deleting course', 
-        error: process.env.NODE_ENV === 'development' ? error.message : undefined 
+        message: 'Error deleting course',
+        error: 'INTERNAL_ERROR',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined 
       }),
       { status: 500, headers: { 'Content-Type': 'application/json' } }
     );
