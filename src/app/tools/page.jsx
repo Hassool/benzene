@@ -1,19 +1,20 @@
 // src/app/tools/page.jsx
-import { getServerSession } from "next-auth";
-import { redirect } from "next/navigation";
+"use client"
 
-import authOptions from "@/app/api/auth/[...nextauth]/route";
-
-import { GiChemicalDrop, GiChemicalTank } from "react-icons/gi";
+import { GiChemicalDrop, GiChemicalTank, GiTable } from "react-icons/gi";
 import { SiConvertio } from "react-icons/si";
 import Link from "next/link";
+import { useTranslation } from "@/lib/TranslationProvider";
+import { FunctionSquare } from "lucide-react";
 
 const NavList = [
   {
     name: "Chemical Equation Balancer",
+    nameAR: "موازن المعادلات الكيميائية",
     icon: <GiChemicalDrop />,
     path: "/tools/ceb",
     description: "Balance chemical equations instantly with our intelligent algorithm. Simply input your unbalanced equation and get the correct stoichiometric coefficients.",
+    descriptionAR: "وازن المعادلات الكيميائية فورًا باستخدام خوارزمية ذكية. ما عليك سوى إدخال معادلتك غير المتوازنة لتحصل على المعاملات الصحيحة.",
     color: "from-blue-500 to-cyan-400",
     darkColor: "dark:from-blue-400 dark:to-cyan-300",
     hoverColor: "hover:from-blue-600 hover:to-cyan-500",
@@ -23,9 +24,11 @@ const NavList = [
   },
   {
     name: "Unit Converter", 
+    nameAR: "محول الوحدات",
     icon: <SiConvertio />,
     path: "/tools/converter",
     description: "Convert between different units of measurement including mass, volume, temperature, pressure, and concentration for all your chemistry calculations.",
+    descriptionAR: "حوّل بين مختلف الوحدات مثل الكتلة، الحجم، درجة الحرارة، الضغط والتركيز لمساعدتك في جميع حسابات الكيمياء.",
     color: "from-emerald-500 to-green-400",
     darkColor: "dark:from-emerald-400 dark:to-green-300",
     hoverColor: "hover:from-emerald-600 hover:to-green-500",
@@ -35,35 +38,59 @@ const NavList = [
   },
   {
     name: "2D Lab",
+    nameAR: "المعمل ثنائي الأبعاد",
     icon: <GiChemicalTank />,
     path: "/tools/2dlab", 
     description: "Visualize and simulate chemical reactions in a virtual 2D laboratory environment. Perfect for understanding molecular interactions and reaction mechanisms.",
+    descriptionAR: "تصوّر وحاكي التفاعلات الكيميائية في معمل افتراضي ثنائي الأبعاد. مثالي لفهم التفاعلات الجزيئية وآليات التفاعل.",
     color: "from-purple-500 to-pink-400",
     darkColor: "dark:from-purple-400 dark:to-pink-300",
     hoverColor: "hover:from-purple-600 hover:to-pink-500",
     darkHoverColor: "dark:hover:from-purple-500 dark:hover:to-pink-400",
     iconColor: "text-purple-400 dark:text-purple-300",
     bgGradient: "bg-gradient-to-br from-purple-500/10 to-pink-400/10 dark:from-purple-400/10 dark:to-pink-300/10"
+  },
+  {
+    name: "Function Graph Drawer",
+    nameAR: "رَسّام الدوال",
+    icon: <FunctionSquare />,
+    path: "/tools/FGD",
+    description: "Draw mathematical function graphs interactively. Visualize equations, analyze shapes, and explore their behavior dynamically.",
+    descriptionAR: "ارسم منحنيات الدوال الرياضية بطريقة تفاعلية. تصوّر المعادلات وحلّل الأشكال واستكشف سلوكها ديناميكيًا.",
+    color: "from-orange-500 to-yellow-400",
+    darkColor: "dark:from-orange-400 dark:to-yellow-300",
+    hoverColor: "hover:from-orange-600 hover:to-yellow-500",
+    darkHoverColor: "dark:hover:from-orange-500 dark:hover:to-yellow-400",
+    iconColor: "text-orange-400 dark:text-yellow-300",
+    bgGradient: "bg-gradient-to-br from-orange-500/10 to-yellow-400/10 dark:from-orange-400/10 dark:to-yellow-300/10"
+  },
+  {
+    name: "Periodic Table",
+    nameAR: "الجدول الدوري",
+    icon: <GiTable />,
+    path: "/tools/PT",
+    description: "Explore the periodic table with detailed information about each element, including atomic number, mass, and chemical properties.",
+    descriptionAR: "استكشف الجدول الدوري مع معلومات مفصلة عن كل عنصر مثل العدد الذري، الكتلة والخصائص الكيميائية.",
+    color: "from-pink-500 to-red-400",
+    darkColor: "dark:from-pink-400 dark:to-red-300",
+    hoverColor: "hover:from-pink-600 hover:to-red-500",
+    darkHoverColor: "dark:hover:from-pink-500 dark:hover:to-red-400",
+    iconColor: "text-pink-400 dark:text-red-300",
+    bgGradient: "bg-gradient-to-br from-pink-500/10 to-red-400/10 dark:from-pink-400/10 dark:to-red-300/10"
   }
 ];
 
-export default async function page() {
-  const session = await getServerSession(authOptions);
 
-  if (!session) {
-    redirect("/auth/signin");
-  }
+export default async function page() {
+  const { t,isRTL, isLoading } = useTranslation();
 
   return (
     <div className="font-sans min-h-screen bg-bg dark:bg-bg-dark p-8 pb-20 sm:p-20 transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <header className="text-center mb-16">
           <h1 className="text-4xl font-bold text-text dark:text-text-dark mb-4 font-montserrat">
-            Chemistry Tools Hub
+            {!isRTL?"Tools Hub":"مركز الأدوات"}
           </h1>
-          <p className="text-text-secondary dark:text-text-dark-secondary text-lg font-inter">
-            Professional chemistry tools for students and researchers
-          </p>
         </header>
 
         <main className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -77,17 +104,17 @@ export default async function page() {
                   {item.icon}
                 </div>
                 <h2 className="text-xl font-semibold text-text dark:text-text-dark font-montserrat">
-                  {item.name}
+                  {isRTL ? item.nameAR : item.name}
                 </h2>
               </div>
               
               <p className="text-text-secondary dark:text-text-dark-secondary text-sm leading-relaxed mb-6 font-inter">
-                {item.description}
+                {isRTL ? item.descriptionAR : item.description}
               </p>
               
               <Link href={item.path}>
                 <button className={`w-full bg-gradient-to-r ${item.color} ${item.darkColor} ${item.hoverColor} ${item.darkHoverColor} text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-bg dark:focus:ring-offset-bg-dark focus:ring-blue-500 font-montserrat`}>
-                  Launch Tool
+                  {!isRTL?"Launch Tool":"شغل هذه الأداة"}
                 </button>
               </Link>
             </div>

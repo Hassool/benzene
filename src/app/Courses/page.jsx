@@ -2,6 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useTranslation } from "@/lib/TranslationProvider";
 
 // helper: find the first array anywhere in an object (depth-limited)
 function findFirstArray(obj, maxDepth = 5, depth = 0) {
@@ -34,6 +35,7 @@ export default function Page({ searchParams: _searchParams }) {
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const {t} = useTranslation()
 
   const categoryParam = searchParams?.get("category") ?? "";
   const moduleParam = searchParams?.get("module") ?? "";
@@ -195,11 +197,8 @@ export default function Page({ searchParams: _searchParams }) {
       <div className="bg-bg-secondary/80 dark:bg-bg-dark-secondary/80 backdrop-blur-lg border-b border-border dark:border-border-dark sticky top-0 z-10">
         <div className="container mx-auto px-4 py-8 text-center">
           <h1 className="text-5xl md:text-6xl font-bold text-text dark:text-text-dark font-montserrat mb-3 bg-gradient-to-r from-special to-special-hover bg-clip-text text-transparent">
-            Our Courses
+            {t('courses.titles')}
           </h1>
-          <p className="text-text-secondary dark:text-text-dark-secondary text-xl font-medium">
-            Discover amazing learning opportunities
-          </p>
         </div>
       </div>
 
@@ -211,14 +210,14 @@ export default function Page({ searchParams: _searchParams }) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search courses, instructors, modules..."
-              className="w-full px-6 py-4 text-lg bg-bg-secondary dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-2xl focus:border-special focus:outline-none focus:ring-4 focus:ring-special/20 transition-all duration-300 text-text dark:text-text-dark placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-medium"
+              placeholder={t("courses.search.palceholder")}
+              className="w-full placeholder:px-20 px-20 py-4 text-lg bg-bg-secondary dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-2xl focus:border-special focus:outline-none focus:ring-4 focus:ring-special/20 transition-all duration-300 text-text dark:text-text-dark placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-medium"
             />
             <button
               type="submit"
               className="absolute right-3 top-1/2 -translate-y-1/2 bg-special hover:bg-special-hover text-white px-6 py-2 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-md hover:shadow-lg"
             >
-              Search
+              {t('courses.search.title')}
             </button>
           </div>
         </form>
@@ -228,11 +227,11 @@ export default function Page({ searchParams: _searchParams }) {
       <div className="container mx-auto px-4 py-6">
         <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm rounded-2xl p-6 border border-border dark:border-border-dark">
           <div className="flex items-center gap-6 flex-wrap">
-            <span className="font-bold text-text dark:text-text-dark text-xl font-montserrat">Filters:</span>
+            <span className="font-bold text-text dark:text-text-dark text-xl font-montserrat">{t('courses.filters.title')}:</span>
 
             {/* Category Dropdown */}
             <div className="relative">
-              <label className="block text-sm font-semibold text-text dark:text-text-dark mb-2 font-montserrat">Category</label>
+              <label className="block text-sm font-semibold text-text dark:text-text-dark mb-2 font-montserrat">{t('courses.filters.c')}</label>
               <select 
                 value={categoryParam}
                 onChange={(e) => router.push(buildHref({ category: e.target.value }))}
@@ -252,7 +251,7 @@ export default function Page({ searchParams: _searchParams }) {
 
             {/* Module Dropdown */}
             <div className="relative">
-              <label className="block text-sm font-semibold text-text dark:text-text-dark mb-2 font-montserrat">Module</label>
+              <label className="block text-sm font-semibold text-text dark:text-text-dark mb-2 font-montserrat">{t('courses.filters.m')}</label>
               <select 
                 value={moduleParam}
                 onChange={(e) => router.push(buildHref({ module: e.target.value }))}
@@ -272,16 +271,16 @@ export default function Page({ searchParams: _searchParams }) {
 
             {/* Sort Dropdown */}
             <div className="relative">
-              <label className="block text-sm font-semibold text-text dark:text-text-dark mb-2 font-montserrat">Sort By</label>
+              <label className="block text-sm font-semibold text-text dark:text-text-dark mb-2 font-montserrat">{t('courses.filters.s')}</label>
               <select 
                 value={sortParam}
                 onChange={(e) => router.push(buildHref({ sort: e.target.value }))}
                 className="appearance-none bg-bg dark:bg-bg-dark text-text dark:text-text-dark border-2 border-border dark:border-border-dark rounded-xl px-4 py-3 pr-10 font-semibold font-montserrat min-w-44 focus:border-special focus:outline-none focus:ring-4 focus:ring-special/20 transition-all duration-300 cursor-pointer hover:border-special/70"
               >
-                <option value="id_desc">Newest First</option>
-                <option value="id_asc">Oldest First</option>
-                <option value="title_asc">Title A→Z</option>
-                <option value="title_desc">Title Z→A</option>
+                <option value="id_desc">{t('courses.filters.NF')}</option>
+                <option value="id_asc">{t('courses.filters.OF')}</option>
+                <option value="title_asc">A→Z</option>
+                <option value="title_desc">Z→A</option>
               </select>
               <div className="absolute inset-y-0 right-0 top-8 flex items-center px-3 pointer-events-none">
                 <svg className="w-5 h-5 text-text-secondary dark:text-text-dark-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -297,7 +296,7 @@ export default function Page({ searchParams: _searchParams }) {
                   onClick={() => router.push(buildHref({ category: "", module: "", sort: "id_desc", search: "" }))}
                   className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-2 border-red-200 dark:border-red-800 hover:bg-red-100 dark:hover:bg-red-900/30 font-semibold py-3 px-4 rounded-xl transition-all duration-300 font-montserrat mt-7"
                 >
-                  Clear Filters
+                  {t('courses.filters.clear')}
                 </button>
               </div>
             )}
@@ -305,45 +304,10 @@ export default function Page({ searchParams: _searchParams }) {
         </div>
       </div>
 
-      {/* Results Summary */}
-      {!loading && (
-        <div className="container mx-auto px-4 pb-4">
-          <div className="text-center">
-            <p className="text-text-secondary dark:text-text-dark-secondary font-medium">
-              {filtered.length === 0 ? "No courses found" : 
-               filtered.length === 1 ? "1 course found" : 
-               `${filtered.length} courses found`}
-              {(categoryParam || moduleParam || searchQuery.trim()) && " matching your criteria"}
-            </p>
-          </div>
-        </div>
-      )}
 
       {/* Courses grid */}
       <div className="container mx-auto px-4 py-6">
-        {loading && (
-          <div className="text-center py-16">
-            <div className="inline-block animate-spin rounded-full h-12 w-12 border-4 border-special border-t-transparent"></div>
-            <p className="text-text-secondary dark:text-text-dark-secondary mt-4 text-lg">Loading courses...</p>
-          </div>
-        )}
         
-        {error && !loading && (
-          <div className="text-center py-12">
-            <div className="bg-red-50 dark:bg-red-900/20 border-2 border-red-200 dark:border-red-800 rounded-2xl p-8 max-w-md mx-auto">
-              <p className="text-red-600 dark:text-red-400 font-semibold">Error: {String(error)}</p>
-            </div>
-          </div>
-        )}
-
-        {!loading && !error && filtered.length === 0 && (
-          <div className="text-center py-16">
-            <div className="bg-bg-secondary dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-2xl p-12 max-w-md mx-auto">
-              <h3 className="text-2xl font-bold text-text dark:text-text-dark mb-2 font-montserrat">No courses found</h3>
-              <p className="text-text-secondary dark:text-text-dark-secondary">Try adjusting your filters or search terms.</p>
-            </div>
-          </div>
-        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
           {filtered.map((course) => (
@@ -416,7 +380,7 @@ export default function Page({ searchParams: _searchParams }) {
         {filtered.length > 0 && (
           <div className="text-center mt-16">
             <button className="bg-bg-secondary dark:bg-bg-dark-secondary border-3 border-special text-special hover:bg-special hover:text-white font-bold py-4 px-10 rounded-2xl transition-all duration-300 shadow-lg hover:shadow-xl transform hover:scale-105 font-montserrat text-lg">
-              Load More Courses
+              +
             </button>
           </div>
         )}

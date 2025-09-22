@@ -1,4 +1,5 @@
 // src/data/translations/index.js
+import { CoursesAR, CoursesEN } from "./modules/courses";
 import { MainEN, MainAR } from "./modules/main";
 import { NavAR, NavEN } from "./modules/nav";
 // helpers
@@ -47,4 +48,5 @@ function buildModuleConfig(en, ar) {
 export const modules = {
   main: buildModuleConfig(MainEN, MainAR),
   nav: buildModuleConfig(NavEN, NavAR),
+  courses: buildModuleConfig(CoursesEN, CoursesAR),
 };
