@@ -5,6 +5,7 @@ import Footer from "@/components/Footer/Footer";
 import { TranslationProvider } from "@/lib/TranslationProvider";
 import DynamicMain from "@/components/DynamicMain";
 
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],

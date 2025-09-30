@@ -260,11 +260,6 @@ function CoursePage() {
                     alt={course.title}
                     className="w-full h-48 object-cover rounded-lg border border-border dark:border-border-dark"
                   />
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity rounded-lg flex items-center justify-center">
-                    <button className="bg-white dark:bg-bg-dark text-text dark:text-text-dark px-4 py-2 rounded-lg font-inter font-medium">
-                      Change Thumbnail
-                    </button>
-                  </div>
                 </div>
                 
                 <div className="space-y-4">

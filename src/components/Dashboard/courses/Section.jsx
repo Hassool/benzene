@@ -1,6 +1,8 @@
+// Section.jsx - Updated with Supabase Storage
 import React, { useEffect, useState, useRef } from 'react'
+import { createClient } from '@supabase/supabase-js'
 import { useSession } from 'next-auth/react'
-import {
+import { 
   ChevronLeft,
   ChevronRight,
   Plus,
@@ -15,6 +17,12 @@ import {
 } from 'lucide-react'
 import { redirect } from 'next/navigation'
 
+// Create Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+)
+
 // --- Utility helpers ---
 const safeJson = async (res) => {
   try {
@@ -24,7 +32,6 @@ const safeJson = async (res) => {
     return { success: res.ok, data: null, message: res.statusText }
   }
 }
-
 const useToast = () => {
   const [toasts, setToasts] = useState([])
   const push = (type, text) => {
@@ -159,7 +166,6 @@ const SectionForm = ({ data, onChange, onSubmit, submitting }) => {
 
 // --- Resource Type selector ---
 const ResourceTypeSelector = ({ selectedType, onSelect }) => {
-  // Updated to match the backend Resource model enum values
   const resourceTypes = [
     { type: 'video', icon: <FileText className="w-6 h-6" />, title: 'Video', description: 'Upload or link to video content' },
     { type: 'document', icon: <Book className="w-6 h-6" />, title: 'Document', description: 'PDF, Word, or other document files' },
@@ -198,33 +204,144 @@ const ResourceTypeSelector = ({ selectedType, onSelect }) => {
 }
 
 // --- Resource form ---
+// --- Resource form with Cloudinary Upload ---
 const ResourceForm = ({ data, onChange, resourceType }) => {
   const [errors, setErrors] = useState({})
-
+  const [uploading, setUploading] = useState(false)
+  const fileInputRef = useRef(null)
+  
+  // Cloudinary upload function using unsigned preset
+  const uploadToCloudinary = async (file) => {
+    try {
+      const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+      const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'benzen';
+      
+      if (!cloudName) {
+        throw new Error('NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME is not set');
+      }
+      
+      // Créer FormData pour l'upload
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('upload_preset', uploadPreset);
+      
+      console.log(`Uploading to Cloudinary: ${cloudName}, preset: ${uploadPreset}`);
+      
+      // Upload vers Cloudinary (resource_type: 'raw' pour les PDFs/documents)
+      const uploadResponse = await fetch(
+        `https://api.cloudinary.com/v1_1/${cloudName}/raw/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+      
+      if (!uploadResponse.ok) {
+        const errorData = await uploadResponse.json();
+        throw new Error(
+          errorData.error?.message || 
+          `Upload failed with status ${uploadResponse.status}`
+        );
+      }
+      
+      const uploadData = await uploadResponse.json();
+      const publicUrl = uploadData.secure_url;
+      
+      if (!publicUrl) {
+        throw new Error('No URL returned from Cloudinary');
+      }
+      
+      console.log('Cloudinary upload successful:', { 
+        publicId: uploadData.public_id,
+        publicUrl,
+        format: uploadData.format
+      });
+      
+      return publicUrl;
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      throw new Error(`Failed to upload document: ${error.message}`);
+    }
+  }
+  
+  // Gérer le changement de fichier
+  const handleFileChange = async (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    
+    // Validation du type de fichier
+    const allowedTypes = [
+      'application/pdf',
+      'application/msword',
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      'text/plain',
+      'application/vnd.ms-excel',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    ]
+    const fileExtension = file.name.split('.').pop().toLowerCase()
+    const allowedExtensions = ['pdf', 'doc', 'docx', 'txt', 'xls', 'xlsx']
+    
+    if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+      setErrors(prev => ({ ...prev, content: 'Please upload a PDF, Word, Excel, or text file' }))
+      return
+    }
+    
+    // Validation de la taille (25MB max)
+    const maxSize = 25 * 1024 * 1024 // 25MB
+    if (file.size > maxSize) {
+      setErrors(prev => ({ ...prev, content: `File size must be less than 25MB` }))
+      return
+    }
+    
+    setUploading(true)
+    setErrors(prev => ({ ...prev, content: null }))
+    
+    try {
+      const cloudinaryUrl = await uploadToCloudinary(file)
+      onChange({ 
+        ...data, 
+        content: cloudinaryUrl, 
+        fileName: file.name,
+        fileSize: file.size,
+        fileType: file.type || fileExtension
+      })
+      setErrors(prev => ({ ...prev, content: null }))
+    } catch (error) {
+      console.error('Upload error:', error)
+      setErrors(prev => ({ ...prev, content: error.message }))
+      // Reset file input on error
+      if (fileInputRef.current) {
+        fileInputRef.current.value = ''
+      }
+    } finally {
+      setUploading(false)
+    }
+  }
+  
   const validate = () => {
     const e = {}
     if (!data.title || data.title.trim().length < 3) e.title = 'Title must be at least 3 characters'
     if (data.title && data.title.length > 100) e.title = 'Title cannot exceed 100 characters'
     if (data.description && data.description.length > 500) e.description = 'Description cannot exceed 500 characters'
-    
-    // For non-quiz resources, require URL in content
     if (resourceType !== 'quiz' && (!data.content || !data.content.trim())) {
-      e.content = 'URL is required for this resource type'
+      e.content = resourceType === 'document' ? 'Please upload a document' : 'URL is required'
     }
-    
     setErrors(e)
     return Object.keys(e).length === 0
   }
-
+  
   return (
     <div className="space-y-4">
+      {/* Title input */}
       <div>
-        <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">Resource Title *</label>
+        <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
+          Resource Title *
+        </label>
         <input
           type="text"
           value={data.title || ''}
           onChange={(e) => onChange({ ...data, title: e.target.value })}
-          className={`w-full px-4 py-3 rounded-lg border transition-colors bg-bg dark:bg-bg-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-special focus:border-transparent ${
+          className={`w-full px-4 py-3 rounded-lg border transition-colors bg-bg dark:bg-bg-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-special ${
             errors.title ? 'border-red-500' : 'border-border dark:border-border-dark'
           }`}
           placeholder="Enter resource title"
@@ -232,13 +349,16 @@ const ResourceForm = ({ data, onChange, resourceType }) => {
         {errors.title && <p className="mt-1 text-sm text-red-500">{errors.title}</p>}
       </div>
 
+      {/* Description textarea */}
       <div>
-        <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">Description (Optional)</label>
+        <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
+          Description (Optional)
+        </label>
         <textarea
           rows={3}
           value={data.description || ''}
           onChange={(e) => onChange({ ...data, description: e.target.value })}
-          className={`w-full px-4 py-3 rounded-lg border transition-colors resize-none bg-bg dark:bg-bg-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-special focus:border-transparent ${
+          className={`w-full px-4 py-3 rounded-lg border transition-colors resize-none bg-bg dark:bg-bg-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-special ${
             errors.description ? 'border-red-500' : 'border-border dark:border-border-dark'
           }`}
           placeholder="Describe this resource..."
@@ -246,20 +366,79 @@ const ResourceForm = ({ data, onChange, resourceType }) => {
         {errors.description && <p className="mt-1 text-sm text-red-500">{errors.description}</p>}
       </div>
 
+      {/* Content input - Document upload ou URL */}
       {resourceType !== 'quiz' && (
         <div>
           <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
-            {resourceType === 'document' ? 'Document URL' : resourceType === 'video' ? 'Video URL' : resourceType === 'image' ? 'Image URL' : 'Link URL'} *
+            {resourceType === 'document' ? 'Upload Document *' : 
+             resourceType === 'video' ? 'Video URL *' : 
+             resourceType === 'image' ? 'Image URL *' : 'Link URL *'}
           </label>
-          <input
-            type="url"
-            value={data.content || ''}
-            onChange={(e) => onChange({ ...data, content: e.target.value })}
-            className={`w-full px-4 py-3 rounded-lg border transition-colors bg-bg dark:bg-bg-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-special focus:border-transparent ${
-              errors.content ? 'border-red-500' : 'border-border dark:border-border-dark'
-            }`}
-            placeholder={`Enter ${resourceType} URL`}
-          />
+          
+          {resourceType === 'document' ? (
+            <div className="space-y-2">
+              {/* File input */}
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx,.txt,.xls,.xlsx"
+                onChange={handleFileChange}
+                disabled={uploading}
+                className={`w-full px-4 py-3 rounded-lg border transition-colors bg-bg dark:bg-bg-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-special file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-special/10 file:text-special hover:file:bg-special/20 ${
+                  errors.content ? 'border-red-500' : 'border-border dark:border-border-dark'
+                } ${uploading ? 'opacity-60 cursor-not-allowed' : ''}`}
+              />
+              
+              {/* Upload progress */}
+              {uploading && (
+                <div className="flex items-center space-x-2 text-sm text-text-secondary dark:text-text-dark-secondary">
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-special"></div>
+                  <span>Uploading document to Cloudinary...</span>
+                </div>
+              )}
+              
+              {/* Upload success */}
+              {data.fileName && !uploading && (
+                <div className="flex items-center justify-between p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                  <div className="flex items-center space-x-2 text-sm text-green-600 dark:text-green-400">
+                    <CheckCircle className="w-4 h-4" />
+                    <span>Uploaded: {data.fileName}</span>
+                    {data.fileSize && (
+                      <span className="text-xs opacity-75">
+                        ({(data.fileSize / (1024 * 1024)).toFixed(2)} MB)
+                      </span>
+                    )}
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onChange({ ...data, content: '', fileName: '', fileSize: null, fileType: null })
+                      if (fileInputRef.current) fileInputRef.current.value = ''
+                    }}
+                    className="text-red-500 hover:text-red-600 text-sm"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+              
+              <p className="text-xs text-text-secondary dark:text-text-dark-secondary">
+                Supported formats: PDF, Word, Excel, Text files (Max size: 25MB)
+              </p>
+            </div>
+          ) : (
+            // URL input for video/image/link
+            <input
+              type="url"
+              value={data.content || ''}
+              onChange={(e) => onChange({ ...data, content: e.target.value })}
+              className={`w-full px-4 py-3 rounded-lg border transition-colors bg-bg dark:bg-bg-dark text-text dark:text-text-dark focus:outline-none focus:ring-2 focus:ring-special ${
+                errors.content ? 'border-red-500' : 'border-border dark:border-border-dark'
+              }`}
+              placeholder={`Enter ${resourceType} URL`}
+            />
+          )}
+          
           {errors.content && <p className="mt-1 text-sm text-red-500">{errors.content}</p>}
         </div>
       )}
@@ -272,9 +451,9 @@ const QuizCreator = ({ quizzes, onChange }) => {
   const addQuestion = () => {
     const newQuiz = { 
       id: Date.now(), 
-      Question: '', // Note: capitalized to match backend model
-      answers: ['', ''], // Fixed spelling from backend
-      answer: '', // Fixed spelling from backend
+      Question: '', 
+      answers: ['', ''], 
+      answer: '', 
       order: quizzes.length + 1 
     }
     onChange([...quizzes, newQuiz])
@@ -383,6 +562,9 @@ const QuizCreator = ({ quizzes, onChange }) => {
   )
 }
 
+// Rest of the component remains the same...
+// (FinalActions component and main Section component continue as before)
+
 // --- Final Actions ---
 const FinalActions = ({ onAddResource, onAddSection, onFinish, createdSection, createdResources, creating }) => (
   <div className="space-y-6">
@@ -425,7 +607,7 @@ const FinalActions = ({ onAddResource, onAddSection, onFinish, createdSection, c
   </div>
 )
 
-// --- Main Component ---
+// Main component export continues from original...
 export default function Section({ courseId, onComplete }) {
   const { data: session, status } = useSession()
   const [currentStep, setCurrentStep] = useState(1)
@@ -468,7 +650,7 @@ export default function Section({ courseId, onComplete }) {
         console.warn('Failed to parse draft data:', e)
       }
     }
-  }, [courseId]) // Only depend on courseId
+  }, [courseId])
 
   // Save draft data when state changes (debounced)
   useEffect(() => {
@@ -478,7 +660,7 @@ export default function Section({ courseId, onComplete }) {
       const key = `section:draft:${courseId}`
       const draftData = { sectionData, resourceData, resourceType, quizzes }
       localStorage.setItem(key, JSON.stringify(draftData))
-    }, 500) // Debounce saves by 500ms
+    }, 500)
 
     return () => clearTimeout(timeoutId)
   }, [courseId, sectionData, resourceData, resourceType, quizzes])
@@ -496,7 +678,7 @@ export default function Section({ courseId, onComplete }) {
     window.addEventListener('beforeunload', onUnload)
     return () => {
       window.removeEventListener('beforeunload', onUnload)
-      onUnload() // Save on unmount
+      onUnload()
     }
   }, [courseId, sectionData, resourceData, resourceType, quizzes])
 
@@ -510,8 +692,8 @@ export default function Section({ courseId, onComplete }) {
     try {
       const payload = {
         ...sectionData,
-        courseId, // Ensure courseId is set
-        order: 1 // Default order, backend will adjust if needed
+        courseId,
+        order: 1
       }
 
       const res = await fetch('/api/section', {
@@ -548,8 +730,6 @@ export default function Section({ courseId, onComplete }) {
     }
   }
 
-  // Fixed handleCreateResource function for Section.jsx
-
   const handleCreateResource = async () => {
     if (!createdSection) {
       push('error', 'Create the section first')
@@ -564,12 +744,11 @@ export default function Section({ courseId, onComplete }) {
       }
 
       if (resourceType === 'quiz') {
-        // Step 1: Create the quiz resource first
         const resourcePayload = {
           title: resourceData.title || 'Quiz Resource',
           description: resourceData.description || '',
           type: 'quiz',
-          content: JSON.stringify({ quizCount: quizzes.length }), // Store quiz metadata
+          content: JSON.stringify({ quizCount: quizzes.length }),
           sectionId: sectionId,
           order: createdResources.length + 1
         }
@@ -593,14 +772,13 @@ export default function Section({ courseId, onComplete }) {
 
         console.log('Quiz resource created:', resourceId)
 
-        // Step 2: Create individual quiz questions
         const quizPromises = quizzes.map(async (quiz, index) => {
           const quizPayload = {
             Question: quiz.Question,
             answers: quiz.answers,
             answer: quiz.answer,
             order: index + 1,
-            ResourceID: resourceId // Use the created resource ID
+            ResourceID: resourceId
           }
 
           console.log('Creating quiz question:', { Question: quiz.Question, ResourceID: resourceId })
@@ -622,19 +800,22 @@ export default function Section({ courseId, onComplete }) {
 
         const createdQuizzes = await Promise.all(quizPromises)
         
-        // Add both the resource and the quizzes to created resources
         setCreatedResources(prev => [...prev, createdResource, ...createdQuizzes])
         push('success', `Quiz resource with ${createdQuizzes.length} questions created successfully`)
         
       } else {
-        // Handle regular resources (non-quiz)
         const payload = {
           title: resourceData.title,
           description: resourceData.description || '',
           type: resourceType,
-          content: resourceData.content, // URL string
+          content: resourceData.content,
           sectionId: sectionId,
           order: createdResources.length + 1
+        }
+
+        if (resourceType === 'document' && resourceData.fileName) {
+          payload.fileName = resourceData.fileName
+          payload.fileType = resourceData.fileType || 'document'
         }
 
         console.log('Creating regular resource:', payload)
@@ -645,7 +826,7 @@ export default function Section({ courseId, onComplete }) {
           credentials: 'include',
           body: JSON.stringify(payload),
         })
-
+        
         const json = await safeJson(res)
         if (!res.ok) {
           throw new Error(json?.msg || json?.message || 'Failed to create resource')
@@ -681,7 +862,6 @@ export default function Section({ courseId, onComplete }) {
     setCreatedSection(null)
     setCreatedResources([])
     setCurrentStep(1)
-    // Clear localStorage draft
     if (courseId) {
       localStorage.removeItem(`section:draft:${courseId}`)
     }
@@ -690,14 +870,12 @@ export default function Section({ courseId, onComplete }) {
   const finishFlow = async () => {
     setFinishing(true)
     try {
-      // Clear localStorage draft
       if (courseId) {
         localStorage.removeItem(`section:draft:${courseId}`)
       }
       
       push('success', 'Section creation completed successfully')
       
-      // Call onComplete callback if provided
       if (onComplete) {
         onComplete(createdSection, createdResources)
       }
@@ -834,7 +1012,6 @@ export default function Section({ courseId, onComplete }) {
 
   return (
     <div className="max-w-4xl mx-auto p-6 bg-bg dark:bg-bg-dark min-h-screen">
-      {/* Toast notifications */}
       <div aria-live="polite" className="fixed right-6 top-6 z-50 space-y-2">
         {toasts.map((toast) => (
           <div 
@@ -858,7 +1035,6 @@ export default function Section({ courseId, onComplete }) {
       </div>
 
       <ProgressBar currentStep={currentStep} totalSteps={steps.length} steps={steps} />
-      
 
       {renderStep()}
     </div>
