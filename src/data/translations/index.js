@@ -2,6 +2,7 @@
 import { CoursesAR, CoursesEN } from "./modules/courses";
 import { MainEN, MainAR } from "./modules/main";
 import { NavAR, NavEN } from "./modules/nav";
+import { HonorEN, HonorAR } from "./modules/honor";
 // helpers
 
 
@@ -49,4 +50,5 @@ export const modules = {
   main: buildModuleConfig(MainEN, MainAR),
   nav: buildModuleConfig(NavEN, NavAR),
   courses: buildModuleConfig(CoursesEN, CoursesAR),
+  honor: buildModuleConfig(HonorEN, HonorAR),
 };

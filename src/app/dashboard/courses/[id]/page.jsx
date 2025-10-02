@@ -2,6 +2,7 @@
 
 import EditSection from '@/components/Dashboard/courses/EditSection'
 import { useFetchData } from '@/lib/UseFetch'
+import { Copy, Trash } from 'lucide-react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useState } from 'react'
@@ -209,6 +210,19 @@ function CoursePage() {
   }
 
   const courseSections = Array.isArray(sections) && sections.length > 0 ? sections : (Array.isArray(sectionsData) ? sectionsData : [])
+
+
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(`https://benzene-beta.vercel.app/Courses/${id}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+    }
+  };
   
   return (
     <div className="min-h-screen bg-bg dark:bg-bg-dark bg-gradient-light dark:bg-gradient-dark">
@@ -461,11 +475,18 @@ function CoursePage() {
                 </h3>
                 
                 <div className="space-y-3">
-                  <button className="w-full flex items-center space-x-3 p-3 bg-bg dark:bg-bg-dark rounded-lg border border-border dark:border-border-dark hover:border-special dark:hover:border-special-dark transition-colors">
-                    <svg className="w-5 h-5 text-special dark:text-special-dark" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.367 2.684 3 3 0 00-5.367-2.684z" />
-                    </svg>
-                    <span className="font-inter text-text dark:text-text-dark">Share Course</span>
+                  <button onClick={handleCopy()} className="w-full flex items-center space-x-3 p-3 bg-bg dark:bg-bg-dark rounded-lg border border-border dark:border-border-dark hover:border-special dark:hover:border-special-dark transition-colors">
+                    {copied ? (
+                      <>
+                        <Check size={18} />
+                        <span className="font-inter text-text dark:text-text-dark">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={18} />
+                        <span className="font-inter text-text dark:text-text-dark">Copy the Course URL</span>
+                      </>
+                    )}
                   </button>
                 </div>
               </div>

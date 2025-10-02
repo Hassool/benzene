@@ -1,180 +1,321 @@
-import { v2 as cloudinary } from 'cloudinary';
-
-cloudinary.config({
-  cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME, // safe to expose
-  api_key: process.env.CLOUDINARY_API_KEY,                   // keep server-side only
-  api_secret: process.env.CLOUDINARY_API_SECRET,             // keep server-side only
-});
+// ============================================
+// SHARED HELPER FUNCTIONS
+// Add these to all three route files
+// ============================================
 
 /**
- * Determine Cloudinary resource type based on URL or file extension
- * @param {string} url - The Cloudinary URL
- * @returns {string} - The resource type: "image", "video", or "raw"
+ * Helper function to check if URL is from Cloudinary
  */
-const determineResourceType = (url) => {
-  if (!url || typeof url !== 'string') return 'image'; // default fallback
-  
-  // Check for video indicators in the URL
-  if (url.includes('/video/') || url.includes('_video/')) {
-    return 'video';
-  }
-  
-  // Check for image indicators in the URL
-  if (url.includes('/image/') || url.includes('_image/')) {
-    return 'image';
-  }
-  
-  // Check file extension
-  const urlLower = url.toLowerCase();
-  
-  // Video extensions
-  const videoExtensions = ['.mp4', '.avi', '.mov', '.wmv', '.flv', '.webm', '.mkv', '.m4v', '.3gp', '.ogv'];
-  const hasVideoExt = videoExtensions.some(ext => urlLower.includes(ext));
-  if (hasVideoExt) return 'video';
-  
-  // Image extensions
-  const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.ico', '.tiff'];
-  const hasImageExt = imageExtensions.some(ext => urlLower.includes(ext));
-  if (hasImageExt) return 'image';
-  
-  // Audio extensions (for completeness)
-  const audioExtensions = ['.mp3', '.wav', '.ogg', '.m4a', '.flac', '.aac'];
-  const hasAudioExt = audioExtensions.some(ext => urlLower.includes(ext));
-  if (hasAudioExt) return 'video'; // Cloudinary treats audio as video resource type
-  
-  // Default to image if we can't determine
-  return 'image';
+const isCloudinaryUrl = (url) => {
+  if (!url || typeof url !== 'string') return false;
+  return url.includes('cloudinary.com') || url.includes('res.cloudinary.com');
 };
 
 /**
- * Extract public ID from Cloudinary URL
- * @param {string} url - The Cloudinary URL
- * @returns {string} - The public ID
+ * Helper function to extract URL from content based on resource type
  */
-const extractPublicId = (url) => {
+const extractUrlFromContent = (content, type) => {
+  if (!content) return null;
+  
+  if (typeof content === 'string') {
+    return content;
+  }
+  
+  if (typeof content === 'object') {
+    return content.url || content.src || null;
+  }
+  
+  return null;
+};
+
+/**
+ * Map resource type to Cloudinary resource type
+ */
+const getCloudinaryResourceType = (resourceType) => {
+  const typeMap = {
+    'image': 'image',
+    'video': 'video',
+    'audio': 'video', // Cloudinary stores audio as video type
+    'document': 'raw', // Documents use raw type
+  };
+  
+  return typeMap[resourceType] || null;
+};
+
+// ============================================
+// UPDATED deleteResource FUNCTION
+// Use this in all three route files
+// ============================================
+
+/**
+ * Delete all quizzes associated with a resource
+ */
+const deleteResourceQuizzes = async (resourceId) => {
   try {
-    const parts = url.split("/");
-    const filename = parts.pop(); // e.g. aifgein3xy5rd3z7bmmp.jpg
-    const publicIdWithExt = filename.split(".")[0]; // aifgein3xy5rd3z7bmmp
+    console.log(`Deleting quizzes for resource: ${resourceId}`);
+    const deleteResult = await Quiz.deleteMany({ ResourceID: resourceId });
+    console.log(`Deleted ${deleteResult.deletedCount} quizzes for resource ${resourceId}`);
+    return deleteResult.deletedCount;
+  } catch (error) {
+    console.error(`Error deleting quizzes for resource ${resourceId}:`, error);
+    throw error;
+  }
+};
+
+/**
+ * Delete a single resource and its associated data
+ */
+const deleteResource = async (resource) => {
+  try {
+    console.log(`Processing resource: ${resource._id} (${resource.type})`);
     
-    // Remove version part (e.g., v1757879249)
-    let versionIndex = -1;
-    for (let i = parts.length - 1; i >= 0; i--) {
-      if (parts[i].startsWith('v') && /^v\d+$/.test(parts[i])) {
-        versionIndex = i;
-        break;
+    let quizzesDeleted = 0;
+    let cloudinaryAssetDeleted = false;
+    
+    // If resource type is quiz, delete all quizzes first
+    if (resource.type === 'quiz') {
+      quizzesDeleted = await deleteResourceQuizzes(resource._id);
+    }
+    
+    // Handle Cloudinary assets for image, video, document, and audio types
+    if (['image', 'video', 'document', 'audio'].includes(resource.type)) {
+      const url = extractUrlFromContent(resource.content, resource.type);
+      
+      if (url && isCloudinaryUrl(url)) {
+        try {
+          console.log(`Deleting Cloudinary asset: ${url} (type: ${resource.type})`);
+          
+          // Get the appropriate Cloudinary resource type
+          const cloudinaryType = getCloudinaryResourceType(resource.type);
+          
+          // Pass the resource type to deleteFromUrl for proper deletion
+          await deleteFromUrl(url, cloudinaryType);
+          
+          console.log(`Successfully deleted Cloudinary asset: ${url}`);
+          cloudinaryAssetDeleted = true;
+        } catch (cloudinaryError) {
+          console.error(`Failed to delete Cloudinary asset ${url}:`, cloudinaryError);
+          // Continue with resource deletion even if Cloudinary deletion fails
+        }
+      } else {
+        if (!url) {
+          console.log(`No URL found in content for resource ${resource._id}`);
+        } else {
+          console.log(`URL is not from Cloudinary for resource ${resource._id}: ${url}`);
+        }
       }
     }
     
-    if (versionIndex !== -1) {
-      parts.splice(versionIndex, 1);
-    }
+    // Delete the resource itself from database
+    const deleteResult = await Resource.findByIdAndDelete(resource._id);
+    console.log(`Successfully deleted resource from database: ${resource._id}`);
     
-    // Find the upload index
-    const uploadIndex = parts.findIndex(part => part === "upload");
-    if (uploadIndex === -1) {
-      throw new Error("Invalid Cloudinary URL - 'upload' not found");
-    }
-    
-    // Get folder path after upload
-    const folderParts = parts.slice(uploadIndex + 1);
-    const folder = folderParts.join("/");
-    
-    const publicId = folder
-      ? `${folder}/${publicIdWithExt}`
-      : publicIdWithExt;
-    
-    return publicId;
+    return {
+      resource: deleteResult,
+      quizzesDeleted,
+      cloudinaryAssetDeleted
+    };
   } catch (error) {
-    throw new Error(`Failed to extract public ID from URL: ${error.message}`);
+    console.error(`Error deleting resource ${resource._id}:`, error);
+    throw error;
   }
 };
 
+// ============================================
+// EXAMPLE: Updated deleteSection/route.js
+// ============================================
+
+// src/app/api/deleteSection/route.js
+
+import { getServerSession } from 'next-auth'
+import { authOptions } from '../auth/[...nextauth]/route'
+import connectDB from '@/lib/mongoose'
+import Course from '@/models/Course'
+import Section from '@/models/Section'
+import Resource from '@/models/Resource'
+import Quiz from '@/models/Quiz'
+import { deleteFromUrl } from '@/lib/deleteAsset'
+
+// ... (Include all helper functions above here) ...
+
 /**
- * Delete any Cloudinary asset by its full URL.
- * Automatically detects whether it's an image, video, or other resource type.
- * @param {string} url - The Cloudinary URL of the asset
- * @param {string} [resourceType] - Optional: specify resource type ("image", "video", "raw"). If not provided, will auto-detect.
- * @returns {Promise<Object>} - Cloudinary deletion result
+ * DELETE handler for section deletion
  */
-export async function deleteFromUrl(url, resourceType = null) {
+export async function DELETE(req) {
   try {
-    if (!url || typeof url !== 'string') {
-      throw new Error('Invalid URL provided');
+    const session = await getServerSession(authOptions);
+    
+    if (!session?.user?.id) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Authentication required',
+          error: 'UNAUTHORIZED' 
+        }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
     }
+
+    await connectDB();
     
-    // Verify this is a Cloudinary URL
-    if (!url.includes('cloudinary.com') && !url.includes('res.cloudinary.com')) {
-      throw new Error('URL is not a Cloudinary URL');
+    const url = new URL(req.url);
+    const sectionId = url.searchParams.get('id');
+    
+    if (!sectionId) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Section ID is required',
+          error: 'MISSING_SECTION_ID' 
+        }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
     }
+
+    const section = await Section.findById(sectionId);
     
-    const publicId = extractPublicId(url);
-    const detectedType = resourceType || determineResourceType(url);
-    
-    console.log(`Deleting Cloudinary asset:`, {
-      url: url.substring(0, 100) + (url.length > 100 ? '...' : ''),
-      publicId,
-      resourceType: detectedType
-    });
-    
-    const result = await cloudinary.uploader.destroy(publicId, {
-      resource_type: detectedType,
-    });
-    
-    console.log(`Cloudinary deletion result:`, {
-      result: result.result,
-      publicId,
-      resourceType: detectedType
-    });
-    
-    // Check if deletion was successful
-    if (result.result === 'ok') {
-      console.log(`Successfully deleted ${detectedType}: ${publicId}`);
-    } else if (result.result === 'not found') {
-      console.warn(`Asset not found for deletion: ${publicId} (${detectedType})`);
-    } else {
-      console.warn(`Unexpected deletion result: ${result.result} for ${publicId}`);
+    if (!section) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Section not found',
+          error: 'SECTION_NOT_FOUND' 
+        }),
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
+      );
     }
+
+    const course = await Course.findById(section.courseId);
     
-    return result;
-  } catch (err) {
-    console.error("Error deleting Cloudinary asset:", {
-      error: err.message,
-      url: url?.substring(0, 100) + (url?.length > 100 ? '...' : ''),
-      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    if (!course) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Associated course not found',
+          error: 'COURSE_NOT_FOUND' 
+        }),
+        { status: 404, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    const isOwner = course.userID.toString() === session.user.id;
+    const isAdmin = session.user.isAdmin === true;
+    
+    if (!isOwner && !isAdmin) {
+      return new Response(
+        JSON.stringify({ 
+          success: false, 
+          message: 'Not authorized to delete this section',
+          error: 'FORBIDDEN' 
+        }),
+        { status: 403, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    console.log(`Deletion authorized for section: ${sectionId} by ${isOwner ? 'owner' : 'admin'} (${session.user.phoneNumber})`);
+
+    console.log(`Starting deletion process for section: ${sectionId} (${section.title})`);
+    
+    const deletionStats = {
+      sectionsDeleted: 0,
+      resourcesDeleted: 0,
+      quizzesDeleted: 0,
+      cloudinaryAssetsDeleted: 0
+    };
+
+    const resources = await Resource.find({ 
+      sectionId: sectionId,
+      isDeleted: false 
     });
-    throw err;
+    
+    console.log(`Found ${resources.length} resources in section ${sectionId}`);
+    
+    if (resources.length > 0) {
+      for (const resource of resources) {
+        try {
+          const resourceResult = await deleteResource(resource);
+          deletionStats.resourcesDeleted++;
+          deletionStats.quizzesDeleted += resourceResult.quizzesDeleted;
+          if (resourceResult.cloudinaryAssetDeleted) {
+            deletionStats.cloudinaryAssetsDeleted++;
+          }
+          
+          console.log(`Successfully processed resource ${resource._id}`);
+        } catch (resourceError) {
+          console.error(`Failed to delete resource ${resource._id}:`, resourceError);
+          // Continue with other resources even if one fails
+        }
+      }
+    }
+
+    const sectionDeleteResult = await Section.findByIdAndDelete(sectionId);
+    
+    if (sectionDeleteResult) {
+      deletionStats.sectionsDeleted = 1;
+      console.log(`Successfully deleted section: ${sectionId}`);
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: 'Section and all associated data deleted successfully',
+        data: {
+          sectionId: sectionId,
+          sectionTitle: section.title,
+          courseId: section.courseId,
+          courseTitle: course.title,
+          deletedAt: new Date().toISOString(),
+          statistics: deletionStats
+        }
+      }),
+      { status: 200, headers: { 'Content-Type': 'application/json' } }
+    );
+
+  } catch (error) {
+    console.error('Section deletion error:', error);
+    
+    return new Response(
+      JSON.stringify({ 
+        success: false, 
+        message: 'Error deleting section',
+        error: 'INTERNAL_ERROR',
+        details: process.env.NODE_ENV === 'development' ? error.message : undefined,
+        timestamp: new Date().toISOString()
+      }),
+      { status: 500, headers: { 'Content-Type': 'application/json' } }
+    );
   }
 }
 
-/**
- * Delete multiple Cloudinary assets by their URLs
- * @param {string[]} urls - Array of Cloudinary URLs
- * @returns {Promise<Object[]>} - Array of deletion results
- */
-export async function deleteMultipleFromUrls(urls) {
-  if (!Array.isArray(urls)) {
-    throw new Error('URLs must be provided as an array');
-  }
-  
-  console.log(`Deleting ${urls.length} Cloudinary assets...`);
-  
-  const results = [];
-  
-  for (const url of urls) {
-    try {
-      const result = await deleteFromUrl(url);
-      results.push({ url, success: true, result });
-    } catch (error) {
-      console.error(`Failed to delete ${url}:`, error.message);
-      results.push({ url, success: false, error: error.message });
-    }
-  }
-  
-  const successful = results.filter(r => r.success).length;
-  const failed = results.length - successful;
-  
-  console.log(`Batch deletion completed: ${successful} successful, ${failed} failed`);
-  
-  return results;
+export async function GET(req) {
+  return new Response(
+    JSON.stringify({ 
+      success: false, 
+      message: 'Method not allowed. Use DELETE request.',
+      error: 'METHOD_NOT_ALLOWED' 
+    }),
+    { status: 405, headers: { 'Content-Type': 'application/json' } }
+  );
+}
+
+export async function POST(req) {
+  return new Response(
+    JSON.stringify({ 
+      success: false, 
+      message: 'Method not allowed. Use DELETE request.',
+      error: 'METHOD_NOT_ALLOWED' 
+    }),
+    { status: 405, headers: { 'Content-Type': 'application/json' } }
+  );
+}
+
+export async function PATCH(req) {
+  return new Response(
+    JSON.stringify({ 
+      success: false, 
+      message: 'Method not allowed. Use DELETE request.',
+      error: 'METHOD_NOT_ALLOWED' 
+    }),
+    { status: 405, headers: { 'Content-Type': 'application/json' } }
+  );
 }

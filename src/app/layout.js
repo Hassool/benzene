@@ -4,6 +4,7 @@ import NavBar from "@/components/nav/NavBar";
 import Footer from "@/components/Footer/Footer";
 import { TranslationProvider } from "@/lib/TranslationProvider";
 import DynamicMain from "@/components/DynamicMain";
+import Popup from "@/components/PopUp";
 
 
 const geistSans = Geist({
@@ -28,6 +29,7 @@ export default async function RootLayout({ children }) {
         className={`${geistSans.variable} ${geistMono.variable} bg-bg dark:bg-bg-dark text-text dark:text-text-dark antialiased`}
       >
         <TranslationProvider>
+          <Popup/>
           <NavBar />
           <DynamicMain>
             {children}
