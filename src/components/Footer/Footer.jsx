@@ -1,26 +1,30 @@
 import Link from "next/link";
 import AuthButton from "./AuthButton"; 
+import { useTranslation } from "@/lib/TranslationProvider";
+import { Github, Instagram, MedalIcon } from "lucide-react";
+import { BsTiktok } from "react-icons/bs";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
+  const {t}= useTranslation
 
   const footerLinks = {
     main: [
-      { label: "Home", href: "/" },
-      { label: "Courses", href: "/Courses" },
-      { label: "Tools", href: "/tools" },
-      { label: "Honor Page", href: "/Honor" },
-      { label: "Dashboard", href: "/dashboard" },
+      { label: t('footer.nav.n1'), href: "/" },
+      { label: t('footer.nav.n2'), href: "/Courses" },
+      { label: t('footer.nav.n3'), href: "/tools" },
+      { label: t('footer.nav.n4'), href: "/Honor" },
+      { label: t('footer.nav.n5'), href: "/dashboard" },
     ],
     legal: [
-      { label: "Privacy Policy", href: "/privacy" },
-      { label: "Terms of Service", href: "/terms" },
-      { label: "Cookie Policy", href: "/cookies" },
+      { label: t('footer.legal.l1') , href: "/privacy-policy" },
+      { label: t('footer.legal.l2') , href: "/terms-of-service" },
+      { label: t('footer.legal.l3') , href: "/cookie-policy" },
     ],
     social: [
-      { label: "GitHub", href: "https://github.com/hassool", external: true },
-      { label: "LinkedIn", href: "https://linkedin.com/in/hassool", external: true },
-      { label: "Twitter", href: "https://twitter.com/hassool", external: true },
+      { label: <Github/>, href: "https://github.com/hassool", external: true },
+      { label: <Instagram/>, href: "https://linkedin.com/in/hassool", external: true },
+      { label: <BsTiktok/>, href: "https://twitter.com/hassool", external: true },
     ]
   };
 
@@ -40,13 +44,13 @@ export default function Footer() {
               <div className="mb-4">
                 <h2 className="text-2xl font-montserrat font-bold text-text dark:text-text-dark mb-2">
                   <span className="bg-gradient-to-r from-special via-[#dda76f] to-[#8a007d] bg-clip-text text-transparent">
-                    BENZENE
+                    {t('footer.auth.title')}
                   </span>
                 </h2>
                 <div className="w-12 h-1 bg-gradient-to-r from-special to-[#dda76f] rounded-full"></div>
               </div>
               <p className="text-text-secondary dark:text-text-dark-secondary mb-6 leading-relaxed">
-                Empowering learners with cutting-edge courses and tools. Built with passion and innovation.
+                {t('footer.auth.p')}
               </p>
               <AuthButton />
             </div>
@@ -57,7 +61,7 @@ export default function Footer() {
             {/* Main Links */}
             <div>
               <h3 className="text-lg font-montserrat font-semibold text-text dark:text-text-dark mb-6 relative">
-                Navigation
+                {t('footer.nav.title')}
                 <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-special rounded-full"></div>
               </h3>
               <nav className="space-y-3">
@@ -78,7 +82,7 @@ export default function Footer() {
             <div className="space-y-8">
               <div>
                 <h3 className="text-lg font-montserrat font-semibold text-text dark:text-text-dark mb-6 relative">
-                  Legal
+                  {t('footer.legal.title')}
                   <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-special rounded-full"></div>
                 </h3>
                 <nav className="space-y-3">
@@ -97,7 +101,7 @@ export default function Footer() {
 
               <div>
                 <h3 className="text-lg font-montserrat font-semibold text-text dark:text-text-dark mb-6 relative">
-                  Connect
+                  <MedalIcon/>
                   <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-special rounded-full"></div>
                 </h3>
                 <div className="flex space-x-4">
@@ -111,7 +115,7 @@ export default function Footer() {
                       title={link.label}
                     >
                       <span className="text-text-secondary dark:text-text-dark-secondary group-hover:text-white text-sm font-semibold">
-                        {link.label[0]}
+                        {link.label}
                       </span>
                     </Link>
                   ))}

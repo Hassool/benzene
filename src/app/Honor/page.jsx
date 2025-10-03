@@ -196,18 +196,13 @@ export default function Page() {
             <Heart className="w-8 h-8 text-special flex-shrink-0 mt-1" />
             <div>
               <h2 className="text-2xl font-montserrat font-semibold text-text dark:text-text-dark mb-4">
-                A Message from Your Student
+                {t('honor.header.meTitle')}
               </h2>
               <p className="text-lg text-text dark:text-text-dark font-inter leading-relaxed">
-                Dear Mrs. Johnson, words cannot express how grateful I am for the impact you've had on my life. 
-                Your passion for teaching, your patience with every question, and your ability to make complex concepts 
-                feel simple and exciting has inspired me to create this education platform. You didn't just teach me 
-                subjects; you taught me how to think, how to question, and most importantly, how to never stop learning. 
-                This platform exists because of educators like you who believe in their students' potential and nurture 
-                their growth. Thank you for being not just a teacher, but a true mentor and inspiration.
+                {t('honor.header.msg')}
               </p>
               <p className="text-right mt-6 text-text-secondary dark:text-text-dark-secondary font-inter italic">
-                — With endless gratitude, Your Student
+                — {t('honor.header.meSlogan')}
               </p>
             </div>
           </div>
@@ -225,7 +220,7 @@ export default function Page() {
         <div className="mb-12">
           <h2 className="text-3xl font-montserrat font-bold text-center text-text dark:text-text-dark mb-8 flex items-center justify-center gap-3">
             <BookOpen className="w-8 h-8 text-special" />
-            Letters of Gratitude
+            {t('honor.header.second')}
           </h2>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 justify-items-center">
@@ -282,27 +277,27 @@ export default function Page() {
         <div className="bg-bg dark:bg-bg-dark rounded-2xl p-8 shadow-lg border border-border dark:border-border-dark">
           <h2 className="text-3xl font-montserrat font-bold text-center text-text dark:text-text-dark mb-8 flex items-center justify-center gap-3">
             <Send className="w-8 h-8 text-special" />
-            Share Your Gratitude
+            {t('honor.form.title')}
           </h2>
           
           <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl mx-auto">
             <div>
               <label className="block text-text dark:text-text-dark font-montserrat font-medium mb-2">
-                Your Name (Optional)
+                {t('honor.form.name.legend')}
               </label>
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleInputChange}
-                placeholder="Enter your name or leave blank for anonymous"
+                placeholder={t('honor.form..name.ph')}
                 className="w-full px-4 py-3 rounded-lg border border-border dark:border-border-dark bg-bg-secondary dark:bg-bg-dark-secondary text-text dark:text-text-dark font-inter focus:ring-2 focus:ring-special focus:border-transparent transition-all"
               />
             </div>
 
             <div>
               <label className="block text-text dark:text-text-dark font-montserrat font-medium mb-2">
-                Your Letter *
+                {t('honor.form.letter.legend')}
               </label>
               <textarea
                 name="message"
@@ -310,14 +305,14 @@ export default function Page() {
                 onChange={handleInputChange}
                 required
                 rows={5}
-                placeholder="Share your thoughts, memories, or gratitude..."
+                placeholder={t('honor.form.letter.ph')}
                 className="w-full px-4 py-3 rounded-lg border border-border dark:border-border-dark bg-bg-secondary dark:bg-bg-dark-secondary text-text dark:text-text-dark font-inter focus:ring-2 focus:ring-special focus:border-transparent transition-all resize-none"
               />
             </div>
 
             <div>
               <label className="block text-text dark:text-text-dark font-montserrat font-medium mb-2">
-                Card Border Color
+                {t('honor.form.color')}
               </label>
               <div className="flex items-center gap-4">
                 <input
@@ -344,7 +339,7 @@ export default function Page() {
 
             <div>
               <label className="block text-text dark:text-text-dark font-montserrat font-medium mb-2">
-                Your Photo (Optional)
+                {t('honor.form..photo.legend')}
               </label>
               <div className="space-y-3">
                 <input
@@ -361,7 +356,7 @@ export default function Page() {
                   </div>
                 )}
                 <p className="text-sm text-text-secondary dark:text-text-dark-secondary">
-                  Upload an image file or leave empty for no photo
+                  {t('honor.form.photo.ph')}
                 </p>
               </div>
             </div>
@@ -369,9 +364,6 @@ export default function Page() {
             {/* Preview Section */}
             {(formData.name || formData.message || formData.image) && (
               <div className="border-t border-border dark:border-border-dark pt-6">
-                <h3 className="text-xl font-montserrat font-semibold text-text dark:text-text-dark mb-4 text-center">
-                  Preview Your Letter
-                </h3>
                 <div 
                   className={`bg-bg-secondary dark:bg-bg-dark-secondary rounded-xl p-6 shadow-lg border-t-8 ${
                     formData.image ? 'max-w-2xl mx-auto' : 'max-w-sm mx-auto'
@@ -419,24 +411,17 @@ export default function Page() {
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    Adding Your Letter...
+                    {t('honor.form.action')=="Add My Letter" ? "Adding your letter ..." : "إضافة رسالتك ..."}
                   </>
                 ) : (
                   <>
                     <Send className="w-5 h-5" />
-                    Add My Letter
+                    {t('honor.form.action')}
                   </>
                 )}
               </button>
             </div>
           </form>
-        </div>
-
-        {/* Footer */}
-        <div className="text-center mt-12 py-8 border-t border-border dark:border-border-dark">
-          <p className="text-text-secondary dark:text-text-dark-secondary font-inter">
-            Thank you for celebrating amazing educators who inspire us all 🌟
-          </p>
         </div>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { CoursesAR, CoursesEN } from "./modules/courses";
 import { MainEN, MainAR } from "./modules/main";
 import { NavAR, NavEN } from "./modules/nav";
 import { HonorEN, HonorAR } from "./modules/honor";
+import { FooterEN, FooterAR } from "./modules/footer";
 // helpers
 
 
@@ -20,7 +21,7 @@ export function deepEqual(a, b) {
     if (!deepEqual(a[k], b[k])) return false;
   }
   return true;
-}
+} 
 
 export function deepMerge(base, override) {
   if (!isObject(base)) return override === undefined ? base : override;
@@ -51,4 +52,5 @@ export const modules = {
   nav: buildModuleConfig(NavEN, NavAR),
   courses: buildModuleConfig(CoursesEN, CoursesAR),
   honor: buildModuleConfig(HonorEN, HonorAR),
+  footer: buildModuleConfig(FooterEN, FooterAR),
 };
