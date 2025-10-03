@@ -40,19 +40,30 @@ export function TranslationProvider({ children }) {
     if (newLang === lang) return; // Don't reload if same language
     
     setLang(newLang);
-    localStorage.setItem('lang', newLang);
+    
+    // Only access localStorage in the browser
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('lang', newLang);
+    }
+    
     document.documentElement.lang = newLang;
     document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
     loadTranslations(newLang);
   };
 
-  // Initialize
+  // Initialize - only runs on client
   useEffect(() => {
-    const storedLang = localStorage.getItem('lang') || 'en';
-    setLang(storedLang);
-    document.documentElement.lang = storedLang;
-    document.documentElement.dir = storedLang === 'ar' ? 'rtl' : 'ltr';
-    loadTranslations(storedLang);
+    // Check if we're in the browser
+    if (typeof window !== 'undefined') {
+      const storedLang = localStorage.getItem('lang') || 'en';
+      setLang(storedLang);
+      document.documentElement.lang = storedLang;
+      document.documentElement.dir = storedLang === 'ar' ? 'rtl' : 'ltr';
+      loadTranslations(storedLang);
+    } else {
+      // Server-side: just load English
+      loadTranslations('en');
+    }
   }, []);
 
   const value = {
