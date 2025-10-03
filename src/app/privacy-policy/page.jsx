@@ -4,7 +4,7 @@
 import { useTranslation } from "@/lib/TranslationProvider";
 
 export default function PrivacyPolicyPage() {
-  const { lang, changeLanguage, t } = useTranslation
+  const { lang, changeLanguage, t } = useTranslation()
 
   return (
     <div className="min-h-screen bg-bg text-text dark:bg-bg-dark dark:text-text-dark font-inter px-6 py-12">
