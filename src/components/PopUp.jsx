@@ -80,7 +80,7 @@ const Popup = () => {
                 
                 {/* Content */}
                 <div className="flex-1 min-w-0">
-                  <h3 className="font-montserrat font-bold text-lg text-text dark:text-text-dark mb-1">
+                  <h3 className="font-montserrat font-bold text-lg text-rtl text-text dark:text-text-dark mb-1">
                     طهر قلبك
                   </h3>
                   <p className="font-inter text-text-secondary dark:text-text-dark-secondary leading-relaxed">
