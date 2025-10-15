@@ -8,7 +8,7 @@ import { BsTiktok } from "react-icons/bs";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { t } = useTranslation();
+  const { t , isRTL } = useTranslation();
   
   const footerLinks = {
     main: [
@@ -147,7 +147,7 @@ export default function Footer() {
                 className="group inline-flex items-center space-x-2 bg-gradient-to-r from-[#dda76f] to-[#8a007d] hover:from-[#8a007d] hover:to-[#dda76f] text-white font-medium py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
               >
                 <span>{t('footer.me.acton')}</span>
-                <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+                <span className={`transform group-hover:translate-x-1 transition-transform duration-300 ${isRTL ? "rotate-180" : ""}`}>→</span>
               </Link>
             </div>
           </div>
