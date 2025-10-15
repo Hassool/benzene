@@ -1,3 +1,5 @@
+'use client';
+
 import Link from "next/link";
 import AuthButton from "./AuthButton"; 
 import { useTranslation } from "@/lib/TranslationProvider";
@@ -6,8 +8,8 @@ import { BsTiktok } from "react-icons/bs";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const {t}= useTranslation
-
+  const { t } = useTranslation();
+  
   const footerLinks = {
     main: [
       { label: t('footer.nav.n1'), href: "/" },
@@ -17,9 +19,9 @@ export default function Footer() {
       { label: t('footer.nav.n5'), href: "/dashboard" },
     ],
     legal: [
-      { label: t('footer.legal.l1') , href: "/privacy-policy" },
-      { label: t('footer.legal.l2') , href: "/terms-of-service" },
-      { label: t('footer.legal.l3') , href: "/cookie-policy" },
+      { label: t('footer.legal.l1'), href: "/privacy-policy" },
+      { label: t('footer.legal.l2'), href: "/terms-of-service" },
+      { label: t('footer.legal.l3'), href: "/cookie-policy" },
     ],
     social: [
       { label: <Github/>, href: "https://github.com/hassool", external: true },
@@ -105,14 +107,13 @@ export default function Footer() {
                   <div className="absolute -bottom-2 left-0 w-8 h-0.5 bg-special rounded-full"></div>
                 </h3>
                 <div className="flex space-x-4">
-                  {footerLinks.social.map((link) => (
+                  {footerLinks.social.map((link, index) => (
                     <Link
-                      key={link.label}
+                      key={index}
                       href={link.href}
                       target={link.external ? "_blank" : undefined}
                       rel={link.external ? "noopener noreferrer" : undefined}
                       className="group w-10 h-10 bg-bg-secondary dark:bg-bg-dark-secondary border border-border/50 dark:border-border-dark/50 rounded-xl flex items-center justify-center hover:bg-special hover:border-special hover:scale-110 transition-all duration-300 hover:shadow-lg"
-                      title={link.label}
                     >
                       <span className="text-text-secondary dark:text-text-dark-secondary group-hover:text-white text-sm font-semibold">
                         {link.label}
@@ -128,7 +129,7 @@ export default function Footer() {
           <div className="lg:col-span-1">
             <div className="bg-gradient-to-br from-special/5 to-[#dda76f]/5 dark:from-special/10 dark:to-[#dda76f]/10 border border-special/20 rounded-2xl p-6 hover:border-special/30 transition-all duration-500">
               <h3 className="text-lg font-montserrat font-semibold text-text dark:text-text-dark mb-3">
-                Created By
+                {t('footer.me.presnt')}
               </h3>
               <div className="mb-4">
                 <span className="text-2xl font-bold">
@@ -137,7 +138,7 @@ export default function Footer() {
                 </span>
               </div>
               <p className="text-text-secondary dark:text-text-dark-secondary mb-6 text-sm leading-relaxed">
-                Crafted with ❤️ and countless cups of tea 🍵. Always pushing boundaries in web development.
+                {t('footer.me.p')}
               </p>
               <Link
                 href="https://hassool.com/"
@@ -145,7 +146,7 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="group inline-flex items-center space-x-2 bg-gradient-to-r from-[#dda76f] to-[#8a007d] hover:from-[#8a007d] hover:to-[#dda76f] text-white font-medium py-2.5 px-4 rounded-xl transition-all duration-300 transform hover:scale-105 hover:shadow-xl"
               >
-                <span>Visit Portfolio</span>
+                <span>{t('footer.me.acton')}</span>
                 <span className="transform group-hover:translate-x-1 transition-transform duration-300">→</span>
               </Link>
             </div>

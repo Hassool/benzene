@@ -6,7 +6,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 
 function AuthContent() {
-  const {t} = useTranslation
+  const {t} = useTranslation()
   const { data: session } = useSession()
   const [isLoading, setIsLoading] = useState(false)
 
