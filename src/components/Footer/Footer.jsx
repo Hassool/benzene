@@ -25,8 +25,8 @@ export default function Footer() {
     ],
     social: [
       { label: <Github/>, href: "https://github.com/hassool", external: true },
-      { label: <Instagram/>, href: "https://linkedin.com/in/hassool", external: true },
-      { label: <BsTiktok/>, href: "https://twitter.com/hassool", external: true },
+      { label: <Instagram/>, href: "https://www.instagram.com/mwag_dev/", external: true },
+      { label: <BsTiktok/>, href: "https://www.tiktok.com/@mwag_dev", external: true },
     ]
   };
 
