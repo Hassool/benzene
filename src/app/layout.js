@@ -5,6 +5,7 @@ import Footer from "@/components/Footer/Footer";
 import { TranslationProvider } from "@/lib/TranslationProvider";
 import DynamicMain from "@/components/DynamicMain";
 import Popup from "@/components/PopUp";
+import { Analytics } from '@vercel/analytics/next';
 
 
 const geistSans = Geist({
@@ -33,6 +34,7 @@ export default function RootLayout({ children }) {
           <NavBar />
           <DynamicMain>
             {children}
+            <Analytics />
             <Footer />
           </DynamicMain>
         </TranslationProvider>

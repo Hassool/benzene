@@ -37,20 +37,6 @@ const NavList = [
     bgGradient: "bg-gradient-to-br from-emerald-500/10 to-green-400/10 dark:from-emerald-400/10 dark:to-green-300/10"
   },
   {
-    name: "2D Lab",
-    nameAR: "المعمل ثنائي الأبعاد",
-    icon: <GiChemicalTank />,
-    path: "/tools/2dlab", 
-    description: "Visualize and simulate chemical reactions in a virtual 2D laboratory environment. Perfect for understanding molecular interactions and reaction mechanisms.",
-    descriptionAR: "تصوّر وحاكي التفاعلات الكيميائية في معمل افتراضي ثنائي الأبعاد. مثالي لفهم التفاعلات الجزيئية وآليات التفاعل.",
-    color: "from-purple-500 to-pink-400",
-    darkColor: "dark:from-purple-400 dark:to-pink-300",
-    hoverColor: "hover:from-purple-600 hover:to-pink-500",
-    darkHoverColor: "dark:hover:from-purple-500 dark:hover:to-pink-400",
-    iconColor: "text-purple-400 dark:text-purple-300",
-    bgGradient: "bg-gradient-to-br from-purple-500/10 to-pink-400/10 dark:from-purple-400/10 dark:to-pink-300/10"
-  },
-  {
     name: "Function Graph Drawer",
     nameAR: "رَسّام الدوال",
     icon: <FunctionSquare />,
