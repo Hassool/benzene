@@ -21,13 +21,6 @@ const AdminCheck = {
   adminOnly: true
 }
 
-const YacineCheck = { 
-  name: "Check Letters", 
-  path: "/dashboard/letters", 
-  icon: <Mail className="h-5 w-5" />,
-  yacineOnly: true
-}
-
 function DashNav() {
   const { data: session, status } = useSession()
   const pathname = usePathname()
@@ -88,8 +81,7 @@ function DashNav() {
   // Build navigation items based on user permissions
   const allNavItems = [
     ...NavList,
-    ...(session?.user?.isAdmin ? [AdminCheck] : []),
-    ...(session?.user?.isYacine ? [YacineCheck] : [])
+    ...(session?.user?.isAdmin ? [AdminCheck] : [])
   ]
 
   return (
@@ -112,12 +104,6 @@ function DashNav() {
               </div>
               <div>
                 <h1 className="text-lg font-bold text-text dark:text-text-dark">Dashboard</h1>
-                {session?.user?.isYacine && (
-                  <div className="flex items-center gap-1 px-2 py-0.5 bg-purple-500/10 dark:bg-purple-400/20 text-purple-600 dark:text-purple-400 text-xs rounded-full">
-                    <Mail className="h-3 w-3" />
-                    <span>Yacine</span>
-                  </div>
-                )}
                 {session?.user?.isAdmin && (
                   <div className="flex items-center gap-1 px-2 py-0.5 bg-special/10 dark:bg-special-dark/20 text-special dark:text-special-light text-xs rounded-full">
                     <Shield className="h-3 w-3" />
@@ -168,7 +154,6 @@ function DashNav() {
                   {/* Hover tooltip */}
                   <span className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-text dark:bg-text-dark text-bg dark:text-bg-dark px-3 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     {item.name}
-                    {item.yacineOnly && <span className="text-purple-300"> (Yacine Only)</span>}
                     {item.adminOnly && <span className="text-blue-300"> (Admin Only)</span>}
                   </span>
                 </li>
@@ -185,9 +170,6 @@ function DashNav() {
                   <p className="text-sm font-medium text-text dark:text-text-dark truncate max-w-32">
                     {session?.user?.fullName || 'User'}
                   </p>
-                  {session?.user?.isYacine && (
-                    <p className="text-xs text-purple-600 dark:text-purple-400 font-medium">Yacine</p>
-                  )}
                   {session?.user?.isAdmin && (
                     <p className="text-xs text-special dark:text-special-light font-medium">Administrator</p>
                   )}
@@ -214,12 +196,6 @@ function DashNav() {
                           {session?.user?.phoneNumber}
                         </p>
                         <div className="flex items-center gap-2 mt-1">
-                          {session?.user?.isYacine && (
-                            <div className="flex items-center gap-1">
-                              <Mail className="h-3 w-3 text-purple-600 dark:text-purple-400" />
-                              <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">Yacine</span>
-                            </div>
-                          )}
                           {session?.user?.isAdmin && (
                             <div className="flex items-center gap-1">
                               <Shield className="h-3 w-3 text-special dark:text-special-light" />
@@ -289,12 +265,6 @@ function DashNav() {
                       {session?.user?.phoneNumber}
                     </p>
                     <div className="flex items-center gap-2 mt-2">
-                      {session?.user?.isYacine && (
-                        <div className="flex items-center gap-1.5 px-3 py-1 bg-purple-500/10 dark:bg-purple-400/20 rounded-full">
-                          <Mail className="h-3 w-3 text-purple-600 dark:text-purple-400" />
-                          <span className="text-xs text-purple-600 dark:text-purple-400 font-medium">Yacine</span>
-                        </div>
-                      )}
                       {session?.user?.isAdmin && (
                         <div className="flex items-center gap-1.5 px-3 py-1 bg-special/10 dark:bg-special-dark/20 rounded-full">
                           <Shield className="h-3 w-3 text-special dark:text-special-light" />
@@ -320,21 +290,15 @@ function DashNav() {
                           : 'text-text dark:text-text-dark'
                         }
                         ${item.adminOnly ? 'border border-special/30 dark:border-special-dark/40' : ''}
-                        ${item.yacineOnly ? 'border border-purple-500/30 dark:border-purple-400/40' : ''}
                       `}
                     >
-                      <div className={`p-2 rounded-xl ${pathname === item.path ? 'bg-white/20' : item.yacineOnly ? 'bg-purple-500/10 dark:bg-purple-400/20' : 'bg-special/10 dark:bg-special-dark/20'}`}>
+                      <div className={`p-2 rounded-xl ${pathname === item.path ? 'bg-white/20' : 'bg-special/10 dark:bg-special-dark/20'}`}>
                         {item.icon}
                       </div>
                       <span className="font-medium flex-1">{item.name}</span>
                       {item.adminOnly && (
                         <div className="bg-special/20 dark:bg-special-dark/30 px-2 py-1 rounded-full">
                           <Shield className="h-3 w-3 text-special dark:text-special-light" />
-                        </div>
-                      )}
-                      {item.yacineOnly && (
-                        <div className="bg-purple-500/20 dark:bg-purple-400/30 px-2 py-1 rounded-full">
-                          <Mail className="h-3 w-3 text-purple-600 dark:text-purple-400" />
                         </div>
                       )}
                     </Link>
