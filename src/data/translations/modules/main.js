@@ -94,7 +94,11 @@ const MainEN = {
   },
   honor: {
     subtitle: "This platform exists because of the incredible teachers who inspire students every day. Thank you for making learning magical!",
-    quote: "Great teachers inspire greatness in others"
+    quote: "Great teachers inspire greatness in others",
+    special: {
+      title: "special thx",
+      letter: "Benzene was inspired by Mrs. terrak, a teacher whose passion for sharing knowledge continues to guide this project. Thank you."
+    }
   },
   cta: {
     subtitle: "Join thousands of Algerian students succeeding with our free tools and courses!",
@@ -213,7 +217,11 @@ const MainAR = {
   },
   honor: {
     subtitle: "هذه المنصة موجودة بفضل المعلمين الرائعين الذين يلهمون الطلاب كل يوم. شكراً لكم لجعل التعلم سحرياً!",
-    quote: "المعلمون العظماء يلهمون العظمة في الآخرين"
+    quote: "المعلمون العظماء يلهمون العظمة في الآخرين",
+    special: {
+      title: "شكر خاص",
+      letter: "استلهم البنزين من السيدة تيراك، المعلمة التي يستمر شغفها بمشاركة المعرفة في توجيه هذا المشروع. شكرًا لك."
+    }
   },
   cta: {
     subtitle: "انضم لآلاف الطلاب الجزائريين الناجحين مع أدواتنا ودوراتنا المجانية!",

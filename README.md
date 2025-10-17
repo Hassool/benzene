@@ -1,36 +1,87 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 🌿 Benzene 1.0
 
-## Getting Started
+**Benzene** is a **charity web app** built to help **high school students** learn different subjects easily and for free.  
+It provides lessons, tools, and quizzes — all designed to make studying simpler, more interactive, and more accessible.
 
-First, run the development server:
+---
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🎯 Purpose
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The goal of Benzene is to give **every student** access to high-quality educational content and useful tools, no matter their background.  
+It’s a **non-profit project**, created to make learning available to everyone, everywhere.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🧪 Features (v1.0)
 
-## Learn More
+- 📘 **Lessons** in multiple formats:
+  - Documents  
+  - External links  
+  - Images  
+  - Videos  
 
-To learn more about Next.js, take a look at the following resources:
+- 🧠 **Quizzes** created by teachers directly in the web app
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- 🧰 **Tools Section**:
+  - ⚖️ Equation Balancer  
+  - 🧪 Periodic Table  
+  - 📏 Unit Converter  
+  - 📈 Graph Drawer (for math functions)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🚧 Upcoming Features
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- 🧩 **Duolingo-style learning system** (v1.1)
+- 🎨 **Visual animations** (v1.1)
+- 📱 **Android app** version (v1.2)
+- 🌍 **Complete Arabic translation**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 💡 Inspiration
+
+Benzene was inspired by **Mrs. Chirac**, a teacher whose passion for sharing knowledge and helping students left a lasting impact.  
+> “Benzene was inspired by Mrs. Chirac, a teacher whose passion for sharing knowledge continues to guide this project. Thank you.”
+
+---
+
+## 🧑‍💻 Tech Stack
+
+- **Frontend:** React (Next.js)  
+- **Backend:** Node.js & Express  
+- **Database:** MongoDB  
+- **Hosting:** (e.g., Vercel / Render / Netlify — specify if applicable)
+
+---
+
+## 🧭 Project Vision
+
+Education should not be limited by money or access.  
+Benzene aims to grow into a **complete online learning ecosystem** for high schoolers — free, fun, and community-driven.
+
+---
+
+## 🧪 Contributing
+
+If you'd like to contribute:
+1. Fork the repository  
+2. Create a feature branch (`git checkout -b feature-name`)  
+3. Commit your changes  
+4. Push and submit a Pull Request
+
+Contributions, feedback, and ideas are all welcome.
+
+---
+
+## 🐞 Feedback & Bug Reporting
+
+Benzene 1.0 is still under development.  
+If you find any bugs, missing translations, or have suggestions, please open an **issue** or contact the maintainers.
+
+---
+
+
+### 🌐 Live Demo
+
+[🔗 Visit Benzene Web App](https://benzene-beta.vercel.app/) 
