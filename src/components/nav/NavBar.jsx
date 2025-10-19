@@ -19,8 +19,7 @@ export default function NavBar() {
   const NavList = [
     { name: t('nav.home'), icon: <GoHome />, path: '/' },
     { name: t('nav.tools'), icon: <TbTools />, path: '/tools' },
-    { name: t('nav.courses'), icon: <MdOutlinePlayLesson />, path: '/Courses' },
-    { name: t('nav.honor'), icon: <FaRegHeart />, path: '/Honor' },
+    { name: t('nav.courses'), icon: <MdOutlinePlayLesson />, path: '/Courses' }
   ];
 
   return (
