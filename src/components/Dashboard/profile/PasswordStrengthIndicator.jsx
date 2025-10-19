@@ -1,12 +1,16 @@
+import { useTranslation } from "@/lib/TranslationProvider"
+
 const PasswordStrengthIndicator = ({ requirements }) => {
+  const { t } = useTranslation()
+  
   if (!requirements) return null
 
   const items = [
-    { key: "minLength", label: "8+ characters" },
-    { key: "hasLowercase", label: "Lowercase" },
-    { key: "hasUppercase", label: "Uppercase" },
-    { key: "hasNumber", label: "Number" },
-    { key: "hasSpecialChar", label: "Special char" },
+    { key: "minLength", label: t('profile.strength.minLength') },
+    { key: "hasLowercase", label: t('profile.strength.lowercase') },
+    { key: "hasUppercase", label: t('profile.strength.uppercase') },
+    { key: "hasNumber", label: t('profile.strength.number') },
+    { key: "hasSpecialChar", label: t('profile.strength.specialChar') },
   ]
 
   return (

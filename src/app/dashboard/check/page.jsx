@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { UserRoundCheck, Check, Trash2, Clock, Users, UserCheck, AlertCircle, RefreshCw, Phone, Calendar } from 'lucide-react'
 import { useRouter } from 'next/navigation'
+import { useTranslation } from "@/lib/TranslationProvider"
 
-export default function page() {
+export default function Page() {
+  const { t, lang } = useTranslation()
   const { data: session, status } = useSession()
   const router = useRouter()
   const [users, setUsers] = useState([])
@@ -37,11 +39,11 @@ export default function page() {
         setStatusCounts(data.statusCounts)
       } else {
         console.error('Failed to fetch users:', data.error)
-        alert('Failed to load users: ' + data.error)
+        alert(`${t('check.errors.loadFailed')}: ${data.error}`)
       }
     } catch (error) {
       console.error('Error fetching users:', error)
-      alert('Failed to load users. Please try again.')
+      alert(`${t('check.errors.loadFailed')}. ${t('check.errors.tryAgain')}`)
     } finally {
       setLoading(false)
     }
@@ -89,11 +91,11 @@ export default function page() {
           active: (prev.active || 0) + 1
         }))
       } else {
-        alert('Failed to activate user: ' + data.error)
+        alert(`${t('check.errors.activateFailed')}: ${data.error}`)
       }
     } catch (error) {
       console.error('Error activating user:', error)
-      alert('Failed to activate user. Please try again.')
+      alert(`${t('check.errors.activateFailed')}. ${t('check.errors.tryAgain')}`)
     } finally {
       setProcessingId(null)
     }
@@ -101,7 +103,7 @@ export default function page() {
 
   // Deactivate user
   const handleDeactivate = async (userId) => {
-    if (!confirm('Are you sure you want to deactivate this user? They will not be able to log in.')) {
+    if (!confirm(t('check.confirm.deactivate'))) {
       return
     }
 
@@ -134,11 +136,11 @@ export default function page() {
           pending: (prev.pending || 0) + 1
         }))
       } else {
-        alert('Failed to deactivate user: ' + data.error)
+        alert(`${t('check.errors.deactivateFailed')}: ${data.error}`)
       }
     } catch (error) {
       console.error('Error deactivating user:', error)
-      alert('Failed to deactivate user. Please try again.')
+      alert(`${t('check.errors.deactivateFailed')}. ${t('check.errors.tryAgain')}`)
     } finally {
       setProcessingId(null)
     }
@@ -146,7 +148,7 @@ export default function page() {
 
   // Delete user
   const handleDelete = async (userId) => {
-    if (!confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+    if (!confirm(t('check.confirm.delete'))) {
       return
     }
 
@@ -169,11 +171,11 @@ export default function page() {
           active: filter === 'active' ? Math.max(0, (prev.active || 0) - 1) : prev.active
         }))
       } else {
-        alert('Failed to delete user: ' + data.error)
+        alert(`${t('check.errors.deleteFailed')}: ${data.error}`)
       }
     } catch (error) {
       console.error('Error deleting user:', error)
-      alert('Failed to delete user. Please try again.')
+      alert(`${t('check.errors.deleteFailed')}. ${t('check.errors.tryAgain')}`)
     } finally {
       setProcessingId(null)
     }
@@ -185,7 +187,7 @@ export default function page() {
       <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-special mx-auto mb-4"></div>
-          <p className="text-text dark:text-text-dark font-inter">Loading...</p>
+          <p className="text-text dark:text-text-dark font-inter">{t('check.loading.main')}</p>
         </div>
       </div>
     )
@@ -197,7 +199,7 @@ export default function page() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark pt-20">
+    <div className={`min-h-screen bg-gradient-light dark:bg-gradient-dark pt-20 ${lang === 'ar' ? 'rtl' : 'ltr'}`}>
       <div className="max-w-7xl mx-auto px-4 py-8">
         
         {/* Header */}
@@ -205,20 +207,20 @@ export default function page() {
           <div className="flex justify-center items-center gap-4 mb-4">
             <UserRoundCheck className="w-10 h-10 text-special dark:text-special-light" />
             <h1 className="text-4xl font-montserrat font-bold text-text dark:text-text-dark">
-              User Management
+              {t('check.header.title')}
             </h1>
           </div>
           <p className="text-lg text-text-secondary dark:text-text-dark-secondary font-inter">
-            Review and manage user registration requests
+            {t('check.header.subtitle')}
           </p>
         </div>
 
         {/* Status Filter Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           {[
-            { key: 'pending', label: 'Pending', icon: Clock, color: 'orange' },
-            { key: 'active', label: 'Active', icon: UserCheck, color: 'green' },
-            { key: 'all', label: 'All Users', icon: Users, color: 'blue' }
+            { key: 'pending', label: t('check.filters.pending'), icon: Clock, color: 'orange' },
+            { key: 'active', label: t('check.filters.active'), icon: UserCheck, color: 'green' },
+            { key: 'all', label: t('check.filters.all'), icon: Users, color: 'blue' }
           ].map(({ key, label, icon: Icon, color }) => (
             <button
               key={key}
@@ -253,7 +255,7 @@ export default function page() {
             className="flex items-center gap-2 px-4 py-2 bg-bg-secondary dark:bg-bg-dark-secondary hover:bg-special/10 dark:hover:bg-special-dark/20 text-text dark:text-text-dark rounded-xl transition-all duration-200 disabled:opacity-50"
           >
             <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
-            <span>Refresh</span>
+            <span>{t('check.actions.refresh')}</span>
           </button>
         </div>
 
@@ -262,7 +264,7 @@ export default function page() {
           <div className="flex justify-center py-12">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-special mx-auto mb-4"></div>
-              <p className="text-text-secondary dark:text-text-dark-secondary">Loading users...</p>
+              <p className="text-text-secondary dark:text-text-dark-secondary">{t('check.loading.users')}</p>
             </div>
           </div>
         )}
@@ -272,12 +274,12 @@ export default function page() {
           <div className="text-center py-12">
             <AlertCircle className="w-16 h-16 text-text-secondary dark:text-text-dark-secondary mx-auto mb-4" />
             <h3 className="text-xl font-semibold text-text dark:text-text-dark mb-2">
-              No {filter === 'all' ? '' : filter} users found
+              {filter === 'all' ? t('check.empty.noUsers') : `${t('check.empty.noUsers')} ${filter === 'pending' ? t('check.filters.pending') : t('check.filters.active')}`}
             </h3>
             <p className="text-text-secondary dark:text-text-dark-secondary">
               {filter === 'pending' 
-                ? 'All user requests have been processed.' 
-                : 'No users match the current filter.'}
+                ? t('check.empty.allProcessed')
+                : t('check.empty.noMatch')}
             </p>
           </div>
         )}
@@ -295,12 +297,12 @@ export default function page() {
                   {user.isActive ? (
                     <span className="flex items-center gap-1 px-2 py-1 bg-green-500/20 text-green-600 dark:text-green-400 text-xs rounded-full">
                       <UserCheck className="h-3 w-3" />
-                      Active
+                      {t('check.status.active')}
                     </span>
                   ) : (
                     <span className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 text-orange-600 dark:text-orange-400 text-xs rounded-full">
                       <Clock className="h-3 w-3" />
-                      Pending
+                      {t('check.status.pending')}
                     </span>
                   )}
                 </div>
@@ -324,13 +326,13 @@ export default function page() {
                     
                     <div className="flex items-center justify-center gap-2">
                       <Calendar className="h-4 w-4" />
-                      <span>Joined: {new Date(user.createdAt).toLocaleDateString()}</span>
+                      <span>{t('check.info.joined')} {new Date(user.createdAt).toLocaleDateString()}</span>
                     </div>
                     
                     {user.lastLogin && (
                       <div className="flex items-center justify-center gap-2">
                         <Clock className="h-4 w-4" />
-                        <span>Last login: {new Date(user.lastLogin).toLocaleDateString()}</span>
+                        <span>{t('check.info.lastLogin')} {new Date(user.lastLogin).toLocaleDateString()}</span>
                       </div>
                     )}
                   </div>
@@ -349,7 +351,7 @@ export default function page() {
                       ) : (
                         <Check className="h-4 w-4" />
                       )}
-                      <span>Activate</span>
+                      <span>{t('check.actions.activate')}</span>
                     </button>
                   ) : (
                     <button
@@ -362,7 +364,7 @@ export default function page() {
                       ) : (
                         <Clock className="h-4 w-4" />
                       )}
-                      <span>Deactivate</span>
+                      <span>{t('check.actions.deactivate')}</span>
                     </button>
                   )}
                   
@@ -376,7 +378,7 @@ export default function page() {
                     ) : (
                       <Trash2 className="h-4 w-4" />
                     )}
-                    <span>Delete</span>
+                    <span>{t('check.actions.delete')}</span>
                   </button>
                 </div>
               </div>

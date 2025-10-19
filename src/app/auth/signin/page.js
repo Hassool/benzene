@@ -4,8 +4,11 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Phone, Lock, AlertCircle } from "lucide-react";
+import { useTranslation } from "@/lib/TranslationProvider";
+import Link from "next/link";
 
 export default function SignIn() {
+  const {isRTL} = useTranslation()
   const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
@@ -33,7 +36,7 @@ export default function SignIn() {
       if (result?.error) {
         setError("Invalid phone number or password. Please try again.");
       } else {
-        router.push("/");
+        router.push("/dashboard");
       }
     } catch (err) {
       setError("An unexpected error occurred. Please try again.");
@@ -48,10 +51,10 @@ export default function SignIn() {
         {/* Header */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-text dark:text-text-dark font-montserrat mb-2">
-            Welcome Back
+            {! isRTL ? "Welcome Back" : "مرحبًا بعودتك"}
           </h1>
           <p className="text-text-secondary dark:text-text-dark-secondary font-inter">
-            Sign in to your account to continue
+            {! isRTL ? "Sign in to your account to continue" : "قم بتسجيل الدخول إلى حسابك للمتابعة"}
           </p>
         </div>
 
@@ -71,7 +74,7 @@ export default function SignIn() {
           {/* Phone Number Field */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-text dark:text-text-dark font-inter">
-              Phone Number
+              {isLoading ? "Phone Number" : "رقم الهاتف "}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -92,7 +95,7 @@ export default function SignIn() {
           {/* Password Field */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-text dark:text-text-dark font-inter">
-              Password
+              {! isRTL ? "Password" : "كلمة المرور "}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -103,7 +106,7 @@ export default function SignIn() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
-                className="w-full pl-10 pr-12 py-3 bg-bg dark:bg-bg-dark border border-border dark:border-border-dark rounded-xl text-text dark:text-text-dark placeholder-text-secondary dark:placeholder-text-dark-secondary focus:outline-none focus:ring-2 focus:ring-special focus:border-transparent transition-all duration-200 font-inter"
+                className="w-full ltr pl-10 pr-12 py-3 bg-bg dark:bg-bg-dark border border-border dark:border-border-dark rounded-xl text-text dark:text-text-dark placeholder-text-secondary dark:placeholder-text-dark-secondary focus:outline-none focus:ring-2 focus:ring-special focus:border-transparent transition-all duration-200 font-inter"
                 required
                 disabled={isLoading}
               />
@@ -122,17 +125,6 @@ export default function SignIn() {
             </div>
           </div>
 
-          {/* Forgot Password Link */}
-          <div className="text-right">
-            <button
-              type="button"
-              className="text-sm text-special hover:text-special-hover transition-colors duration-200 font-inter"
-              disabled={isLoading}
-            >
-              Forgot your password?
-            </button>
-          </div>
-
           {/* Submit Button */}
           <button
             type="submit"
@@ -142,10 +134,10 @@ export default function SignIn() {
             {isLoading ? (
               <>
                 <div className="animate-spin rounded-full h-5 w-5 border-2 border-white/20 border-t-white"></div>
-                Signing In...
+                {! isRTL ? "Signing In..." : "جاري تسجيل الدخول... "}
               </>
             ) : (
-              "Sign In"
+              `${! isRTL ? "Sign In" : "سجل الدخول "}`
             )}
           </button>
 
@@ -156,7 +148,7 @@ export default function SignIn() {
             </div>
             <div className="relative flex justify-center text-sm">
               <span className="px-4 bg-bg-secondary dark:bg-bg-dark-secondary text-text-secondary dark:text-text-dark-secondary font-inter">
-                New to our platform?
+                {! isRTL ? "request an account" : "اطلب حسابا"}
               </span>
             </div>
           </div>
@@ -164,16 +156,38 @@ export default function SignIn() {
 
         {/* Footer */}
         <div className="mt-8 text-center">
+          {! isRTL ? 
           <p className="text-xs text-text-secondary dark:text-text-dark-secondary font-inter">
             By signing in, you agree to our{" "}
-            <button className="text-special hover:text-special-hover transition-colors duration-200">
+            <Link href="/terms-of-service" className="text-special hover:text-special-hover transition-colors duration-200">
               Terms of Service
-            </button>{" "}
+            </Link>{" "}
             and{" "}
-            <button className="text-special hover:text-special-hover transition-colors duration-200">
+            <Link href="/privacy-policy" className="text-special hover:text-special-hover transition-colors duration-200">
               Privacy Policy
-            </button>
+            </Link>
+            and{" "}
+            <Link href="/privacy-policy" className="text-special hover:text-special-hover transition-colors duration-200">
+              Cookie Policy
+            </Link>
           </p>
+          :
+            <p className="text-xs text-text-secondary dark:text-text-dark-secondary font-inter">
+            بتسجيل الدخول، فإنك توافق على{" "}
+            <Link href="/terms-of-service" className="text-special hover:text-special-hover transition-colors duration-200">
+              شروط الخدمة
+            </Link>{" "}
+            و{" "}
+            <Link href="/privacy-policy" className="text-special hover:text-special-hover transition-colors duration-200">
+              سياسة الخصوصية
+            </Link>{" "}
+            و{" "}
+            <Link href="/privacy-policy" className="text-special hover:text-special-hover transition-colors duration-200">
+              سياسة ملفات تعريف الارتباط
+            </Link>
+          </p>
+
+        }
         </div>
       </div>
     </div>

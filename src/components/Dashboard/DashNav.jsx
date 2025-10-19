@@ -7,26 +7,29 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import NavLink from '../nav/NavLink'
 import { GoHome } from 'react-icons/go'
-
-const NavList = [
-  { name: "Home", icon: <GoHome className="h-5 w-5"  />, path: "/" },
-  { name: "Profile", path: "/dashboard", icon: <User className="h-5 w-5" /> },
-  { name: "Courses", path: "/dashboard/courses", icon: <Book className="h-5 w-5" /> }
-]
-
-const AdminCheck = { 
-  name: "Check Demands", 
-  path: "/dashboard/check", 
-  icon: <UserRoundCheck className="h-5 w-5" />,
-  adminOnly: true
-}
+import { useTranslation } from "@/lib/TranslationProvider"
 
 function DashNav() {
+  const { t, isLoading: translationLoading, lang } = useTranslation()
   const { data: session, status } = useSession()
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false)
+
+  // Navigation items with translations
+  const NavList = [
+    { name: t('dashNav.nav.home'), icon: <GoHome className="h-5 w-5" />, path: "/" },
+    { name: t('dashNav.nav.profile'), path: "/dashboard", icon: <User className="h-5 w-5" /> },
+    { name: t('dashNav.nav.courses'), path: "/dashboard/courses", icon: <Book className="h-5 w-5" /> }
+  ]
+
+  const AdminCheck = { 
+    name: t('dashNav.nav.checkDemands'), 
+    path: "/dashboard/check", 
+    icon: <UserRoundCheck className="h-5 w-5" />,
+    adminOnly: true
+  }
 
   // Handle scroll effect
   useEffect(() => {
@@ -67,7 +70,7 @@ function DashNav() {
     setIsUserMenuOpen(!isUserMenuOpen)
   }
 
-  if (status === 'loading') {
+  if (status === 'loading' || translationLoading) {
     return (
       <nav className="bg-gradient-light dark:bg-gradient-dark p-4 shadow-lg fixed top-0 w-full z-50 transition-all duration-300 border-b border-border/10 dark:border-border-dark/10">
         <div className="flex justify-between items-center max-w-7xl mx-auto">
@@ -94,6 +97,7 @@ function DashNav() {
           ? 'shadow-2xl shadow-special/5 dark:shadow-special-dark/10 border-border/30 dark:border-border-dark/30' 
           : 'border-border/10 dark:border-border-dark/10'
         }
+        ${lang === 'ar' ? 'rtl' : 'ltr'}
       `}>
         <div className="max-w-7xl mx-auto">
           {/* Mobile Menu Button */}
@@ -103,11 +107,11 @@ function DashNav() {
                 <Book className="h-4 w-4 text-special dark:text-special-light" />
               </div>
               <div>
-                <h1 className="text-lg font-bold text-text dark:text-text-dark">Dashboard</h1>
+                <h1 className="text-lg font-bold text-text dark:text-text-dark">{t('dashNav.nav.dashboard')}</h1>
                 {session?.user?.isAdmin && (
                   <div className="flex items-center gap-1 px-2 py-0.5 bg-special/10 dark:bg-special-dark/20 text-special dark:text-special-light text-xs rounded-full">
                     <Shield className="h-3 w-3" />
-                    <span>Admin</span>
+                    <span>{t('dashNav.user.admin')}</span>
                   </div>
                 )}
               </div>
@@ -128,8 +132,8 @@ function DashNav() {
                 <Book className="h-5 w-5 text-special dark:text-special-light" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-text dark:text-text-dark">Dashboard</h1>
-                <p className="text-xs text-text-secondary dark:text-text-dark-secondary">Learning Management System</p>
+                <h1 className="text-xl font-bold text-text dark:text-text-dark">{t('dashNav.nav.dashboard')}</h1>
+                <p className="text-xs text-text-secondary dark:text-text-dark-secondary">{t('dashNav.nav.subtitle')}</p>
               </div>
             </div>
 
@@ -137,7 +141,6 @@ function DashNav() {
               {allNavItems.map((item, i) => (
                 <li key={i} className="relative group">
                   <NavLink 
-                    r
                     item={item} 
                     className="relative px-4 py-2.5 rounded-xl transition-all duration-200 hover:scale-105" 
                   />
@@ -154,7 +157,7 @@ function DashNav() {
                   {/* Hover tooltip */}
                   <span className="absolute -bottom-12 left-1/2 -translate-x-1/2 bg-text dark:bg-text-dark text-bg dark:text-bg-dark px-3 py-1.5 rounded-lg text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
                     {item.name}
-                    {item.adminOnly && <span className="text-blue-300"> (Admin Only)</span>}
+                    {item.adminOnly && <span className="text-blue-300"> ({t('dashNav.user.adminOnly')})</span>}
                   </span>
                 </li>
               ))}
@@ -166,12 +169,12 @@ function DashNav() {
                 onClick={toggleUserMenu}
                 className="flex items-center gap-3 px-4 py-2.5 bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 hover:bg-bg-secondary/70 dark:hover:bg-bg-dark-secondary/70 rounded-xl transition-all duration-200 hover:scale-105 group"
               >
-                <div className="text-right">
+                <div className={`text-${lang === 'ar' ? 'left' : 'right'}`}>
                   <p className="text-sm font-medium text-text dark:text-text-dark truncate max-w-32">
-                    {session?.user?.fullName || 'User'}
+                    {session?.user?.fullName || t('dashNav.user.user')}
                   </p>
                   {session?.user?.isAdmin && (
-                    <p className="text-xs text-special dark:text-special-light font-medium">Administrator</p>
+                    <p className="text-xs text-special dark:text-special-light font-medium">{t('dashNav.user.administrator')}</p>
                   )}
                 </div>
                 <div className="h-10 w-10 bg-special/20 dark:bg-special-dark/30 rounded-xl flex items-center justify-center">
@@ -182,7 +185,7 @@ function DashNav() {
 
               {/* User Dropdown Menu */}
               {isUserMenuOpen && (
-                <div className="absolute right-0 top-full mt-2 w-64 bg-bg dark:bg-bg-dark border border-border/30 dark:border-border-dark/30 rounded-2xl shadow-2xl shadow-special/10 dark:shadow-special-dark/20 backdrop-blur-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+                <div className={`absolute ${lang === 'ar' ? 'left-0' : 'right-0'} top-full mt-2 w-64 bg-bg dark:bg-bg-dark border border-border/30 dark:border-border-dark/30 rounded-2xl shadow-2xl shadow-special/10 dark:shadow-special-dark/20 backdrop-blur-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200`}>
                   <div className="p-4 border-b border-border/20 dark:border-border-dark/20">
                     <div className="flex items-center gap-3">
                       <div className="h-12 w-12 bg-special/20 dark:bg-special-dark/30 rounded-xl flex items-center justify-center">
@@ -190,7 +193,7 @@ function DashNav() {
                       </div>
                       <div className="min-w-0">
                         <p className="font-semibold text-text dark:text-text-dark truncate">
-                          {session?.user?.fullName || 'User'}
+                          {session?.user?.fullName || t('dashNav.user.user')}
                         </p>
                         <p className="text-sm text-text-secondary dark:text-text-dark-secondary truncate">
                           {session?.user?.phoneNumber}
@@ -199,7 +202,7 @@ function DashNav() {
                           {session?.user?.isAdmin && (
                             <div className="flex items-center gap-1">
                               <Shield className="h-3 w-3 text-special dark:text-special-light" />
-                              <span className="text-xs text-special dark:text-special-light font-medium">Admin</span>
+                              <span className="text-xs text-special dark:text-special-light font-medium">{t('dashNav.user.admin')}</span>
                             </div>
                           )}
                         </div>
@@ -213,14 +216,14 @@ function DashNav() {
                       className="flex items-center gap-3 p-3 rounded-xl hover:bg-special/10 dark:hover:bg-special-dark/20 text-text dark:text-text-dark hover:text-special dark:hover:text-special-light transition-all duration-200"
                     >
                       <Settings className="h-4 w-4" />
-                      <span>Settings</span>
+                      <span>{t('dashNav.user.settings')}</span>
                     </Link>
                     <button
                       onClick={() => signOut()}
                       className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-text dark:text-text-dark hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
                     >
                       <LogOut className="h-4 w-4" />
-                      <span>Sign Out</span>
+                      <span>{t('dashNav.user.signOut')}</span>
                     </button>
                   </div>
                 </div>
@@ -233,7 +236,7 @@ function DashNav() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden animate-in fade-in duration-300">
-          <div className="fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-gradient-light dark:bg-gradient-dark shadow-2xl transform transition-transform duration-300 mobile-nav-container border-l border-border/30 dark:border-border-dark/30">
+          <div className={`fixed top-0 ${lang === 'ar' ? 'left-0 border-r' : 'right-0 border-l'} h-full w-80 max-w-[90vw] bg-gradient-light dark:bg-gradient-dark shadow-2xl transform transition-transform duration-300 mobile-nav-container border-border/30 dark:border-border-dark/30`}>
             <div className="p-6 h-full overflow-y-auto">
               {/* Mobile Menu Header */}
               <div className="flex items-center justify-between mb-8">
@@ -241,7 +244,7 @@ function DashNav() {
                   <div className="h-8 w-8 bg-special/20 dark:bg-special-dark/30 rounded-xl flex items-center justify-center">
                     <Book className="h-4 w-4 text-special dark:text-special-light" />
                   </div>
-                  <h2 className="text-lg font-bold text-text dark:text-text-dark">Navigation</h2>
+                  <h2 className="text-lg font-bold text-text dark:text-text-dark">{t('dashNav.nav.navigation')}</h2>
                 </div>
                 <button
                   onClick={toggleMobileMenu}
@@ -259,7 +262,7 @@ function DashNav() {
                   </div>
                   <div className="min-w-0">
                     <p className="font-semibold text-text dark:text-text-dark">
-                      {session?.user?.fullName || 'User'}
+                      {session?.user?.fullName || t('dashNav.user.user')}
                     </p>
                     <p className="text-sm text-text-secondary dark:text-text-dark-secondary">
                       {session?.user?.phoneNumber}
@@ -268,7 +271,7 @@ function DashNav() {
                       {session?.user?.isAdmin && (
                         <div className="flex items-center gap-1.5 px-3 py-1 bg-special/10 dark:bg-special-dark/20 rounded-full">
                           <Shield className="h-3 w-3 text-special dark:text-special-light" />
-                          <span className="text-xs text-special dark:text-special-light font-medium">Admin</span>
+                          <span className="text-xs text-special dark:text-special-light font-medium">{t('dashNav.user.admin')}</span>
                         </div>
                       )}
                     </div>
@@ -315,7 +318,7 @@ function DashNav() {
                   <div className="p-2 rounded-xl bg-special/10 dark:bg-special-dark/20">
                     <Settings className="h-4 w-4" />
                   </div>
-                  <span className="font-medium">Settings</span>
+                  <span className="font-medium">{t('dashNav.user.settings')}</span>
                 </Link>
                 <button
                   onClick={() => signOut()}
@@ -324,7 +327,7 @@ function DashNav() {
                   <div className="p-2 rounded-xl bg-red-500/10">
                     <LogOut className="h-4 w-4" />
                   </div>
-                  <span className="font-medium">Sign Out</span>
+                  <span className="font-medium">{t('dashNav.user.signOut')}</span>
                 </button>
               </div>
             </div>

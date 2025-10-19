@@ -1,6 +1,9 @@
 import { User, Phone, Mail, Calendar, Edit3, Lock } from "lucide-react"
+import { useTranslation } from "@/lib/TranslationProvider"
 
 const ProfileView = ({ user, onEdit, onChangePassword }) => {
+  const { t } = useTranslation()
+  
   return (
     <div className="space-y-6">
       {/* Avatar */}
@@ -11,20 +14,20 @@ const ProfileView = ({ user, onEdit, onChangePassword }) => {
         <div>
           <h2 className="text-xl font-semibold text-text dark:text-text-dark">{user.fullName}</h2>
           <p className="text-text-secondary dark:text-text-dark-secondary">
-            Member since {new Date(user.createdAt || Date.now()).toLocaleDateString()}
+            {t('profile.view.memberSince')} {new Date(user.createdAt || Date.now()).toLocaleDateString()}
           </p>
         </div>
       </div>
 
       {/* Info */}
       <div className="grid gap-4">
-        <InfoRow icon={<User />} label="Full Name" value={user.fullName} />
-        <InfoRow icon={<Phone />} label="Phone Number" value={user.phoneNumber} />
-        {user.email && <InfoRow icon={<Mail />} label="Email Address" value={user.email} />}
+        <InfoRow icon={<User />} label={t('profile.view.fullName')} value={user.fullName} />
+        <InfoRow icon={<Phone />} label={t('profile.view.phoneNumber')} value={user.phoneNumber} />
+        {user.email && <InfoRow icon={<Mail />} label={t('profile.view.emailAddress')} value={user.email} />}
         <InfoRow
           icon={<Calendar />}
-          label="Last Login"
-          value={user.lastLogin ? new Date(user.lastLogin).toLocaleString() : "Never"}
+          label={t('profile.view.lastLogin')}
+          value={user.lastLogin ? new Date(user.lastLogin).toLocaleString() : t('profile.view.never')}
         />
       </div>
 
@@ -35,14 +38,14 @@ const ProfileView = ({ user, onEdit, onChangePassword }) => {
           className="flex items-center gap-2 px-4 py-2 bg-special hover:bg-special-hover text-white rounded-lg transition-colors"
         >
           <Edit3 className="h-4 w-4" />
-          Edit Profile
+          {t('profile.view.editProfile')}
         </button>
         <button
           onClick={onChangePassword}
           className="flex items-center gap-2 px-4 py-2 border border-border dark:border-border-dark text-text dark:text-text-dark hover:bg-border/20 dark:hover:bg-border-dark/20 rounded-lg transition-colors"
         >
           <Lock className="h-4 w-4" />
-          Change Password
+          {t('profile.view.changePassword')}
         </button>
       </div>
     </div>

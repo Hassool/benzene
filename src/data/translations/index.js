@@ -3,6 +3,9 @@ import { CoursesAR, CoursesEN } from "./modules/courses";
 import { MainEN, MainAR } from "./modules/main";
 import { NavAR, NavEN } from "./modules/nav";
 import { FooterEN, FooterAR } from "./modules/footer";
+import { DashNavEN, DashNavAR } from "./modules/dashNav";
+import { ProfileEN , ProfileAR } from "./modules/profile";
+import { CheckEN, CheckAR } from "./modules/check";
 // helpers
 
 
@@ -51,4 +54,7 @@ export const modules = {
   nav: buildModuleConfig(NavEN, NavAR),
   courses: buildModuleConfig(CoursesEN, CoursesAR),
   footer: buildModuleConfig(FooterEN, FooterAR),
+  dashNav: buildModuleConfig(DashNavEN, DashNavAR),
+  profile: buildModuleConfig(ProfileEN, ProfileAR),
+  check: buildModuleConfig(CheckEN, CheckAR),
 };
