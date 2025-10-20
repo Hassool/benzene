@@ -74,7 +74,7 @@ export default function SignIn() {
           {/* Phone Number Field */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-text dark:text-text-dark font-inter">
-              {isLoading ? "Phone Number" : "رقم الهاتف "}
+              {isRTL ? "Phone Number" : "رقم الهاتف "}
             </label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
