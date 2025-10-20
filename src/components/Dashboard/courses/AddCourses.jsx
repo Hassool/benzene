@@ -1,4 +1,4 @@
-// src/components/AddCourses.jsx - With Translations
+// src/components/Addcourses.jsx - With Translations
 "use client"
 
 import { useState } from "react"
@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react"
 import { Upload, Book, Image as ImageIcon, X, Check } from "lucide-react"
 import { useTranslation } from "@/lib/TranslationProvider"
 
-export default function AddCourses() {
+export default function Addcourses() {
   const { t, lang } = useTranslation()
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState(false)
