@@ -8,7 +8,7 @@ import { useFetchData } from "@/lib/UseFetch"
 import { useTranslation } from "@/lib/TranslationProvider"
 
 export default function ViewCourses() {
-  const {t} = useTranslation
+  const {t} = useTranslation()
   const { data: session } = useSession()
   const [loading, setLoading] = useState(true)
   const [deletingCourseId, setDeletingCourseId] = useState(null)
