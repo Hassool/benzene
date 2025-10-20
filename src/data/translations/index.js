@@ -1,121 +1,57 @@
-'use client';
+// src/data/translations/index.js
+import { CoursesAR, CoursesEN } from "./modules/courses";
+import { MainEN, MainAR } from "./modules/main";
+import { NavAR, NavEN } from "./modules/nav";
+import { FooterEN, FooterAR } from "./modules/footer";
+import { DashNavEN, DashNavAR } from "./modules/dashNav";
+import { ProfileEN , ProfileAR } from "./modules/profile";
+import { CheckEN, CheckAR } from "./modules/check";
 
-import { createContext, useContext, useState, useEffect } from 'react';
+function isObject(v) {
+  return v && typeof v === "object" && !Array.isArray(v);
+}
 
-const TranslationContext = createContext();
+export function deepEqual(a, b) {
+  if (a === b) return true;
+  if (!isObject(a) || !isObject(b)) return false;
+  const ak = Object.keys(a).sort();
+  const bk = Object.keys(b).sort();
+  if (ak.length !== bk.length) return false;
+  for (let k of ak) {
+    if (!deepEqual(a[k], b[k])) return false;
+  }
+  return true;
+} 
 
-export default function TranslationProvider({ children }) {
-  const [lang, setLang] = useState('en');
-  const [translations, setTranslations] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
-
-  const loadTranslations = async (language, forceRefresh = false) => {
-    setIsLoading(true);
-
-    try {
-      // Try reading from cache first
-      if (!forceRefresh && typeof window !== 'undefined') {
-        const cached = localStorage.getItem(`translations_${language}`);
-        if (cached) {
-          const parsed = JSON.parse(cached);
-          setTranslations(parsed);
-          setIsLoading(false);
-          return; // Skip fetching if cached
-        }
-      }
-
-      // Fetch from API if no cache or forced refresh
-      const response = await fetch(`/api/translations?lang=${language}`);
-      if (!response.ok) throw new Error('Failed to fetch translations');
-
-      const data = await response.json();
-      setTranslations(data);
-
-      // Save to cache
-      if (typeof window !== 'undefined') {
-        localStorage.setItem(`translations_${language}`, JSON.stringify(data));
-      }
-
-    } catch (error) {
-      console.error('Failed to load translations:', error);
-
-      if (language !== 'en') {
-        // Fallback to English only once to prevent infinite loop
-        loadTranslations('en');
-        return;
-      }
-
-      setTranslations({});
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const changeLanguage = (newLang) => {
-    if (newLang === lang) return;
-
-    setLang(newLang);
-
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('lang', newLang);
-    }
-
-    document.documentElement.lang = newLang;
-    document.documentElement.dir = newLang === 'ar' ? 'rtl' : 'ltr';
-
-    // Load with cache fallback
-    loadTranslations(newLang);
-  };
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const storedLang = localStorage.getItem('lang') || 'en';
-      setLang(storedLang);
-      document.documentElement.lang = storedLang;
-      document.documentElement.dir = storedLang === 'ar' ? 'rtl' : 'ltr';
-      loadTranslations(storedLang);
+export function deepMerge(base, override) {
+  if (!isObject(base)) return override === undefined ? base : override;
+  if (!isObject(override)) return override === undefined ? base : override;
+  const out = Array.isArray(base) ? [...base] : { ...base };
+  for (const key of Object.keys(override)) {
+    const vBase = out[key];
+    const vOverride = override[key];
+    if (isObject(vBase) && isObject(vOverride)) {
+      out[key] = deepMerge(vBase, vOverride);
     } else {
-      loadTranslations('en');
+      out[key] = vOverride;
     }
-  }, []);
-
-  const value = {
-    lang,
-    translations,
-    isLoading,
-    changeLanguage,
-    isRTL: lang === 'ar'
-  };
-
-  return (
-    <TranslationContext.Provider value={value}>
-      {children}
-    </TranslationContext.Provider>
-  );
+  }
+  return out;
 }
 
-export function useTranslation() {
-  const context = useContext(TranslationContext);
-  if (!context) throw new Error('useTranslation must be used within TranslationProvider');
-
-  const { translations, isLoading, ...rest } = context;
-
-  const t = (key, defaultValue = key) => {
-    if (isLoading) return defaultValue;
-
-    const keys = key.split('.');
-    let value = translations;
-
-    for (const k of keys) {
-      if (value && typeof value === 'object' && k in value) {
-        value = value[k];
-      } else {
-        return defaultValue;
-      }
-    }
-
-    return typeof value === 'string' ? value : defaultValue;
-  };
-
-  return { t, isLoading, ...rest };
+function buildModuleConfig(en, ar) {
+  if (deepEqual(en, ar)) {
+    return { default: en }; 
+  }
+  return { default: en, ar }; 
 }
+
+export const modules = {
+  main: buildModuleConfig(MainEN, MainAR),
+  nav: buildModuleConfig(NavEN, NavAR),
+  courses: buildModuleConfig(CoursesEN, CoursesAR),
+  footer: buildModuleConfig(FooterEN, FooterAR),
+  dashNav: buildModuleConfig(DashNavEN, DashNavAR),
+  profile: buildModuleConfig(ProfileEN, ProfileAR),
+  check: buildModuleConfig(CheckEN, CheckAR),
+};
