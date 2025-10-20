@@ -6,8 +6,6 @@ import { FooterEN, FooterAR } from "./modules/footer";
 import { DashNavEN, DashNavAR } from "./modules/dashNav";
 import { ProfileEN , ProfileAR } from "./modules/profile";
 import { CheckEN, CheckAR } from "./modules/check";
-// helpers
-
 
 function isObject(v) {
   return v && typeof v === "object" && !Array.isArray(v);
@@ -41,12 +39,11 @@ export function deepMerge(base, override) {
   return out;
 }
 
-// Build module configs from your pair exports
 function buildModuleConfig(en, ar) {
   if (deepEqual(en, ar)) {
-    return { default: en }; // shared content -> only default
+    return { default: en }; 
   }
-  return { default: en, ar }; // per-lang override present
+  return { default: en, ar }; 
 }
 
 export const modules = {

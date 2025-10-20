@@ -211,13 +211,6 @@ function DashNav() {
                   </div>
 
                   <div className="p-2">
-                    <Link
-                      href="/dashboard/settings"
-                      className="flex items-center gap-3 p-3 rounded-xl hover:bg-special/10 dark:hover:bg-special-dark/20 text-text dark:text-text-dark hover:text-special dark:hover:text-special-light transition-all duration-200"
-                    >
-                      <Settings className="h-4 w-4" />
-                      <span>{t('dashNav.user.settings')}</span>
-                    </Link>
                     <button
                       onClick={() => signOut()}
                       className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-text dark:text-text-dark hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"
@@ -311,15 +304,6 @@ function DashNav() {
 
               {/* Mobile Menu Footer Actions */}
               <div className="space-y-2 pt-4 border-t border-border/20 dark:border-border-dark/20">
-                <Link
-                  href="/dashboard/settings"
-                  className="flex items-center gap-4 p-4 rounded-2xl hover:bg-special/10 dark:hover:bg-special-dark/20 text-text dark:text-text-dark hover:text-special dark:hover:text-special-light transition-all duration-200"
-                >
-                  <div className="p-2 rounded-xl bg-special/10 dark:bg-special-dark/20">
-                    <Settings className="h-4 w-4" />
-                  </div>
-                  <span className="font-medium">{t('dashNav.user.settings')}</span>
-                </Link>
                 <button
                   onClick={() => signOut()}
                   className="w-full flex items-center gap-4 p-4 rounded-2xl hover:bg-red-500/10 text-text dark:text-text-dark hover:text-red-600 dark:hover:text-red-400 transition-all duration-200"

@@ -1,39 +1,13 @@
-// src/components/AddCourses.jsx - Publish Version
+// src/components/AddCourses.jsx - With Translations
 "use client"
 
 import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { Upload, Book, Image as ImageIcon, X, Check } from "lucide-react"
-
-const CATEGORIES = [
-  { value: '1as', label: 'Première Année Secondaire (1AS)' },
-  { value: '2as', label: 'Deuxième Année Secondaire (2AS)' },
-  { value: '3as', label: 'Troisième Année Secondaire (3AS)' },
-  { value: 'other', label: 'Autres' }
-]
-
-const MODULES_BY_CATEGORY = {
-  '1as': [
-    'Mathématiques', 'Physique', 'Sciences Naturelles', 'Français', 'Arabe', 
-    'Anglais', 'Histoire-Géographie', 'Éducation Islamique', 'Philosophie'
-  ],
-  '2as': [
-    'Mathématiques', 'Physique', 'Sciences Naturelles', 'Français', 'Arabe', 
-    'Anglais', 'Histoire-Géographie', 'Éducation Islamique', 'Philosophie',
-    'Sciences de l\'Ingénieur', 'Économie-Gestion'
-  ],
-  '3as': [
-    'Mathématiques', 'Physique', 'Sciences Naturelles', 'Français', 'Arabe', 
-    'Anglais', 'Histoire-Géographie', 'Éducation Islamique', 'Philosophie',
-    'Sciences de l\'Ingénieur', 'Économie-Gestion', 'Littérature'
-  ],
-  'other': [
-    'Formation Professionnelle', 'Langue Étrangère', 'Informatique', 
-    'Arts', 'Sport', 'Musique', 'Autre'
-  ]
-}
+import { useTranslation } from "@/lib/TranslationProvider"
 
 export default function AddCourses() {
+  const { t, lang } = useTranslation()
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState(false)
   const [imageUploading, setImageUploading] = useState(false)
@@ -49,6 +23,64 @@ export default function AddCourses() {
   })
 
   const [errors, setErrors] = useState({})
+
+  // Dynamic categories from translations
+  const CATEGORIES = [
+    { value: '1as', label: t('courses.add.categories.1as') },
+    { value: '2as', label: t('courses.add.categories.2as') },
+    { value: '3as', label: t('courses.add.categories.3as') },
+    { value: 'other', label: t('courses.add.categories.other') }
+  ]
+
+  const MODULES_BY_CATEGORY = {
+    '1as': [
+      t('courses.add.modules.mathematics'),
+      t('courses.add.modules.physics'),
+      t('courses.add.modules.naturalSciences'),
+      t('courses.add.modules.french'),
+      t('courses.add.modules.arabic'),
+      t('courses.add.modules.english'),
+      t('courses.add.modules.historyGeo'),
+      t('courses.add.modules.islamicEd'),
+      t('courses.add.modules.philosophy')
+    ],
+    '2as': [
+      t('courses.add.modules.mathematics'),
+      t('courses.add.modules.physics'),
+      t('courses.add.modules.naturalSciences'),
+      t('courses.add.modules.french'),
+      t('courses.add.modules.arabic'),
+      t('courses.add.modules.english'),
+      t('courses.add.modules.historyGeo'),
+      t('courses.add.modules.islamicEd'),
+      t('courses.add.modules.philosophy'),
+      t('courses.add.modules.engineering'),
+      t('courses.add.modules.economics')
+    ],
+    '3as': [
+      t('courses.add.modules.mathematics'),
+      t('courses.add.modules.physics'),
+      t('courses.add.modules.naturalSciences'),
+      t('courses.add.modules.french'),
+      t('courses.add.modules.arabic'),
+      t('courses.add.modules.english'),
+      t('courses.add.modules.historyGeo'),
+      t('courses.add.modules.islamicEd'),
+      t('courses.add.modules.philosophy'),
+      t('courses.add.modules.engineering'),
+      t('courses.add.modules.economics'),
+      t('courses.add.modules.literature')
+    ],
+    'other': [
+      t('courses.add.modules.vocational'),
+      t('courses.add.modules.foreignLang'),
+      t('courses.add.modules.computer'),
+      t('courses.add.modules.arts'),
+      t('courses.add.modules.sport'),
+      t('courses.add.modules.music'),
+      t('courses.add.modules.other')
+    ]
+  }
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
@@ -98,11 +130,11 @@ export default function AddCourses() {
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
-      setErrors(prev => ({ ...prev, thumbnail: 'Veuillez sélectionner une image valide' }))
+      setErrors(prev => ({ ...prev, thumbnail: t('courses.add.validation.imageInvalid') }))
       return
     }
     if (file.size > 5 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, thumbnail: 'La taille de l\'image ne doit pas dépasser 5MB' }))
+      setErrors(prev => ({ ...prev, thumbnail: t('courses.add.validation.imageSize') }))
       return
     }
 
@@ -111,22 +143,22 @@ export default function AddCourses() {
       setFormData(prev => ({ ...prev, thumbnail: imageUrl }))
       setErrors(prev => ({ ...prev, thumbnail: '' }))
     } catch {
-      setErrors(prev => ({ ...prev, thumbnail: 'Erreur lors du téléchargement de l\'image' }))
+      setErrors(prev => ({ ...prev, thumbnail: t('courses.add.validation.imageUploadError') }))
     }
   }
 
   const validateForm = () => {
     const newErrors = {}
-    if (!formData.title.trim()) newErrors.title = 'Le titre est requis'
-    else if (formData.title.length < 3) newErrors.title = 'Le titre doit contenir au moins 3 caractères'
-    else if (formData.title.length > 100) newErrors.title = 'Le titre ne peut pas dépasser 100 caractères'
+    if (!formData.title.trim()) newErrors.title = t('courses.add.validation.titleRequired')
+    else if (formData.title.length < 3) newErrors.title = t('courses.add.validation.titleMinLength')
+    else if (formData.title.length > 100) newErrors.title = t('courses.add.validation.titleMaxLength')
 
-    if (!formData.description.trim()) newErrors.description = 'La description est requise'
-    else if (formData.description.length < 10) newErrors.description = 'La description doit contenir au moins 10 caractères'
-    else if (formData.description.length > 1000) newErrors.description = 'La description ne peut pas dépasser 1000 caractères'
+    if (!formData.description.trim()) newErrors.description = t('courses.add.validation.descRequired')
+    else if (formData.description.length < 10) newErrors.description = t('courses.add.validation.descMinLength')
+    else if (formData.description.length > 1000) newErrors.description = t('courses.add.validation.descMaxLength')
 
-    if (!formData.category) newErrors.category = 'La catégorie est requise'
-    if (!formData.module) newErrors.module = 'Le module est requis'
+    if (!formData.category) newErrors.category = t('courses.add.validation.categoryRequired')
+    if (!formData.module) newErrors.module = t('courses.add.validation.moduleRequired')
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -178,11 +210,11 @@ export default function AddCourses() {
           })
           setErrors(fieldErrors)
         } else {
-          setErrors({ submit: result.message || 'Une erreur est survenue' })
+          setErrors({ submit: result.message || t('courses.add.validation.submitError') })
         }
       }
     } catch {
-      setErrors({ submit: 'Erreur de connexion. Veuillez réessayer.' })
+      setErrors({ submit: t('courses.add.validation.connectionError') })
     } finally {
       setLoading(false)
     }
@@ -193,7 +225,7 @@ export default function AddCourses() {
       <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex items-center justify-center">
         <div className="text-center p-8">
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-special border-t-transparent mx-auto mb-4"></div>
-          <p className="text-text dark:text-text-dark">Chargement...</p>
+          <p className="text-text dark:text-text-dark">{t('courses.add.loading')}</p>
         </div>
       </div>
     )
@@ -205,10 +237,10 @@ export default function AddCourses() {
         <div className="text-center p-8 bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm rounded-2xl border border-border/30 dark:border-border-dark/30">
           <Book className="w-16 h-16 mx-auto text-special/70 mb-4" />
           <h3 className="text-xl font-semibold text-text dark:text-text-dark mb-2">
-            Connexion Requise
+            {t('courses.add.loginRequired')}
           </h3>
           <p className="text-text-secondary dark:text-text-dark-secondary mb-4">
-            Veuillez vous connecter pour ajouter un cours.
+            {t('courses.add.loginMessage')}
           </p>
         </div>
       </div>
@@ -216,14 +248,14 @@ export default function AddCourses() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark">
+    <div className={`min-h-screen bg-gradient-light dark:bg-gradient-dark ${lang === 'ar' ? 'rtl' : 'ltr'}`}>
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text dark:text-text-dark mb-2">
-            Ajouter un Nouveau Cours
+            {t('courses.add.title')}
           </h1>
           <p className="text-text-secondary dark:text-text-dark-secondary">
-            Créez et partagez votre expertise avec les étudiants
+            {t('courses.add.subtitle')}
           </p>
         </div>
 
@@ -232,7 +264,7 @@ export default function AddCourses() {
             <div className="flex items-center gap-3">
               <Check className="h-5 w-5 text-green-600 dark:text-green-400" />
               <p className="text-green-700 dark:text-green-300 font-medium">
-                Cours créé avec succès !
+                {t('courses.add.successMessage')}
               </p>
             </div>
           </div>
@@ -243,14 +275,14 @@ export default function AddCourses() {
           <div className="bg-bg-secondary/60 dark:bg-bg-dark-secondary/60 backdrop-blur-sm rounded-2xl border border-border/30 dark:border-border-dark/30 p-6">
             <h2 className="text-xl font-semibold text-text dark:text-text-dark mb-4 flex items-center gap-2">
               <Book className="h-5 w-5 text-special dark:text-special-light" />
-              Informations de Base
+              {t('courses.add.sections.basicInfo')}
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Title */}
               <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
-                  Titre du Cours *
+                  {t('courses.add.fields.title')} *
                 </label>
                 <input
                   type="text"
@@ -259,7 +291,7 @@ export default function AddCourses() {
                   onChange={handleChange}
                   maxLength={100}
                   className="w-full p-3 bg-bg dark:bg-bg-dark border border-border/40 dark:border-border-dark/40 rounded-xl text-text dark:text-text-dark placeholder-text-secondary dark:placeholder-text-dark-secondary focus:border-special dark:focus:border-special-light focus:outline-none transition-colors"
-                  placeholder="Ex: Mathématiques pour 1AS - Algèbre et Géométrie"
+                  placeholder={t('courses.add.fields.titlePlaceholder')}
                 />
                 <div className="flex justify-between text-sm mt-1">
                   {errors.title && <p className="text-red-500">{errors.title}</p>}
@@ -272,7 +304,7 @@ export default function AddCourses() {
               {/* Category */}
               <div>
                 <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
-                  Catégorie *
+                  {t('courses.add.fields.category')} *
                 </label>
                 <select
                   name="category"
@@ -280,7 +312,7 @@ export default function AddCourses() {
                   onChange={handleCategoryChange}
                   className="w-full p-3 bg-bg dark:bg-bg-dark border border-border/40 dark:border-border-dark/40 rounded-xl text-text dark:text-text-dark focus:border-special dark:focus:border-special-light focus:outline-none transition-colors"
                 >
-                  <option value="">Sélectionner une catégorie</option>
+                  <option value="">{t('courses.add.fields.selectCategory')}</option>
                   {CATEGORIES.map(cat => (
                     <option key={cat.value} value={cat.value}>{cat.label}</option>
                   ))}
@@ -291,7 +323,7 @@ export default function AddCourses() {
               {/* Module */}
               <div>
                 <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
-                  Module *
+                  {t('courses.add.fields.module')} *
                 </label>
                 <select
                   name="module"
@@ -300,7 +332,7 @@ export default function AddCourses() {
                   disabled={!formData.category}
                   className="w-full p-3 bg-bg dark:bg-bg-dark border border-border/40 dark:border-border-dark/40 rounded-xl text-text dark:text-text-dark focus:border-special dark:focus:border-special-light focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <option value="">Sélectionner un module</option>
+                  <option value="">{t('courses.add.fields.selectModule')}</option>
                   {formData.category && MODULES_BY_CATEGORY[formData.category]?.map(module => (
                     <option key={module} value={module.toLowerCase()}>{module}</option>
                   ))}
@@ -313,7 +345,7 @@ export default function AddCourses() {
           {/* Description */}
           <div className="bg-bg-secondary/60 dark:bg-bg-dark-secondary/60 backdrop-blur-sm rounded-2xl border border-border/30 dark:border-border-dark/30 p-6">
             <h2 className="text-xl font-semibold text-text dark:text-text-dark mb-4">
-              Description du Cours
+              {t('courses.add.sections.description')}
             </h2>
             <textarea
               name="description"
@@ -322,7 +354,7 @@ export default function AddCourses() {
               rows={4}
               maxLength={1000}
               className="w-full p-3 bg-bg dark:bg-bg-dark border border-border/40 dark:border-border-dark/40 rounded-xl text-text dark:text-text-dark placeholder-text-secondary dark:placeholder-text-dark-secondary focus:border-special dark:focus:border-special-light focus:outline-none transition-colors resize-none"
-              placeholder="Décrivez le contenu, les méthodes d'enseignement et ce que les étudiants apprendront..."
+              placeholder={t('courses.add.fields.descriptionPlaceholder')}
             />
             <div className="flex justify-between text-sm mt-1">
               {errors.description && <p className="text-red-500">{errors.description}</p>}
@@ -336,7 +368,7 @@ export default function AddCourses() {
           <div className="bg-bg-secondary/60 dark:bg-bg-dark-secondary/60 backdrop-blur-sm rounded-2xl border border-border/30 dark:border-border-dark/30 p-6">
             <h2 className="text-xl font-semibold text-text dark:text-text-dark mb-4 flex items-center gap-2">
               <ImageIcon className="h-5 w-5 text-special dark:text-special-light" />
-              Image du Cours (Optionnel)
+              {t('courses.add.sections.image')}
             </h2>
             
             {formData.thumbnail ? (
@@ -358,7 +390,7 @@ export default function AddCourses() {
               <div className="border-2 border-dashed border-border/40 dark:border-border-dark/40 rounded-xl p-8 text-center hover:border-special/50 dark:hover:border-special-light/50 transition-colors">
                 <Upload className="h-12 w-12 mx-auto text-text-secondary dark:text-text-dark-secondary mb-4" />
                 <p className="text-text-secondary dark:text-text-dark-secondary mb-4">
-                  Glissez-déposez une image ou cliquez pour sélectionner
+                  {t('courses.add.fields.imagePlaceholder')}
                 </p>
                 <input
                   type="file"
@@ -372,7 +404,7 @@ export default function AddCourses() {
                   htmlFor="image-upload"
                   className="inline-flex items-center gap-2 px-4 py-2 bg-special/10 dark:bg-special-dark/20 text-special dark:text-special-light rounded-xl hover:bg-special/20 dark:hover:bg-special-dark/30 cursor-pointer transition-colors disabled:opacity-50"
                 >
-                  {imageUploading ? 'Téléchargement...' : 'Choisir une image'}
+                  {imageUploading ? t('courses.add.fields.uploading') : t('courses.add.fields.chooseImage')}
                 </label>
               </div>
             )}
@@ -382,7 +414,7 @@ export default function AddCourses() {
           {/* Publishing Options */}
           <div className="bg-bg-secondary/60 dark:bg-bg-dark-secondary/60 backdrop-blur-sm rounded-2xl border border-border/30 dark:border-border-dark/30 p-6">
             <h2 className="text-xl font-semibold text-text dark:text-text-dark mb-4">
-              Options de Publication
+              {t('courses.add.sections.publishing')}
             </h2>
             
             <div className="flex items-center gap-3">
@@ -395,11 +427,11 @@ export default function AddCourses() {
                 className="w-4 h-4 text-special bg-bg dark:bg-bg-dark border-border/40 dark:border-border-dark/40 rounded focus:ring-special dark:focus:ring-special-light focus:ring-2"
               />
               <label htmlFor="isPublished" className="text-text dark:text-text-dark">
-                Publier le cours immédiatement
+                {t('courses.add.fields.publishImmediately')}
               </label>
             </div>
             <p className="text-text-secondary dark:text-text-dark-secondary text-sm mt-2">
-              Si coché, le cours sera visible publiquement. Sinon, il restera en brouillon.
+              {t('courses.add.fields.publishNote')}
             </p>
           </div>
 
@@ -413,10 +445,10 @@ export default function AddCourses() {
               {loading ? (
                 <>
                   <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-                  Enregistrement...
+                  {t('courses.add.buttons.saving')}
                 </>
               ) : (
-                'Créer le Cours'
+                t('courses.add.buttons.create')
               )}
             </button>
           </div>

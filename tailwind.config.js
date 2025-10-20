@@ -12,8 +12,8 @@ module.exports = {
         bg: {
           DEFAULT: "hsl(0, 0%, 100%)", // pure white
           secondary: "hsl(210, 20%, 96%)", // soft gray background for sections
-          dark: "hsl(222, 47%, 11%)",
-          'dark-secondary': "hsl(222, 47%, 15%)",
+          dark: "hsl(224, 47%, 11%)",
+          'dark-secondary': "hsla(221, 48%, 9%, 1.00)",
         },
         text: {
           DEFAULT: "hsl(222, 20%, 15%)", // much darker for contrast

@@ -2,16 +2,13 @@
 
 import { createContext, useContext, useState, useEffect } from 'react';
 
-// Translation Context
 const TranslationContext = createContext();
 
-// Translation Provider
 export function TranslationProvider({ children }) {
   const [lang, setLang] = useState('en');
   const [translations, setTranslations] = useState({});
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load translations from API
   const loadTranslations = async (language) => {
     setIsLoading(true);
     try {
@@ -23,25 +20,21 @@ export function TranslationProvider({ children }) {
       setTranslations(data);
     } catch (error) {
       console.error('Failed to load translations:', error);
-      // Fallback to English if loading fails
       if (language !== 'en') {
         loadTranslations('en');
         return;
       }
-      // If English also fails, set empty translations
       setTranslations({});
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Change language
   const changeLanguage = (newLang) => {
-    if (newLang === lang) return; // Don't reload if same language
+    if (newLang === lang) return; 
     
     setLang(newLang);
     
-    // Only access localStorage in the browser
     if (typeof window !== 'undefined') {
       localStorage.setItem('lang', newLang);
     }
@@ -51,9 +44,7 @@ export function TranslationProvider({ children }) {
     loadTranslations(newLang);
   };
 
-  // Initialize - only runs on client
   useEffect(() => {
-    // Check if we're in the browser
     if (typeof window !== 'undefined') {
       const storedLang = localStorage.getItem('lang') || 'en';
       setLang(storedLang);
@@ -61,7 +52,6 @@ export function TranslationProvider({ children }) {
       document.documentElement.dir = storedLang === 'ar' ? 'rtl' : 'ltr';
       loadTranslations(storedLang);
     } else {
-      // Server-side: just load English
       loadTranslations('en');
     }
   }, []);
@@ -81,7 +71,6 @@ export function TranslationProvider({ children }) {
   );
 }
 
-// Translation Hook
 export function useTranslation() {
   const context = useContext(TranslationContext);
   if (!context) {
@@ -90,7 +79,6 @@ export function useTranslation() {
 
   const { translations, isLoading, ...rest } = context;
 
-  // Translation function with nested key support
   const t = (key, defaultValue = key) => {
     if (isLoading) return defaultValue;
     

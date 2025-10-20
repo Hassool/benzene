@@ -24,11 +24,6 @@ const ProfileView = ({ user, onEdit, onChangePassword }) => {
         <InfoRow icon={<User />} label={t('profile.view.fullName')} value={user.fullName} />
         <InfoRow icon={<Phone />} label={t('profile.view.phoneNumber')} value={user.phoneNumber} />
         {user.email && <InfoRow icon={<Mail />} label={t('profile.view.emailAddress')} value={user.email} />}
-        <InfoRow
-          icon={<Calendar />}
-          label={t('profile.view.lastLogin')}
-          value={user.lastLogin ? new Date(user.lastLogin).toLocaleString() : t('profile.view.never')}
-        />
       </div>
 
       {/* Actions */}
