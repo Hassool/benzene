@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import NavLink from '../nav/NavLink'
 import { GoHome } from 'react-icons/go'
-import { useTranslation } from "@/lib/TranslationProvider"
+import { useTranslation } from 'react-lite-translation'
 
 function DashNav() {
   const { t, isLoading: translationLoading, lang } = useTranslation()

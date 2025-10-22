@@ -1,5 +1,5 @@
-import { User, Phone, Mail, Calendar, Edit3, Lock } from "lucide-react"
-import { useTranslation } from "@/lib/TranslationProvider"
+import { User, Phone, Mail, Edit3, Lock } from "lucide-react"
+import { useTranslation } from "react-lite-translation"
 
 const ProfileView = ({ user, onEdit, onChangePassword }) => {
   const { t } = useTranslation()

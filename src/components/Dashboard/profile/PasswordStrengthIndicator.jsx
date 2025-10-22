@@ -1,4 +1,4 @@
-import { useTranslation } from "@/lib/TranslationProvider"
+import { useTranslation } from "react-lite-translation"
 
 const PasswordStrengthIndicator = ({ requirements }) => {
   const { t } = useTranslation()
