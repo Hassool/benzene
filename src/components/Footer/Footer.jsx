@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import AuthButton from "./AuthButton"; 
-import { useTranslation } from "@/lib/TranslationProvider";
+import { useTranslation } from "react-lite-translation";
 import { Github, Instagram, MedalIcon } from "lucide-react";
 import { BsTiktok } from "react-icons/bs";
 

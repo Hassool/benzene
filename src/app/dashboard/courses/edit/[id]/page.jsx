@@ -2,7 +2,7 @@
 
 import EditCourse from '@/components/Dashboard/courses/EditCourse'
 import { useParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React from 'react'
 
 function page() {
   const { id } = useParams()

@@ -2,9 +2,9 @@
 
 import EditSection from '@/components/Dashboard/courses/EditSection'
 import { useFetchData } from '@/lib/UseFetch'
-import { Copy, Trash } from 'lucide-react'
+import { Copy } from 'lucide-react'
 import Link from 'next/link'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams } from 'next/navigation'
 import React, { useState } from 'react'
 
 // Confirmation Modal Component

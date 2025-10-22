@@ -1,7 +1,7 @@
 // src/app/cookie-policy/page.jsx
 "use client";
 
-import { useTranslation } from "@/lib/TranslationProvider";
+import { useTranslation } from "react-lite-translation";
 
 export default function CookiePolicyPage() {
   const { lang, changeLanguage, t } = useTranslation();

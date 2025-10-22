@@ -4,7 +4,7 @@
 import { GiChemicalDrop, GiChemicalTank, GiTable } from "react-icons/gi";
 import { SiConvertio } from "react-icons/si";
 import Link from "next/link";
-import { useTranslation } from "@/lib/TranslationProvider";
+import { useTranslation } from "react-lite-translation";
 import { FunctionSquare } from "lucide-react";
 
 const NavList = [

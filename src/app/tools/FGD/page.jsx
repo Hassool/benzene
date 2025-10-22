@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { Home, ZoomIn, ZoomOut, Move, RotateCcw, Activity } from 'lucide-react';
+import { Home, ZoomIn, ZoomOut, Move, Activity } from 'lucide-react';
 import * as math from 'mathjs';
 
 const page = () => {

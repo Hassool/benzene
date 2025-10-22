@@ -1,5 +1,5 @@
 // src/app/api/translations/route.js
-import { modules, deepMerge } from "@/data/translations/index.js"; // adjust path if needed
+import { modules } from "@/translations";
 
 // Re-export deepMerge for use (or reimplement here)
 function isObject(v) { return v && typeof v === "object" && !Array.isArray(v); }

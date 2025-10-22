@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Eye, EyeOff, User, Phone, Lock, CheckCircle, AlertCircle, Clock } from 'lucide-react'
-import { useTranslation } from '@/lib/TranslationProvider'
+import { useTranslation } from 'react-lite-translation'
 
 export default function Page() {
   const { isRTL } = useTranslation()

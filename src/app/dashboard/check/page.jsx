@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
 import { UserRoundCheck, Check, Trash2, Clock, Users, UserCheck, AlertCircle, RefreshCw, Phone, Calendar } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { useTranslation } from "@/lib/TranslationProvider"
+import { useTranslation } from "react-lite-translation"
 
 export default function Page() {
   const { t, lang } = useTranslation()

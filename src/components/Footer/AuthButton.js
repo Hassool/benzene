@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslation } from '@/lib/TranslationProvider'
 import { useSession, signOut, SessionProvider } from 'next-auth/react'
 import Link from 'next/link'
 import { useState } from 'react'

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react"
 import { Trash2, Book, Clock, ExternalLink, Loader2, AlertTriangle } from "lucide-react"
 import Link from "next/link"
 import { useFetchData } from "@/lib/UseFetch"
-import { useTranslation } from "@/lib/TranslationProvider"
+import { useTranslation } from "react-lite-translation"
 
 export default function ViewCourses() {
   const {t} = useTranslation()

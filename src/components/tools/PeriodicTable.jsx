@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from '@/lib/TranslationProvider';
+import { useTranslation } from 'react-lite-translation';
 import { X, Atom, Thermometer, Zap, Calendar, Weight, Layers, Beaker, Gauge } from 'lucide-react';
 
 // Element groups for color coding

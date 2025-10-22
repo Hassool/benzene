@@ -1,7 +1,7 @@
 'use client';
 
 import { TbFlask2, TbCalculator, TbBook, TbLanguage, TbHeart, TbTools, TbBrain, TbWorld } from 'react-icons/tb';
-import { useTranslation } from "@/lib/TranslationProvider";
+import { useTranslation } from 'react-lite-translation';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
