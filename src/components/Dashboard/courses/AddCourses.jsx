@@ -1,4 +1,4 @@
-// src/components/Addcourses.jsx - With Translations
+// src/components/Addcourses.jsx - Enhanced with Branch Prefix Logic
 "use client"
 
 import { useState } from "react"
@@ -17,12 +17,26 @@ export default function Addcourses() {
     title: '',
     description: '',
     category: '',
+    branch: '',
     module: '',
     thumbnail: '',
     isPublished: false
   })
 
   const [errors, setErrors] = useState({})
+
+  // Branch prefixes for title
+  const BRANCH_PREFIXES = {
+    'common-core-science': 'a',
+    'common-core-arts': 's',
+    'technical-math': 'mt',
+    'mathematics': 'm',
+    'sciences': 's',
+    'management-economics': 'g',
+    'languages': 'l',
+    'literature-philosophy': 'af',
+    'all': ''
+  }
 
   // Dynamic categories from translations
   const CATEGORIES = [
@@ -32,54 +46,95 @@ export default function Addcourses() {
     { value: 'other', label: t('courses.add.categories.other') }
   ]
 
+  // Get branches based on selected category
+  const getBranchesForCategory = (category) => {
+    if (!category) return []
+    
+    const branchesKey = `courses.add.branches.${category}`
+    const branches = []
+    
+    if (category === '1as') {
+      branches.push(
+        { value: 'common-core-science', label: t(`${branchesKey}.common-core-science`) },
+        { value: 'common-core-arts', label: t(`${branchesKey}.common-core-arts`) },
+        { value: 'all', label: t(`${branchesKey}.all`) }
+      )
+    } else if (category === '2as' || category === '3as') {
+      branches.push(
+        { value: 'common-core-science', label: t(`${branchesKey}.common-core-science`) },
+        { value: 'common-core-arts', label: t(`${branchesKey}.common-core-arts`) },
+        { value: 'technical-math', label: t(`${branchesKey}.technical-math`) },
+        { value: 'mathematics', label: t(`${branchesKey}.mathematics`) },
+        { value: 'sciences', label: t(`${branchesKey}.sciences`) },
+        { value: 'management-economics', label: t(`${branchesKey}.management-economics`) },
+        { value: 'languages', label: t(`${branchesKey}.languages`) },
+        { value: 'literature-philosophy', label: t(`${branchesKey}.literature-philosophy`) },
+        { value: 'all', label: t(`${branchesKey}.all`) }
+      )
+    } else {
+      branches.push({ value: 'all', label: t(`${branchesKey}.all`) })
+    }
+    
+    return branches
+  }
+
   const MODULES_BY_CATEGORY = {
     '1as': [
-      t('courses.add.modules.mathematics'),
-      t('courses.add.modules.physics'),
-      t('courses.add.modules.naturalSciences'),
-      t('courses.add.modules.french'),
-      t('courses.add.modules.arabic'),
-      t('courses.add.modules.english'),
-      t('courses.add.modules.historyGeo'),
-      t('courses.add.modules.islamicEd'),
-      t('courses.add.modules.philosophy')
+      { key: 'math', label: t('courses.add.modules.1.math') },
+      { key: 'science', label: t('courses.add.modules.1.science') },
+      { key: 'physics', label: t('courses.add.modules.1.physics') },
+      { key: 'arabic', label: t('courses.add.modules.1.arabic') },
+      { key: 'EG', label: t('courses.add.modules.1.EG') },
+      { key: 'french', label: t('courses.add.modules.1.french') },
+      { key: 'english', label: t('courses.add.modules.1.english') },
+      { key: 'islamic', label: t('courses.add.modules.1.islamic') },
+      { key: 'techno', label: t('courses.add.modules.1.techno') },
+      { key: 'info', label: t('courses.add.modules.1.info') },
+      { key: 'gestion', label: t('courses.add.modules.1.gestion') }
     ],
     '2as': [
-      t('courses.add.modules.mathematics'),
-      t('courses.add.modules.physics'),
-      t('courses.add.modules.naturalSciences'),
-      t('courses.add.modules.french'),
-      t('courses.add.modules.arabic'),
-      t('courses.add.modules.english'),
-      t('courses.add.modules.historyGeo'),
-      t('courses.add.modules.islamicEd'),
-      t('courses.add.modules.philosophy'),
-      t('courses.add.modules.engineering'),
-      t('courses.add.modules.economics')
+      { key: 'math', label: t('courses.add.modules.2.math') },
+      { key: 'science', label: t('courses.add.modules.2.science') },
+      { key: 'physics', label: t('courses.add.modules.2.physics') },
+      { key: 'arabic', label: t('courses.add.modules.2.arabic') },
+      { key: 'philo', label: t('courses.add.modules.2.philo') },
+      { key: 'EG', label: t('courses.add.modules.2.EG') },
+      { key: 'french', label: t('courses.add.modules.2.french') },
+      { key: 'english', label: t('courses.add.modules.2.english') },
+      { key: 'de', label: t('courses.add.modules.2.de') },
+      { key: 'es', label: t('courses.add.modules.2.es') },
+      { key: 'it', label: t('courses.add.modules.2.it') },
+      { key: 'islamic', label: t('courses.add.modules.2.islamic') },
+      { key: 'gp', label: t('courses.add.modules.2.gp') },
+      { key: 'ge', label: t('courses.add.modules.2.ge') },
+      { key: 'gm', label: t('courses.add.modules.2.gm') },
+      { key: 'gc', label: t('courses.add.modules.2.gc') },
+      { key: 'gestion', label: t('courses.add.modules.2.gestion') },
+      { key: 'management', label: t('courses.add.modules.2.management') },
+      { key: 'law', label: t('courses.add.modules.2.law') }
     ],
     '3as': [
-      t('courses.add.modules.mathematics'),
-      t('courses.add.modules.physics'),
-      t('courses.add.modules.naturalSciences'),
-      t('courses.add.modules.french'),
-      t('courses.add.modules.arabic'),
-      t('courses.add.modules.english'),
-      t('courses.add.modules.historyGeo'),
-      t('courses.add.modules.islamicEd'),
-      t('courses.add.modules.philosophy'),
-      t('courses.add.modules.engineering'),
-      t('courses.add.modules.economics'),
-      t('courses.add.modules.literature')
+      { key: 'math', label: t('courses.add.modules.3.math') },
+      { key: 'science', label: t('courses.add.modules.3.science') },
+      { key: 'physics', label: t('courses.add.modules.3.physics') },
+      { key: 'arabic', label: t('courses.add.modules.3.arabic') },
+      { key: 'philo', label: t('courses.add.modules.3.philo') },
+      { key: 'EG', label: t('courses.add.modules.3.EG') },
+      { key: 'french', label: t('courses.add.modules.3.french') },
+      { key: 'english', label: t('courses.add.modules.3.english') },
+      { key: 'de', label: t('courses.add.modules.3.de') },
+      { key: 'es', label: t('courses.add.modules.3.es') },
+      { key: 'it', label: t('courses.add.modules.3.it') },
+      { key: 'islamic', label: t('courses.add.modules.3.islamic') },
+      { key: 'gp', label: t('courses.add.modules.3.gp') },
+      { key: 'ge', label: t('courses.add.modules.3.ge') },
+      { key: 'gm', label: t('courses.add.modules.3.gm') },
+      { key: 'gc', label: t('courses.add.modules.3.gc') },
+      { key: 'gestion', label: t('courses.add.modules.3.gestion') },
+      { key: 'management', label: t('courses.add.modules.3.management') },
+      { key: 'law', label: t('courses.add.modules.3.law') }
     ],
-    'other': [
-      t('courses.add.modules.vocational'),
-      t('courses.add.modules.foreignLang'),
-      t('courses.add.modules.computer'),
-      t('courses.add.modules.arts'),
-      t('courses.add.modules.sport'),
-      t('courses.add.modules.music'),
-      t('courses.add.modules.other')
-    ]
+    'other': []
   }
 
   const handleChange = (e) => {
@@ -99,14 +154,30 @@ export default function Addcourses() {
     setFormData(prev => ({
       ...prev,
       category,
+      branch: '',
       module: ''
     }))
     if (errors.category) {
-      setErrors(prev => ({ ...prev, category: '', module: '' }))
+      setErrors(prev => ({ ...prev, category: '', branch: '', module: '' }))
     }
   }
 
-  const uploadImage = async (file) => {
+  const handleBranchChange = (e) => {
+    const branch = e.target.value
+    setFormData(prev => ({
+      ...prev,
+      branch,
+      module: ''
+    }))
+    if (errors.branch) {
+      setErrors(prev => ({ ...prev, branch: '', module: '' }))
+    }
+  }
+
+  const handleImageUpload = async (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
     setImageUploading(true)
     try {
       const formData = new FormData()
@@ -115,67 +186,44 @@ export default function Addcourses() {
       
       const response = await fetch(
         `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
-        { method: 'POST', body: formData }
+        {
+          method: 'POST',
+          body: formData,
+        }
       )
-      if (!response.ok) throw new Error('Upload failed')
+
       const data = await response.json()
-      return data.secure_url
+      if (data.secure_url) {
+        setFormData(prev => ({ ...prev, thumbnail: data.secure_url }))
+      }
+    } catch (error) {
+      setErrors(prev => ({ ...prev, thumbnail: t('courses.add.validation.imageError') }))
     } finally {
       setImageUploading(false)
     }
   }
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-
-    if (!file.type.startsWith('image/')) {
-      setErrors(prev => ({ ...prev, thumbnail: t('courses.add.validation.imageInvalid') }))
-      return
-    }
-    if (file.size > 5 * 1024 * 1024) {
-      setErrors(prev => ({ ...prev, thumbnail: t('courses.add.validation.imageSize') }))
-      return
-    }
-
-    try {
-      const imageUrl = await uploadImage(file)
-      setFormData(prev => ({ ...prev, thumbnail: imageUrl }))
-      setErrors(prev => ({ ...prev, thumbnail: '' }))
-    } catch {
-      setErrors(prev => ({ ...prev, thumbnail: t('courses.add.validation.imageUploadError') }))
-    }
-  }
-
-  const validateForm = () => {
-    const newErrors = {}
-    if (!formData.title.trim()) newErrors.title = t('courses.add.validation.titleRequired')
-    else if (formData.title.length < 3) newErrors.title = t('courses.add.validation.titleMinLength')
-    else if (formData.title.length > 100) newErrors.title = t('courses.add.validation.titleMaxLength')
-
-    if (!formData.description.trim()) newErrors.description = t('courses.add.validation.descRequired')
-    else if (formData.description.length < 10) newErrors.description = t('courses.add.validation.descMinLength')
-    else if (formData.description.length > 1000) newErrors.description = t('courses.add.validation.descMaxLength')
-
-    if (!formData.category) newErrors.category = t('courses.add.validation.categoryRequired')
-    if (!formData.module) newErrors.module = t('courses.add.validation.moduleRequired')
-
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault()
-    if (!validateForm()) return
     setLoading(true)
+    setErrors({})
 
     try {
+      // Get the branch prefix
+      const prefix = formData.branch ? BRANCH_PREFIXES[formData.branch] : ''
+      
+      // Create the final title with prefix
+      const finalTitle = prefix 
+        ? `${prefix} - ${formData.title}` 
+        : formData.title
+
+      // Prepare course data WITHOUT branch field
       const courseData = {
-        title: formData.title.trim(),
-        description: formData.description.trim(),
-        category: formData.category.toLowerCase(),
-        module: formData.module.toLowerCase(),
-        thumbnail: formData.thumbnail || null,
+        title: finalTitle,
+        description: formData.description,
+        category: formData.category,
+        module: formData.module,
+        thumbnail: formData.thumbnail,
         isPublished: formData.isPublished
       }
 
@@ -192,6 +240,7 @@ export default function Addcourses() {
           title: '',
           description: '',
           category: '',
+          branch: '',
           module: '',
           thumbnail: '',
           isPublished: false
@@ -248,7 +297,7 @@ export default function Addcourses() {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-light dark:bg-gradient-dark ${lang === 'ar' ? 'rtl' : 'ltr'}`}>
+    <div className={`min-h-screen bg-gradient-light dark:bg-gradient-dark`}>
       <div className="max-w-4xl mx-auto p-6">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-text dark:text-text-dark mb-2">
@@ -279,28 +328,6 @@ export default function Addcourses() {
             </h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Title */}
-              <div className="md:col-span-2">
-                <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
-                  {t('courses.add.fields.title')} *
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  value={formData.title}
-                  onChange={handleChange}
-                  maxLength={100}
-                  className="w-full p-3 bg-bg dark:bg-bg-dark border border-border/40 dark:border-border-dark/40 rounded-xl text-text dark:text-text-dark placeholder-text-secondary dark:placeholder-text-dark-secondary focus:border-special dark:focus:border-special-light focus:outline-none transition-colors"
-                  placeholder={t('courses.add.fields.titlePlaceholder')}
-                />
-                <div className="flex justify-between text-sm mt-1">
-                  {errors.title && <p className="text-red-500">{errors.title}</p>}
-                  <p className="text-text-secondary dark:text-text-dark-secondary ml-auto">
-                    {formData.title.length}/100
-                  </p>
-                </div>
-              </div>
-
               {/* Category */}
               <div>
                 <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
@@ -320,8 +347,58 @@ export default function Addcourses() {
                 {errors.category && <p className="text-red-500 text-sm mt-1">{errors.category}</p>}
               </div>
 
-              {/* Module */}
+              {/* Branch */}
               <div>
+                <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
+                  {t('courses.add.fields.branch')} *
+                </label>
+                <select
+                  name="branch"
+                  value={formData.branch}
+                  onChange={handleBranchChange}
+                  disabled={!formData.category}
+                  className="w-full p-3 bg-bg dark:bg-bg-dark border border-border/40 dark:border-border-dark/40 rounded-xl text-text dark:text-text-dark focus:border-special dark:focus:border-special-light focus:outline-none transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <option value="">{t('courses.add.fields.selectBranch')}</option>
+                  {formData.category && getBranchesForCategory(formData.category).map(branch => (
+                    <option key={branch.value} value={branch.value}>{branch.label}</option>
+                  ))}
+                </select>
+                {errors.branch && <p className="text-red-500 text-sm mt-1">{errors.branch}</p>}
+              </div>
+
+              {/* Title */}
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
+                  {t('courses.add.fields.title')} *
+                </label>
+                {formData.branch && formData.branch !== 'all' && (
+                  <div className="mb-2 p-2 bg-special/10 dark:bg-special-dark/20 rounded-lg">
+                    <p className="text-sm text-special dark:text-special-light">
+                      {lang === 'ar' ? 'سيتم إضافة البادئة: ' : 'Prefix will be added: '}
+                      <span className="font-bold">{BRANCH_PREFIXES[formData.branch]} - </span>
+                    </p>
+                  </div>
+                )}
+                <input
+                  type="text"
+                  name="title"
+                  value={formData.title}
+                  onChange={handleChange}
+                  maxLength={100}
+                  className="w-full p-3 bg-bg dark:bg-bg-dark border border-border/40 dark:border-border-dark/40 rounded-xl text-text dark:text-text-dark placeholder-text-secondary dark:placeholder-text-dark-secondary focus:border-special dark:focus:border-special-light focus:outline-none transition-colors"
+                  placeholder={t('courses.add.fields.titlePlaceholder')}
+                />
+                <div className="flex justify-between text-sm mt-1">
+                  {errors.title && <p className="text-red-500">{errors.title}</p>}
+                  <p className="text-text-secondary dark:text-text-dark-secondary ml-auto">
+                    {formData.title.length}/100
+                  </p>
+                </div>
+              </div>
+
+              {/* Module */}
+              <div className="md:col-span-2">
                 <label className="block text-sm font-medium text-text dark:text-text-dark mb-2">
                   {t('courses.add.fields.module')} *
                 </label>
@@ -334,7 +411,7 @@ export default function Addcourses() {
                 >
                   <option value="">{t('courses.add.fields.selectModule')}</option>
                   {formData.category && MODULES_BY_CATEGORY[formData.category]?.map(module => (
-                    <option key={module} value={module.toLowerCase()}>{module}</option>
+                    <option key={module.key} value={module.key}>{module.label}</option>
                   ))}
                 </select>
                 {errors.module && <p className="text-red-500 text-sm mt-1">{errors.module}</p>}
