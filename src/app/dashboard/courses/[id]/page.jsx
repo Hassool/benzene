@@ -67,13 +67,14 @@ function ConfirmDeleteModal({ isOpen, onClose, onConfirm, section, isDeleting })
 
 function CoursePage() {
   const { id } = useParams()
-  const courseId = id // Fix: use id from useParams as courseId         
+  const courseId = id
   const [loading, setLoading] = useState(true)
   const [sectionLoading, setSectionLoading] = useState(true)
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, section: null })
   const [isDeleting, setIsDeleting] = useState(false)
   const [sections, setSections] = useState([])
   const [SectionOnEdit, setSectionOnEdit] = useState(null)
+  const [copied, setCopied] = useState(false); // ✅ Move here
   
   const { data: course, error } = useFetchData(`/api/course?id=${courseId}`, setLoading)
   const { data: sectionsData, error: sectionError, refetch: refetchSections } = useFetchData(`/api/section?courseId=${courseId}`, setSectionLoading, setSections)
@@ -127,7 +128,7 @@ function CoursePage() {
 
   const StartEditig = (idToEdit) => {
     if (SectionOnEdit == idToEdit) {
-      closeEditSection(); // Add parentheses to call the function
+      closeEditSection();
     } else {
       setSectionOnEdit(idToEdit);
     }
@@ -137,6 +138,17 @@ function CoursePage() {
     setSectionOnEdit(null);
   };
 
+  const handleCopy = async () => { // ✅ Move here
+    try {
+      await navigator.clipboard.writeText(`https://benzene-beta.vercel.app/Courses/${id}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy text:', err);
+    }
+  };
+
+  // Loading states and early returns come AFTER all hooks
   if (loading || sectionLoading) {
     return (
       <div className="min-h-screen bg-bg dark:bg-bg-dark bg-gradient-light dark:bg-gradient-dark">
@@ -165,7 +177,7 @@ function CoursePage() {
           </div>
         </div>
       </div>
-    )
+     )
   }
 
   if (error) {
@@ -212,20 +224,9 @@ function CoursePage() {
     )
   }
 
-  const courseSections = Array.isArray(sections) && sections.length > 0 ? sections : (Array.isArray(sectionsData) ? sectionsData : [])
+   const courseSections = Array.isArray(sections) && sections.length > 0 ? sections : (Array.isArray(sectionsData) ? sectionsData : [])
 
 
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    try {
-      await navigator.clipboard.writeText(`https://benzene-beta.vercel.app/Courses/${id}`);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-    } catch (err) {
-      console.error('Failed to copy text:', err);
-    }
-  };
   
   return (
     <div className="min-h-screen bg-bg dark:bg-bg-dark bg-gradient-light dark:bg-gradient-dark">
