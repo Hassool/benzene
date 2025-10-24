@@ -125,9 +125,12 @@ function CoursePage() {
     }
   }
 
-  const StartEditig = (idToEdit) =>{
-    if (SectionOnEdit == idToEdit) {closeEditSection }
-    else {setSectionOnEdit(idToEdit)}
+  const StartEditig = (idToEdit) => {
+    if (SectionOnEdit == idToEdit) {
+      closeEditSection(); // Add parentheses to call the function
+    } else {
+      setSectionOnEdit(idToEdit);
+    }
   }
 
   const closeEditSection = () => {
@@ -475,7 +478,7 @@ function CoursePage() {
                 </h3>
                 
                 <div className="space-y-3">
-                  <button onClick={handleCopy()} className="w-full flex items-center space-x-3 p-3 bg-bg dark:bg-bg-dark rounded-lg border border-border dark:border-border-dark hover:border-special dark:hover:border-special-dark transition-colors">
+                  <button onClick={handleCopy} className="w-full flex items-center space-x-3 p-3 bg-bg dark:bg-bg-dark rounded-lg border border-border dark:border-border-dark hover:border-special dark:hover:border-special-dark transition-colors">
                     {copied ? (
                       <>
                         <Check size={18} />
