@@ -5,11 +5,32 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import QuizRunner from "./QuizRunner";
 import { AlertCircle, Play, FileText, ExternalLink, Image, Video, Download, Eye, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 import { toast } from 'react-hot-toast';
+import 'react-pdf/dist/Page/AnnotationLayer.css';
+import 'react-pdf/dist/Page/TextLayer.css';
+import { useTranslation } from "react-lite-translation";
 
 // Configure PDF.js worker - Version 4.4.168
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs`;
 
+const isCloudinaryUrl = (url) => {
+  return url && (url.includes('cloudinary.com') || url.includes('res.cloudinary.com'));
+};
+
+const getProxiedPdfUrl = (url) => {
+  if (!url) return null;
+  
+  // If it's a Cloudinary URL, use it directly
+  if (isCloudinaryUrl(url)) {
+    return url;
+  }
+  
+  // For other URLs, you might need a proxy
+  return url;
+};
+
+
 export default function ResourceCard({ res, isFirst, resourceNumber, totalResources }) {
+  const {t} = useTranslation()
   const [open, setOpen] = useState(false);
   const [quizzes, setQuizzes] = useState([]);
   const [loadingQuizzes, setLoadingQuizzes] = useState(false);
@@ -31,7 +52,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
 
   const handleView = () => {
     if (!res.content) {
-      toast.error('Document URL is missing');
+      toast.error(t("resCard.toast.documentUrlMissing"));
       return;
     }
     window.open(res.content, '_blank', 'noopener,noreferrer');
@@ -39,7 +60,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
 
   const handleDownload = async () => {
     if (!res.content) {
-      toast.error('Document URL is missing');
+      toast.error(t("resCard.toast.documentUrlMissing"));
       return;
     }
     
@@ -52,10 +73,10 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
       link.click();
       document.body.removeChild(link);
       
-      toast.success('Download started');
+      toast.success(t("resCard.toast.downloadStarted"));
     } catch (err) {
       console.error('Download error:', err);
-      toast.error('Failed to download document');
+      toast.error(t("resCard.toast.downloadFailed"));
     }
   };
 
@@ -70,12 +91,12 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
       } else {
         console.error('Failed to load quizzes:', result.msg);
         setError(result.msg || 'Failed to load quiz content');
-        toast.error('Could not load quiz questions');
+        toast.error(t("resCard.toast.quizLoadFailed"));
       }
     } catch (error) {
       console.error('Error loading quizzes:', error);
       setError('Network error while loading quiz');
-      toast.error('Network error. Please check your connection');
+      toast.error(t("resCard.toast.networkError"));
     } finally {
       setLoadingQuizzes(false);
     }
@@ -137,18 +158,6 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
               <div className="flex items-center gap-2 text-sm text-text-secondary dark:text-text-dark-secondary mt-1">
                 {getResourceIcon(res.type)}
                 <span className="capitalize">{res.type}</span>
-                {res.duration && (
-                  <>
-                    <span>•</span>
-                    <span>{res.duration} min</span>
-                  </>
-                )}
-                {res.isRequired && (
-                  <>
-                    <span>•</span>
-                    <span className="text-special font-medium">Required</span>
-                  </>
-                )}
               </div>
             </div>
           </div>
@@ -166,11 +175,10 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
               <AlertCircle className="h-5 w-5 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
               <div>
                 <h4 className="font-medium text-blue-800 dark:text-blue-300 text-sm mb-1">
-                  Recommended Learning Path
+                  {t("resCard.alerts.recommendedPath")}
                 </h4>
                 <p className="text-blue-700 dark:text-blue-300 text-sm leading-relaxed">
-                  For the best learning experience, we recommend completing resources in order. 
-                  However, you can explore any resource that interests you.
+                  {t("resCard.alerts.recommendedPathDescription")}
                 </p>
               </div>
             </div>
@@ -179,43 +187,136 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
 
         <div className="flex gap-3 flex-wrap">
           {res.type === "document" && (
-            <div className="flex gap-2 flex-wrap">
-              <button
-                onClick={() => setOpen(!open)}
-                className="px-4 py-2 rounded-lg bg-special text-white hover:bg-special-hover transition-colors flex items-center gap-2"
-              >
-                <Eye className="h-4 w-4" />
-                <span>{open ? 'Hide Preview' : 'Preview Document'}</span>
-              </button>
-              
-              <button
-                onClick={handleView}
-                disabled={!res.content}
-                className={`px-4 py-2 rounded-lg border ${
-                  !res.content
-                    ? 'opacity-50 cursor-not-allowed' 
-                    : 'border-special text-special hover:bg-special hover:text-white'
-                } transition-colors flex items-center gap-2`}
-              >
-                <ExternalLink className="h-4 w-4" />
-                <span>Open in New Tab</span>
-              </button>
-              
-              <button
-                onClick={handleDownload}
-                disabled={!res.content}
-                className={`px-4 py-2 rounded-lg border ${
-                  !res.content
-                    ? 'opacity-50 cursor-not-allowed' 
-                    : 'border-special text-special hover:bg-special hover:text-white'
-                } transition-colors flex items-center gap-2`}
-              >
-                <Download className="h-4 w-4" />
-                <span>Download</span>
-              </button>
+            <div className="mt-4">
+              {!res.content ? (
+                <div className="text-red-500 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-5 w-5" />
+                    <span>{t("resCard.alerts.documentUrlMissing")}</span>
+                  </div>
+                </div>
+              ) : pdfError ? (
+                <div className="text-red-500 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
+                  <div className="flex items-center gap-2">
+                    <AlertCircle className="h-5 w-5" />
+                    <span>{pdfError}</span>
+                  </div>
+                  <button 
+                    onClick={handleDownload}
+                    className="mt-2 px-3 py-1 bg-red-100 hover:bg-red-200 dark:bg-red-800 dark:hover:bg-red-700 rounded text-red-700 dark:text-red-200 text-sm"
+                  >
+                    {t("resCard.buttons.downloadInstead")}
+                  </button>
+                </div>
+              ) : (
+                <div className="border border-border dark:border-border-dark rounded-lg overflow-hidden bg-white dark:bg-bg-dark">
+                  {/* PDF Controls */}
+                  <div className="flex items-center justify-between p-4 bg-bg-secondary dark:bg-bg-dark-secondary border-b border-border dark:border-border-dark flex-wrap gap-2">
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={previousPage}
+                        disabled={pageNumber <= 1}
+                        className="p-2 rounded-lg border border-border dark:border-border-dark hover:bg-bg dark:hover:bg-bg-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label="Previous page"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </button>
+                      <span className="text-sm text-text dark:text-text-dark px-3 whitespace-nowrap">
+                        {t("resCard.pdf.page")} {pageNumber}/{numPages || '...'}
+                      </span>
+                      <button
+                        onClick={nextPage}
+                        disabled={pageNumber >= numPages}
+                        className="p-2 rounded-lg border border-border dark:border-border-dark hover:bg-bg dark:hover:bg-bg-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label="Next page"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </button>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={zoomOut}
+                        disabled={scale <= 0.6}
+                        className="p-2 rounded-lg border border-border dark:border-border-dark hover:bg-bg dark:hover:bg-bg-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label="Zoom out"
+                      >
+                        <ZoomOut className="h-4 w-4" />
+                      </button>
+                      <span className="text-sm text-text dark:text-text-dark px-2 whitespace-nowrap">
+                        {Math.round(scale * 100)}%
+                      </span>
+                      <button
+                        onClick={zoomIn}
+                        disabled={scale >= 2.0}
+                        className="p-2 rounded-lg border border-border dark:border-border-dark hover:bg-bg dark:hover:bg-bg-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                        aria-label="Zoom in"
+                      >
+                        <ZoomIn className="h-4 w-4" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* PDF Viewer */}
+                  <div className="overflow-auto bg-gray-100 dark:bg-gray-900" style={{ maxHeight: '700px' }}>
+                    <div className="flex justify-center p-4">
+                      <Document
+                        file={{
+                          url: getProxiedPdfUrl(res.content),
+                          httpHeaders: {
+                            'Accept': 'application/pdf'
+                          },
+                          withCredentials: false
+                        }}
+                        onLoadSuccess={onDocumentLoadSuccess}
+                        onLoadError={onDocumentLoadError}
+                        loading={
+                          <div className="flex flex-col items-center justify-center py-12">
+                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-special mb-3"></div>
+                            <span className="text-text-secondary dark:text-text-dark-secondary">
+                              {t("resCard.loading.loadingPdf")}
+                            </span>
+                          </div>
+                        }
+                        error={
+                          <div className="text-red-500 p-4">
+                            <div className="flex flex-col items-center gap-3">
+                              <AlertCircle className="h-8 w-8" />
+                              <p>{t("resCard.alerts.pdfLoadError")}</p>
+                              <button 
+                                onClick={handleView}
+                                className="px-4 py-2 bg-special text-white rounded-lg hover:bg-special-hover"
+                              >
+                                {t("resCard.buttons.openInNewTab")}
+                              </button>
+                            </div>
+                          </div>
+                        }
+                        options={{
+                          cMapUrl: 'https://unpkg.com/pdfjs-dist@4.4.168/cmaps/',
+                          cMapPacked: true,
+                          standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@4.4.168/standard_fonts/',
+                        }}
+                      >
+                        <Page
+                          pageNumber={pageNumber}
+                          scale={scale}
+                          renderTextLayer={true}
+                          renderAnnotationLayer={true}
+                          className="shadow-lg"
+                          loading={
+                            <div className="flex items-center justify-center h-96">
+                              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-special"></div>
+                            </div>
+                          }
+                        />
+                      </Document>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           )}
-
           {res.type === "link" && (
             <a
               href={getContentUrl(res)}
@@ -224,7 +325,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
               className="px-4 py-2 rounded-lg border border-special text-special hover:bg-special hover:text-white transition-colors flex items-center gap-2"
             >
               <ExternalLink className="h-4 w-4" />
-              Open Link
+              {t("resCard.buttons.openLink")}
             </a>
           )}
 
@@ -234,7 +335,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
               className="px-4 py-2 rounded-lg bg-special text-white font-semibold hover:bg-special-hover transition-colors flex items-center gap-2"
             >
               {getResourceIcon(res.type)}
-              {open ? "Hide Content" : "View Content"}
+              {open ? t("resCard.buttons.hideContent") : t("resCard.buttons.viewContent")}
             </button>
           )}
         </div>
@@ -256,7 +357,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                     className="w-full h-auto"
                     controlsList="nodownload"
                   >
-                    Your browser does not support the video tag.
+                    {t("resCard.errors.videoNotSupported")}
                   </video>
                 </div>
               )}
@@ -280,7 +381,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                     <div className="flex items-center justify-center py-8">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-special"></div>
                       <span className="ml-3 text-text-secondary dark:text-text-dark-secondary">
-                        Loading quiz...
+                        {t("resCard.loading.loadingQuiz")}
                       </span>
                     </div>
                   ) : quizzes.length > 0 ? (
@@ -289,7 +390,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                     <div className="text-center py-8">
                       <AlertCircle className="h-12 w-12 text-text-secondary dark:text-text-dark-secondary mx-auto mb-3 opacity-50" />
                       <p className="text-text-secondary dark:text-text-dark-secondary">
-                        No quiz questions available yet.
+                        {t("resCard.alerts.noQuizQuestions")}
                       </p>
                     </div>
                   )}
@@ -302,7 +403,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                     <div className="text-red-500 p-4 bg-red-50 dark:bg-red-900/20 rounded-lg border border-red-200 dark:border-red-800">
                       <div className="flex items-center gap-2">
                         <AlertCircle className="h-5 w-5" />
-                        <span>Document URL is missing</span>
+                        <span>{t("resCard.alerts.documentUrlMissing")}</span>
                       </div>
                     </div>
                   ) : pdfError ? (
@@ -315,7 +416,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                         onClick={handleDownload}
                         className="mt-2 px-3 py-1 bg-red-100 hover:bg-red-200 dark:bg-red-800 dark:hover:bg-red-700 rounded text-red-700 dark:text-red-200 text-sm"
                       >
-                        Download Instead
+                        {t("resCard.buttons.downloadInstead")}
                       </button>
                     </div>
                   ) : (
@@ -330,7 +431,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                             <ChevronLeft className="h-4 w-4" />
                           </button>
                           <span className="text-sm text-text dark:text-text-dark px-3 whitespace-nowrap">
-                            Page {pageNumber} of {numPages || '...'}
+                            {t("resCard.pdf.page")} {pageNumber}/{numPages || '...'}
                           </span>
                           <button
                             onClick={nextPage}
@@ -372,7 +473,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                               <div className="flex items-center justify-center py-12">
                                 <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-special"></div>
                                 <span className="ml-3 text-text-secondary dark:text-text-dark-secondary">
-                                  Loading PDF...
+                                  {t("resCard.loading.loadingPdf")}
                                 </span>
                               </div>
                             }

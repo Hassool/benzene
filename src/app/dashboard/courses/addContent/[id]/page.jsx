@@ -7,8 +7,8 @@ import React from 'react'
 function page() {
   const { id } = useParams()
   return (
-    <div>{id}
-    <Section courseId={id}/>
+    <div>
+      <Section courseId={id}/>
     </div>
   )
 }
