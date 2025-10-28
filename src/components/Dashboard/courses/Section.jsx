@@ -1,6 +1,4 @@
-// Section.jsx - Updated with Supabase Storage
 import React, { useEffect, useState, useRef } from 'react'
-import { createClient } from '@supabase/supabase-js'
 import { useSession } from 'next-auth/react'
 import { 
   ChevronLeft,
@@ -17,11 +15,6 @@ import {
 } from 'lucide-react'
 import { redirect } from 'next/navigation'
 
-// Create Supabase client
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
-)
 
 // --- Utility helpers ---
 const safeJson = async (res) => {
