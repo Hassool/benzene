@@ -3,12 +3,12 @@
 import { useTranslation } from 'react-lite-translation'
 
 export default function LangSwitcher() {
-  const { lang, changeLanguage, isLoading } = useTranslation();
+  const { lang, setLanguage, isLoading } = useTranslation();
 
   const toggleLang = () => {
     if (isLoading) return; // Prevent switching while loading
     const newLang = lang === "en" ? "ar" : "en";
-    changeLanguage(newLang);
+    setLanguage(newLang);
   };
 
   return (
