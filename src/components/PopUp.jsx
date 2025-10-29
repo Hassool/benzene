@@ -1,10 +1,12 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {  useTranslation } from 'react-lite-translation';
 
 const Popup = () => {
   const [showFact, setShowFact] = useState(false);
   const [currentFact, setCurrentFact] = useState('');
+  const {isRTL} = useTranslation()
 
   const funFacts = [
     "لَا إِلَهَ إِلَّا أنْـت سُـبْحانَكَ إِنِّي كُنْـتُ مِنَ الظّـالِميـن",
@@ -62,7 +64,7 @@ const Popup = () => {
               damping: 20,
               duration: 0.5 
             }}
-            className="fixed top-4 left-1/2 -translate-x-1/2 z-50 w-fit max-w-2xl"
+            className={`fixed top-4 ${isRTL ? "right-1/2 translate-x-1/2" :"left-1/2 -translate-x-1/2"} z-50 w-fit max-w-2xl`}
           >
             <div className="relative bg-bg-secondary dark:bg-bg-dark-secondary 
                           border-2 border-yellow-500
