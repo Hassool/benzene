@@ -1,9 +1,10 @@
 "use client";
 
-import { useTranslation } from "@/context/TranslationContext"; // or your correct import path
+import { useTranslation } from "react-lite-translation";
+
 
 export default function LangSwitcher() {
-  const { language, setLanguage, loading } = useTranslation();
+  const { language, setLanguage, loading } = useTranslation()
 
   const toggleLang = () => {
     if (loading) return; // Prevent switching while loading
