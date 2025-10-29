@@ -175,7 +175,8 @@ const CoursesEN = {
         
         empty: {
             title: "No Courses Yet",
-            message: "Start creating your first course to see it here."
+            message: "Start creating your first course to see it here.",
+            stitle: "Create a new lesson"
         },
         
         course: {
@@ -371,7 +372,8 @@ const CoursesAR = {
         
         empty: {
             title: "لا توجد دورات بعد",
-            message: "ابدأ بإنشاء دورتك الأولى لتظهر هنا."
+            message: "ابدأ بإنشاء دورتك الأولى لتظهر هنا.",
+            stitle: "أنشئ درسا جديدا"
         },
         
         course: {

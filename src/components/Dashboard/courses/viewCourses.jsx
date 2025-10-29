@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react"
 import { useState, useEffect } from "react"
-import { Trash2, Book, Clock, ExternalLink, Loader2, AlertTriangle } from "lucide-react"
+import { Trash2, Book, Clock, ArrowBigDownDash, ExternalLink, Loader2, AlertTriangle } from "lucide-react"
 import Link from "next/link"
 import { useFetchData } from "@/lib/UseFetch"
 import { useTranslation } from "react-lite-translation"
@@ -116,6 +116,7 @@ export default function ViewCourses() {
         )}
 
         {courses.length === 0 ? (
+          <>
           <div className="text-center py-16">
             <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm rounded-2xl border border-border/30 dark:border-border-dark/30 p-12 max-w-md mx-auto">
               <Book className="w-20 h-20 mx-auto text-special/50 mb-6" />
@@ -127,6 +128,15 @@ export default function ViewCourses() {
               </p>
             </div>
           </div>
+          <div className="text-center py-16">
+            <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm rounded-2xl border border-border/30 dark:border-border-dark/30 p-12 max-w-md mx-auto">
+              <ArrowBigDownDash className="w-20 h-20 mx-auto text-special/50 mb-6" />
+              <h3 className="text-xl font-semibold text-text dark:text-text-dark mb-2">
+                {t("courses.view.empty.stitle")}
+              </h3>
+            </div>
+          </div>
+          </>
         ) : (
           <div className="grid gap-6">
             {courses.map((course) => (

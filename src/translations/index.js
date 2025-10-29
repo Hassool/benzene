@@ -10,6 +10,7 @@ import { ProfileEN , ProfileAR } from "./profile";
 import { CheckEN, CheckAR } from "./check";
 import { SectionEn, SectionAR } from "./Section";
 import { ResCardEN, ResCardAR } from "./ResCard";
+import { CoursePageEn, CoursePageAR } from "./coursePage";
 
 export const modules = buildModuleConfig({
     main:{ en : MainEN, ar: MainAR},
@@ -21,4 +22,5 @@ export const modules = buildModuleConfig({
     check:{ en : CheckEN, ar: CheckAR},
     section:{ en : SectionEn, ar: SectionAR},
     resCard:{ en : ResCardEN, ar: ResCardAR},
+    coursePage:{ en : CoursePageEn, ar: CoursePageAR}
 });
