@@ -1,12 +1,14 @@
-// src/components/Ceb.jsx
+// src/components/tools.Ceb.jsx
 
 "use client";
 
 import { useEffect, useState } from "react";
 import { GiChemicalDrop } from "react-icons/gi";
 import { FiRefreshCw, FiCheck, FiAlertCircle } from "react-icons/fi";
+import { useTranslation } from 'react-lite-translation';
 
 function Ceb() {
+  const { t, isRTL } = useTranslation();
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [equation, setEquation] = useState("H2O2=H2O+O2");
@@ -79,7 +81,10 @@ function Ceb() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-bg to-bg-secondary dark:from-bg-dark dark:to-bg-dark-secondary p-6 transition-colors duration-300">
+    <div 
+      className={`min-h-screen bg-gradient-to-br from-bg to-bg-secondary dark:from-bg-dark dark:to-bg-dark-secondary p-6 transition-colors duration-300 ${isRTL ? 'rtl' : 'ltr'}`}
+      dir={isRTL ? 'rtl' : 'ltr'}
+    >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
@@ -89,14 +94,13 @@ function Ceb() {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-text dark:text-text-dark mb-3 font-montserrat">
-            Chemical Equation Balancer
+            {t("tools.ceb.header.title")}
           </h1>
           <h3 className="text-sm font-thin text-text-secondary dark:text-text-dark-secondary mb-3 font-inter">
-            Powered by webqc.org
+            {t("tools.ceb.header.poweredBy")}
           </h3>
           <p className="text-text-secondary dark:text-text-dark-secondary text-lg max-w-2xl mx-auto font-inter">
-            Balance chemical equations instantly with our intelligent algorithm. 
-            Enter your unbalanced equation and get accurate stoichiometric coefficients.
+            {t("tools.ceb.header.description")}
           </p>
         </div>
 
@@ -106,8 +110,11 @@ function Ceb() {
             <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl p-8 shadow-2xl">
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
-                  <label htmlFor="equation" className="block text-blue-400 dark:text-blue-300 font-semibold text-lg mb-3 font-montserrat">
-                    Enter Chemical Equation:
+                  <label 
+                    htmlFor="equation" 
+                    className={`block text-blue-400 dark:text-blue-300 font-semibold text-lg mb-3 font-montserrat ${isRTL ? 'text-right' : ''}`}
+                  >
+                    {t("tools.ceb.form.label")}
                   </label>
                   <div className="relative">
                     <input
@@ -115,12 +122,12 @@ function Ceb() {
                       type="text"
                       value={equation}
                       onChange={(e) => setEquation(e.target.value)}
-                      className="w-full px-4 py-4 bg-bg dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-xl text-text dark:text-text-dark text-lg focus:outline-none focus:border-blue-400 dark:focus:border-blue-300 focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-300/30 transition-all duration-200 placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-mono"
-                      placeholder="e.g., H2O2=H2O+O2"
+                      className={`w-full px-4 py-4 bg-bg dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-xl text-text dark:text-text-dark text-lg focus:outline-none focus:border-blue-400 dark:focus:border-blue-300 focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-300/30 transition-all duration-200 placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-mono ${isRTL ? 'text-right' : ''}`}
+                      placeholder={t("tools.ceb.form.placeholder")}
                       disabled={loading}
                     />
                     {loading && (
-                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+                      <div className={`absolute top-1/2 transform -translate-y-1/2 ${isRTL ? 'left-4' : 'right-4'}`}>
                         <FiRefreshCw className="text-blue-400 dark:text-blue-300 animate-spin text-xl" />
                       </div>
                     )}
@@ -130,17 +137,17 @@ function Ceb() {
                 <button
                   type="submit"
                   disabled={loading || !equation.trim()}
-                  className="w-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 dark:hover:shadow-blue-400/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 font-montserrat"
+                  className={`w-full bg-gradient-to-r from-blue-500 to-blue-600 dark:from-blue-400 dark:to-blue-500 hover:from-blue-600 hover:to-blue-700 dark:hover:from-blue-500 dark:hover:to-blue-600 text-white font-semibold py-4 px-6 rounded-xl transition-all duration-200 transform hover:scale-105 hover:shadow-xl hover:shadow-blue-500/25 dark:hover:shadow-blue-400/25 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none flex items-center justify-center gap-2 font-montserrat ${isRTL ? 'flex-row-reverse' : ''}`}
                 >
                   {loading ? (
                     <>
                       <FiRefreshCw className="animate-spin text-xl" />
-                      Balancing...
+                      {t("tools.ceb.form.buttonBalancing")}
                     </>
                   ) : (
                     <>
                       <GiChemicalDrop className="text-xl" />
-                      Balance Equation
+                      {t("tools.ceb.form.buttonBalance")}
                     </>
                   )}
                 </button>
@@ -149,11 +156,13 @@ function Ceb() {
               {/* Result Section */}
               <div className="mt-8">
                 {error && (
-                  <div className="bg-red-900/30 dark:bg-red-800/20 border-l-4 border-red-500 dark:border-red-400 p-6 rounded-lg">
-                    <div className="flex items-start gap-3">
+                  <div className={`bg-red-900/30 dark:bg-red-800/20 border-l-4 border-red-500 dark:border-red-400 p-6 rounded-lg ${isRTL ? 'border-l-0 border-r-4' : ''}`}>
+                    <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <FiAlertCircle className="text-red-400 dark:text-red-300 text-xl mt-0.5 flex-shrink-0" />
-                      <div>
-                        <h3 className="text-red-400 dark:text-red-300 font-semibold text-lg mb-1 font-montserrat">Error</h3>
+                      <div className={isRTL ? 'text-right' : ''}>
+                        <h3 className="text-red-400 dark:text-red-300 font-semibold text-lg mb-1 font-montserrat">
+                          {t("tools.ceb.result.errorTitle")}
+                        </h3>
                         <p className="text-red-300 dark:text-red-200 font-inter">{error}</p>
                       </div>
                     </div>
@@ -161,13 +170,17 @@ function Ceb() {
                 )}
                 
                 {result && !loading && (
-                  <div className="bg-blue-900/30 dark:bg-blue-800/20 border-l-4 border-blue-400 dark:border-blue-300 p-6 rounded-lg">
-                    <div className="flex items-start gap-3">
+                  <div className={`bg-blue-900/30 dark:bg-blue-800/20 border-l-4 border-blue-400 dark:border-blue-300 p-6 rounded-lg ${isRTL ? 'border-l-0 border-r-4' : ''}`}>
+                    <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <FiCheck className="text-blue-400 dark:text-blue-300 text-xl mt-0.5 flex-shrink-0" />
-                      <div className="w-full">
-                        <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-3 font-montserrat">Balanced Equation</h3>
+                      <div className={`w-full ${isRTL ? 'text-right' : ''}`}>
+                        <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-3 font-montserrat">
+                          {t("tools.ceb.result.successTitle")}
+                        </h3>
                         <div className="bg-bg dark:bg-bg-dark-secondary p-4 rounded-lg border border-border dark:border-border-dark">
-                          <div className="font-mono text-xl text-text dark:text-text-dark break-all">{result}</div>
+                          <div className={`font-mono text-xl text-text dark:text-text-dark break-all ${isRTL ? 'text-right' : ''}`}>
+                            {result}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -179,17 +192,27 @@ function Ceb() {
             {/* History */}
             {history.length > 0 && (
               <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl my-6 p-6">
-                <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 font-montserrat">Recent History</h3>
+                <h3 className={`text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 font-montserrat ${isRTL ? 'text-right' : ''}`}>
+                  {t("tools.ceb.history.title")}
+                </h3>
                 <div className="space-y-3">
                   {history.map((item) => (
                     <div
                       key={item.timestamp}
                       className="p-3 bg-bg dark:bg-bg-dark-secondary rounded-lg border border-border dark:border-border-dark"
                     >
-                      <div className="text-text-secondary dark:text-text-dark-secondary text-xs mb-1 font-inter">Original:</div>
-                      <div className="font-mono text-sm text-text dark:text-text-dark mb-2">{item.original}</div>
-                      <div className="text-blue-400 dark:text-blue-300 text-xs mb-1 font-inter">Balanced:</div>
-                      <div className="font-mono text-sm text-blue-300 dark:text-blue-200">{item.balanced}</div>
+                      <div className={`text-text-secondary dark:text-text-dark-secondary text-xs mb-1 font-inter ${isRTL ? 'text-right' : ''}`}>
+                        {t("tools.ceb.history.original")}
+                      </div>
+                      <div className={`font-mono text-sm text-text dark:text-text-dark mb-2 ${isRTL ? 'text-right' : ''}`}>
+                        {item.original}
+                      </div>
+                      <div className={`text-blue-400 dark:text-blue-300 text-xs mb-1 font-inter ${isRTL ? 'text-right' : ''}`}>
+                        {t("tools.ceb.history.balanced")}
+                      </div>
+                      <div className={`font-mono text-sm text-blue-300 dark:text-blue-200 ${isRTL ? 'text-right' : ''}`}>
+                        {item.balanced}
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -201,27 +224,29 @@ function Ceb() {
           <div className="space-y-6">
             {/* Tips */}
             <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl p-6">
-              <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 font-montserrat">Tips</h3>
-              <ul className="text-text-secondary dark:text-text-dark-secondary text-sm space-y-2 font-inter">
-                <li>• Use = to separate reactants and products</li>
-                <li>• Write chemical formulas clearly (e.g., H2SO4)</li>
-                <li>• Use parentheses for complex compounds</li>
-                <li>• Try the examples to get started</li>
+              <h3 className={`text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 font-montserrat ${isRTL ? 'text-right' : ''}`}>
+                {t("tools.ceb.tips.title")}
+              </h3>
+              <ul className={`text-text-secondary dark:text-text-dark-secondary text-sm space-y-2 font-inter ${isRTL ? 'text-right' : ''}`}>
+                <li>{isRTL ? '•' : '•'} {t("tools.ceb.tips.tip1")}</li>
+                <li>{isRTL ? '•' : '•'} {t("tools.ceb.tips.tip2")}</li>
+                <li>{isRTL ? '•' : '•'} {t("tools.ceb.tips.tip3")}</li>
+                <li>{isRTL ? '•' : '•'} {t("tools.ceb.tips.tip4")}</li>
               </ul>
             </div>  
 
             {/* Example Equations */}
             <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl p-6">
-              <h3 className="text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 flex items-center gap-2 font-montserrat">
+              <h3 className={`text-blue-400 dark:text-blue-300 font-semibold text-lg mb-4 flex items-center gap-2 font-montserrat ${isRTL ? 'flex-row-reverse text-right' : ''}`}>
                 <GiChemicalDrop className="text-xl" />
-                Example Equations
+                {t("tools.ceb.examples.title")}
               </h3>
               <div className="space-y-3">
                 {exampleEquations.map((eq, index) => (
                   <button
                     key={index}
                     onClick={() => handleExampleClick(eq)}
-                    className="w-full text-left p-3 bg-bg dark:bg-bg-dark-secondary hover:bg-blue-900/30 dark:hover:bg-blue-800/20 border border-border dark:border-border-dark hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-text-secondary dark:text-text-dark-secondary hover:text-blue-300 dark:hover:text-blue-200 font-mono text-sm"
+                    className={`w-full p-3 bg-bg dark:bg-bg-dark-secondary hover:bg-blue-900/30 dark:hover:bg-blue-800/20 border border-border dark:border-border-dark hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-text-secondary dark:text-text-dark-secondary hover:text-blue-300 dark:hover:text-blue-200 font-mono text-sm ${isRTL ? 'text-right' : 'text-left'}`}
                   >
                     {eq}
                   </button>
