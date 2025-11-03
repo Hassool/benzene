@@ -30,6 +30,58 @@ export const ToolsEN = {
     "examples": {
       "title": "Example Equations"
     }
+  },
+  "unitConverter": {
+    "header": {
+      "title": "Universal Unit Converter",
+      "description": "Convert between different units of measurement including mass, volume, temperature, pressure, and concentration for all your chemistry calculations."
+    },
+    "form": {
+      "categoryLabel": "Conversion Category",
+      "valueLabel": "Value",
+      "valuePlaceholder": "Enter value",
+      "fromLabel": "From",
+      "toLabel": "To",
+      "unitsAvailable": "units"
+    },
+    "actions": {
+      "swapButton": "Swap",
+      "convertButton": "Convert Units",
+      "converting": "Converting...",
+      "clearHistory": "Clear history"
+    },
+    "result": {
+      "title": "Conversion Result"
+    },
+    "error": {
+      "title": "Error",
+      "fillAllFields": "Please fill in all fields",
+      "invalidNumber": "Please enter a valid number",
+      "conversionFailed": "Conversion failed",
+      "networkError": "Network error during conversion",
+      "loadCategoriesFailed": "Failed to load conversion categories"
+    },
+    "history": {
+      "title": "Recent Conversions"
+    },
+    "sidebar": {
+      "quickCategories": "Quick Categories",
+      "tipsTitle": "Tips",
+      "tip1": "Select the appropriate category first",
+      "tip2": "Use the swap button to reverse conversion",
+      "tip3": "Click history items to reuse conversions",
+      "tip4": "Scientific notation for very large/small values"
+    },
+    "categories": {
+      "mass": "Mass",
+      "volume": "Volume",
+      "temperature": "Temperature",
+      "pressure": "Pressure",
+      "concentration": "Concentration",
+      "length": "Length",
+      "time": "Time",
+      "energy": "Energy"
+    }
   }
 }
 
@@ -64,6 +116,58 @@ export const ToolsAR = {
     },
     "examples": {
       "title": "أمثلة المعادلات"
+    }
+  },
+  "unitConverter": {
+    "header": {
+      "title": "محول الوحدات الشامل",
+      "description": "حول بين وحدات القياس المختلفة بما فيها الكتلة والحجم ودرجة الحرارة والضغط والتركيز لجميع حساباتك الكيميائية."
+    },
+    "form": {
+      "categoryLabel": "فئة التحويل",
+      "valueLabel": "القيمة",
+      "valuePlaceholder": "أدخل القيمة",
+      "fromLabel": "من",
+      "toLabel": "إلى",
+      "unitsAvailable": "وحدة"
+    },
+    "actions": {
+      "swapButton": "تبديل",
+      "convertButton": "تحويل الوحدات",
+      "converting": "جاري التحويل...",
+      "clearHistory": "مسح السجل"
+    },
+    "result": {
+      "title": "نتيجة التحويل"
+    },
+    "error": {
+      "title": "خطأ",
+      "fillAllFields": "يرجى ملء جميع الحقول",
+      "invalidNumber": "يرجى إدخال رقم صالح",
+      "conversionFailed": "فشل التحويل",
+      "networkError": "خطأ في الشبكة أثناء التحويل",
+      "loadCategoriesFailed": "فشل تحميل فئات التحويل"
+    },
+    "history": {
+      "title": "التحويلات الأخيرة"
+    },
+    "sidebar": {
+      "quickCategories": "الفئات السريعة",
+      "tipsTitle": "نصائح",
+      "tip1": "اختر الفئة المناسبة أولاً",
+      "tip2": "استخدم زر التبديل لعكس التحويل",
+      "tip3": "انقر على عناصر السجل لإعادة استخدام التحويلات",
+      "tip4": "الترميز العلمي للقيم الكبيرة جداً أو الصغيرة جداً"
+    },
+    "categories": {
+      "mass": "الكتلة",
+      "volume": "الحجم",
+      "temperature": "درجة الحرارة",
+      "pressure": "الضغط",
+      "concentration": "التركيز",
+      "length": "الطول",
+      "time": "الوقت",
+      "energy": "الطاقة"
     }
   }
 }
