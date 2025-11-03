@@ -82,8 +82,8 @@ function Ceb() {
 
   return (
     <div 
-      className={`min-h-screen bg-gradient-to-br from-bg to-bg-secondary dark:from-bg-dark dark:to-bg-dark-secondary p-6 transition-colors duration-300 ${isRTL ? 'rtl' : 'ltr'}`}
-      dir={isRTL ? 'rtl' : 'ltr'}
+      className={`min-h-screen bg-gradient-to-br from-bg to-bg-secondary dark:from-bg-dark dark:to-bg-dark-secondary p-6 transition-colors duration-300 ${isRTL ? 'rtl' : 'text-left'}`}
+      dir={isRTL ? 'rtl' : 'text-left'}
     >
       <div className="max-w-4xl mx-auto">
         {/* Header */}
@@ -170,7 +170,7 @@ function Ceb() {
                 )}
                 
                 {result && !loading && (
-                  <div className={`bg-blue-900/30 dark:bg-blue-800/20 border-l-4 border-blue-400 dark:border-blue-300 p-6 rounded-lg ltr`}>
+                  <div className={`bg-blue-900/30 dark:bg-blue-800/20 border-l-4 border-blue-400 dark:border-blue-300 p-6 rounded-lg text-left`}>
                     <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <FiCheck className="text-blue-400 dark:text-blue-300 text-xl mt-0.5 flex-shrink-0" />
                       <div className={`w-full ${isRTL ? 'text-right' : ''}`}>
@@ -204,13 +204,13 @@ function Ceb() {
                       <div className={`text-text-secondary dark:text-text-dark-secondary text-xs mb-1 font-inter ${isRTL ? 'text-right' : ''}`}>
                         {t("tools.ceb.history.original")}
                       </div>
-                      <div className={`ltr font-mono text-sm text-text dark:text-text-dark mb-2 ${isRTL ? 'text-right' : ''}`}>
+                      <div className={`text-left font-mono text-sm text-text dark:text-text-dark mb-2 ${isRTL ? 'text-right' : ''}`}>
                         {item.original}
                       </div>
                       <div className={`text-blue-400 dark:text-blue-300 text-xs mb-1 font-inter ${isRTL ? 'text-right' : ''}`}>
                         {t("tools.ceb.history.balanced")}
                       </div>
-                      <div className={`ltr font-mono text-sm text-blue-300 dark:text-blue-200 ${isRTL ? 'text-right' : ''}`}>
+                      <div className={`text-left font-mono text-sm text-blue-300 dark:text-blue-200 ${isRTL ? 'text-right' : ''}`}>
                         {item.balanced}
                       </div>
                     </div>

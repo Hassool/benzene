@@ -1,4 +1,4 @@
-// src/components/UnitConverter.jsx
+// src/components/tools.UnitConverter.jsx
 
 "use client"
 
@@ -38,7 +38,7 @@ const UnitConverter = () => {
           }
         }
       } catch (err) {
-        setError(t('unitConverter.error.loadCategoriesFailed'));
+        setError(t('tools.unitConverter.error.loadCategoriesFailed'));
       }
     };
 
@@ -66,13 +66,13 @@ const UnitConverter = () => {
   // Perform conversion
   const handleConvert = async () => {
     if (!fromUnit || !toUnit || !inputValue) {
-      setError(t('unitConverter.error.fillAllFields'));
+      setError(t('tools.unitConverter.error.fillAllFields'));
       return;
     }
 
     const numValue = parseFloat(inputValue);
     if (isNaN(numValue)) {
-      setError(t('unitConverter.error.invalidNumber'));
+      setError(t('tools.unitConverter.error.invalidNumber'));
       return;
     }
 
@@ -100,11 +100,11 @@ const UnitConverter = () => {
         };
         setHistory(prev => [historyItem, ...prev.slice(0, 9)]); // Keep last 10
       } else {
-        setError(data.error || t('unitConverter.error.conversionFailed'));
+        setError(data.error || t('tools.unitConverter.error.conversionFailed'));
         setResult(null);
       }
     } catch (err) {
-      setError(t('unitConverter.error.networkError'));
+      setError(t('tools.unitConverter.error.networkError'));
       setResult(null);
     }
 
@@ -168,10 +168,10 @@ const UnitConverter = () => {
             </div>
           </div>
           <h1 className="text-4xl font-bold text-text dark:text-text-dark mb-3 font-montserrat">
-            {t('unitConverter.header.title')}
+            {t('tools.unitConverter.header.title')}
           </h1>
           <p className={`text-text-secondary dark:text-text-dark-secondary text-lg max-w-2xl mx-auto font-inter ${isRTL ? 'text-center' : ''}`}>
-            {t('unitConverter.header.description')}
+            {t('tools.unitConverter.header.description')}
           </p>
         </div>
 
@@ -182,7 +182,7 @@ const UnitConverter = () => {
               {/* Category Selection */}
               <div className="mb-8">
                 <label className={`block text-emerald-400 dark:text-emerald-300 font-semibold text-lg mb-3 font-montserrat ${isRTL ? 'text-right' : ''}`}>
-                  {t('unitConverter.form.categoryLabel')}
+                  {t('tools.unitConverter.form.categoryLabel')}
                 </label>
                 <select
                   value={selectedCategory}
@@ -192,7 +192,7 @@ const UnitConverter = () => {
                   {categories.map(category => (
                     <option key={category.category} value={category.category} className="bg-bg dark:bg-bg-dark text-text dark:text-text-dark">
                       {category.category.charAt(0).toUpperCase() + category.category.slice(1)} 
-                      ({category.units.length} {t('unitConverter.form.unitsAvailable')})
+                      ({category.units.length} {t('tools.unitConverter.form.unitsAvailable')})
                     </option>
                   ))}
                 </select>
@@ -203,14 +203,14 @@ const UnitConverter = () => {
                 {/* Input Value */}
                 <div className="md:col-span-2">
                   <label className={`block text-emerald-400 dark:text-emerald-300 font-medium mb-2 font-montserrat ${isRTL ? 'text-right' : ''}`}>
-                    {t('unitConverter.form.valueLabel')}
+                    {t('tools.unitConverter.form.valueLabel')}
                   </label>
                   <input
                     type="number"
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
                     className={`w-full px-4 py-3 bg-bg dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-xl text-text dark:text-text-dark focus:outline-none focus:border-emerald-400 dark:focus:border-emerald-300 focus:ring-2 focus:ring-emerald-400/30 dark:focus:ring-emerald-300/30 transition-all duration-200 placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-mono ${isRTL ? 'text-right' : ''}`}
-                    placeholder={t('unitConverter.form.valuePlaceholder')}
+                    placeholder={t('tools.unitConverter.form.valuePlaceholder')}
                     step="any"
                     disabled={loading}
                   />
@@ -219,7 +219,7 @@ const UnitConverter = () => {
                 {/* From Unit */}
                 <div>
                   <label className={`block text-emerald-400 dark:text-emerald-300 font-medium mb-2 font-montserrat ${isRTL ? 'text-right' : ''}`}>
-                    {t('unitConverter.form.fromLabel')}
+                    {t('tools.unitConverter.form.fromLabel')}
                   </label>
                   <select
                     value={fromUnit}
@@ -236,7 +236,7 @@ const UnitConverter = () => {
                 {/* To Unit */}
                 <div>
                   <label className={`block text-emerald-400 dark:text-emerald-300 font-medium mb-2 font-montserrat ${isRTL ? 'text-right' : ''}`}>
-                    {t('unitConverter.form.toLabel')}
+                    {t('tools.unitConverter.form.toLabel')}
                   </label>
                   <select
                     value={toUnit}
@@ -256,11 +256,11 @@ const UnitConverter = () => {
                 <button
                   onClick={handleSwapUnits}
                   className={`px-6 py-3 bg-bg-secondary dark:bg-bg-dark hover:bg-border dark:hover:bg-border-dark text-emerald-400 dark:text-emerald-300 rounded-xl transition-all duration-200 font-medium flex items-center gap-2 hover:scale-105 border border-border dark:border-border-dark font-montserrat ${isRTL ? 'flex-row-reverse' : ''}`}
-                  title={t('unitConverter.actions.swapButton')}
+                  title={t('tools.unitConverter.actions.swapButton')}
                   disabled={loading}
                 >
                   <span className="text-lg">{isRTL ? '⇆' : '⇄'}</span>
-                  {t('unitConverter.actions.swapButton')}
+                  {t('tools.unitConverter.actions.swapButton')}
                 </button>
                 <button
                   onClick={handleConvert}
@@ -270,12 +270,12 @@ const UnitConverter = () => {
                   {loading ? (
                     <>
                       <div className="animate-spin inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full"></div>
-                      {t('unitConverter.actions.converting')}
+                      {t('tools.unitConverter.actions.converting')}
                     </>
                   ) : (
                     <>
                       <SiConvertio className="text-xl" />
-                      {t('unitConverter.actions.convertButton')}
+                      {t('tools.unitConverter.actions.convertButton')}
                     </>
                   )}
                 </button>
@@ -288,7 +288,7 @@ const UnitConverter = () => {
                     <span className="text-emerald-400 dark:text-emerald-300 text-xl mt-0.5 flex-shrink-0">✓</span>
                     <div className="w-full">
                       <h3 className={`text-emerald-400 dark:text-emerald-300 font-semibold text-lg mb-3 font-montserrat ${isRTL ? 'text-right' : ''}`}>
-                        {t('unitConverter.result.title')}
+                        {t('tools.unitConverter.result.title')}
                       </h3>
                       <div className="bg-bg dark:bg-bg-dark-secondary p-4 rounded-lg border border-border dark:border-border-dark">
                         <div className={`text-2xl font-bold text-text dark:text-text-dark mb-2 font-mono ${isRTL ? 'text-right' : ''}`}>
@@ -310,7 +310,7 @@ const UnitConverter = () => {
                     <span className="text-red-400 dark:text-red-300 text-xl mt-0.5 flex-shrink-0">⚠</span>
                     <div>
                       <h3 className={`text-red-400 dark:text-red-300 font-semibold text-lg mb-1 font-montserrat ${isRTL ? 'text-right' : ''}`}>
-                        {t('unitConverter.error.title')}
+                        {t('tools.unitConverter.error.title')}
                       </h3>
                       <p className={`text-red-300 dark:text-red-200 font-inter ${isRTL ? 'text-right' : ''}`}>{error}</p>
                     </div>
@@ -325,12 +325,12 @@ const UnitConverter = () => {
                 <div className={`flex justify-between items-center mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <h3 className={`text-emerald-400 dark:text-emerald-300 font-semibold text-lg flex items-center gap-2 font-montserrat ${isRTL ? 'flex-row-reverse' : ''}`}>
                     <span className="text-xl">🕒</span>
-                    {t('unitConverter.history.title')}
+                    {t('tools.unitConverter.history.title')}
                   </h3>
                   <button
                     onClick={clearHistory}
                     className="text-red-400 dark:text-red-300 hover:text-red-300 dark:hover:text-red-200 transition-colors p-2 hover:bg-red-900/20 dark:hover:bg-red-800/20 rounded-lg"
-                    title={t('unitConverter.actions.clearHistory')}
+                    title={t('tools.unitConverter.actions.clearHistory')}
                   >
                     <span className="text-lg">🗑</span>
                   </button>
@@ -363,7 +363,7 @@ const UnitConverter = () => {
             <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl p-6">
               <h3 className={`text-emerald-400 dark:text-emerald-300 font-semibold text-lg mb-4 flex items-center gap-2 font-montserrat ${isRTL ? 'flex-row-reverse text-right' : ''}`}>
                 <SiConvertio className="text-xl" />
-                {t('unitConverter.sidebar.quickCategories')}
+                {t('tools.unitConverter.sidebar.quickCategories')}
               </h3>
               <div className="space-y-2">
                 {categories.slice(0, 6).map(category => (
@@ -378,7 +378,7 @@ const UnitConverter = () => {
                   >
                     <div className={`font-medium capitalize font-montserrat ${isRTL ? 'text-right' : ''}`}>{category.category}</div>
                     <div className={`text-xs text-text-secondary dark:text-text-dark-secondary font-inter ${isRTL ? 'text-right' : ''}`}>
-                      {category.units.length} {t('unitConverter.form.unitsAvailable')}
+                      {category.units.length} {t('tools.unitConverter.form.unitsAvailable')}
                     </div>
                   </button>
                 ))}
@@ -388,24 +388,24 @@ const UnitConverter = () => {
             {/* Tips */}
             <div className="bg-bg-secondary/50 dark:bg-bg-dark-secondary/50 backdrop-blur-sm border border-border dark:border-border-dark rounded-2xl p-6">
               <h3 className={`text-emerald-400 dark:text-emerald-300 font-semibold text-lg mb-4 font-montserrat ${isRTL ? 'text-right' : ''}`}>
-                {t('unitConverter.sidebar.tipsTitle')}
+                {t('tools.unitConverter.sidebar.tipsTitle')}
               </h3>
               <ul className={`text-text-secondary dark:text-text-dark-secondary text-sm space-y-2 font-inter ${isRTL ? 'text-right' : ''}`}>
                 <li className={`flex items-start gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <span className={`text-emerald-400 dark:text-emerald-300 mt-1 ${isRTL ? 'mr-0 ml-2' : ''}`}>•</span>
-                  {t('unitConverter.sidebar.tip1')}
+                  {t('tools.unitConverter.sidebar.tip1')}
                 </li>
                 <li className={`flex items-start gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <span className={`text-emerald-400 dark:text-emerald-300 mt-1 ${isRTL ? 'mr-0 ml-2' : ''}`}>•</span>
-                  {t('unitConverter.sidebar.tip2')}
+                  {t('tools.unitConverter.sidebar.tip2')}
                 </li>
                 <li className={`flex items-start gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <span className={`text-emerald-400 dark:text-emerald-300 mt-1 ${isRTL ? 'mr-0 ml-2' : ''}`}>•</span>
-                  {t('unitConverter.sidebar.tip3')}
+                  {t('tools.unitConverter.sidebar.tip3')}
                 </li>
                 <li className={`flex items-start gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
                   <span className={`text-emerald-400 dark:text-emerald-300 mt-1 ${isRTL ? 'mr-0 ml-2' : ''}`}>•</span>
-                  {t('unitConverter.sidebar.tip4')}
+                  {t('tools.unitConverter.sidebar.tip4')}
                 </li>
               </ul>
             </div>
