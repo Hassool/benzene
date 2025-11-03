@@ -47,12 +47,51 @@ export const CoursePageEn = {
       "copied": "Copied!"
     },
     "loading": {
-      "message": "Loading..."
+      "message": "Loading...",
+      "title": "Loading Course",
+      "subtitle": "Please wait while we fetch the content..."
     },
     "errors": {
       "loadingCourseTitle": "Error Loading Course",
       "courseNotFoundTitle": "Course Not Found",
-      "courseNotFoundMessage": "The course you're looking for doesn't exist or has been removed."
+      "courseNotFoundMessage": "The course you're looking for doesn't exist or has been removed.",
+      "notFound": "Course Not Found",
+      "backToCourses": "Back to Courses",
+      "courseNotFound": "Course not found",
+      "deleteFailed": "Failed to delete course",
+      "dismiss": "Dismiss"
+    },
+    "breadcrumb": {
+      "courses": "Courses"
+    },
+    "deleteConfirm": {
+      "message": "Are you sure you want to delete this entire course? This action cannot be undone and will delete all sections, resources, and associated data."
+    },
+    "buttons": {
+      "deleteCourse": "Delete Course",
+      "deleting": "Deleting...",
+      "deleteTooltip": "Delete Course (Admin)"
+    },
+    "category": {
+      "default": "COURSE"
+    },
+    "stats": {
+      "sections": "Sections",
+      "instructor": "Instructor",
+      "created": "Created",
+      "module": "Module"
+    },
+    "sectionsArea": {
+      "title": "Course Sections",
+      "subtitle": "Explore the structured learning path designed for optimal knowledge acquisition",
+      "count": "sections",
+      "recommendationTitle": "Recommended Learning Path",
+      "recommendationText": "For the best learning experience, we recommend completing sections in order. However, you're free to explore any section that interests you at any time. Each section builds upon the previous one, creating a comprehensive learning journey.",
+      "noSections": "No Sections Available",
+      "noSectionsText": "This course doesn't have any published sections yet. Check back soon for new content!",
+      "start": "START",
+      "section": "Section",
+      "minutes": "min"
     }
   }
 
@@ -105,11 +144,50 @@ export const CoursePageAR = {
       "copied": "تم النسخ!"
     },
     "loading": {
-      "message": "جاري التحميل..."
+      "message": "جاري التحميل...",
+      "title": "جاري تحميل الدورة",
+      "subtitle": "يرجى الانتظار بينما نقوم بجلب المحتوى..."
     },
     "errors": {
       "loadingCourseTitle": "خطأ في تحميل الدورة",
       "courseNotFoundTitle": "الدورة غير موجودة",
-      "courseNotFoundMessage": "الدورة التي تبحث عنها غير موجودة أو تم حذفها."
+      "courseNotFoundMessage": "الدورة التي تبحث عنها غير موجودة أو تم حذفها.",
+      "notFound": "الدورة غير موجودة",
+      "backToCourses": "العودة إلى الدورات",
+      "courseNotFound": "الدورة غير موجودة",
+      "deleteFailed": "فشل حذف الدورة",
+      "dismiss": "إغلاق"
+    },
+    "breadcrumb": {
+      "courses": "الدورات"
+    },
+    "deleteConfirm": {
+      "message": "هل أنت متأكد من رغبتك في حذف هذه الدورة بالكامل؟ لا يمكن التراجع عن هذا الإجراء وسيتم حذف جميع الأقسام والموارد والبيانات المرتبطة."
+    },
+    "buttons": {
+      "deleteCourse": "حذف الدورة",
+      "deleting": "جاري الحذف...",
+      "deleteTooltip": "حذف الدورة (مسؤول)"
+    },
+    "category": {
+      "default": "دورة"
+    },
+    "stats": {
+      "sections": "الأقسام",
+      "instructor": "المدرس",
+      "created": "تاريخ الإنشاء",
+      "module": "الوحدة"
+    },
+    "sectionsArea": {
+      "title": "أقسام الدورة",
+      "subtitle": "استكشف مسار التعلم المنظم المصمم للحصول على المعرفة الأمثل",
+      "count": "أقسام",
+      "recommendationTitle": "مسار التعلم الموصى به",
+      "recommendationText": "للحصول على أفضل تجربة تعليمية، نوصي بإكمال الأقسام بالترتيب. ومع ذلك، يمكنك استكشاف أي قسم يثير اهتمامك في أي وقت. كل قسم يبني على القسم السابق، مما يخلق رحلة تعليمية شاملة.",
+      "noSections": "لا توجد أقسام متاحة",
+      "noSectionsText": "هذه الدورة لا تحتوي على أي أقسام منشورة حتى الآن. تحقق مرة أخرى قريبًا للحصول على محتوى جديد!",
+      "start": "ابدأ",
+      "section": "القسم",
+      "minutes": "دقيقة"
     }
   }

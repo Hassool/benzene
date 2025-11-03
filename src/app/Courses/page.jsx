@@ -210,7 +210,7 @@ export default function Page({ searchParams: _searchParams }) {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={t("courses.search.palceholder")}
+              placeholder={t("courses.search.placeholder")}
               className="w-full placeholder:px-20 px-20 py-4 text-lg bg-bg-secondary dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-2xl focus:border-special focus:outline-none focus:ring-4 focus:ring-special/20 transition-all duration-300 text-text dark:text-text-dark placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-medium"
             />
             <button
@@ -309,7 +309,7 @@ export default function Page({ searchParams: _searchParams }) {
       <div className="container mx-auto px-4 py-6">
         
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {filtered.map((course) => (
             <article key={course.id} className="group bg-bg-secondary dark:bg-bg-dark-secondary rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden transform hover:-translate-y-2 hover:scale-105 border-2 border-border dark:border-border-dark hover:border-special">
               <div className="relative overflow-hidden">
