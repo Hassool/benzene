@@ -122,7 +122,7 @@ function Ceb() {
                       type="text"
                       value={equation}
                       onChange={(e) => setEquation(e.target.value)}
-                      className={`w-full px-4 py-4 bg-bg dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-xl text-text dark:text-text-dark text-lg focus:outline-none focus:border-blue-400 dark:focus:border-blue-300 focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-300/30 transition-all duration-200 placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-mono ${isRTL ? 'text-right' : ''}`}
+                      className={`w-full px-4 py-4 bg-bg dark:bg-bg-dark-secondary border-2 border-border dark:border-border-dark rounded-xl text-text dark:text-text-dark text-lg focus:outline-none focus:border-blue-400 dark:focus:border-blue-300 focus:ring-2 focus:ring-blue-400/30 dark:focus:ring-blue-300/30 transition-all duration-200 placeholder:text-text-secondary dark:placeholder:text-text-dark-secondary font-mono text-left`}
                       placeholder={t("tools.ceb.form.placeholder")}
                       disabled={loading}
                     />
@@ -170,7 +170,7 @@ function Ceb() {
                 )}
                 
                 {result && !loading && (
-                  <div className={`bg-blue-900/30 dark:bg-blue-800/20 border-l-4 border-blue-400 dark:border-blue-300 p-6 rounded-lg ${isRTL ? 'border-l-0 border-r-4' : ''}`}>
+                  <div className={`bg-blue-900/30 dark:bg-blue-800/20 border-l-4 border-blue-400 dark:border-blue-300 p-6 rounded-lg ltr`}>
                     <div className={`flex items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
                       <FiCheck className="text-blue-400 dark:text-blue-300 text-xl mt-0.5 flex-shrink-0" />
                       <div className={`w-full ${isRTL ? 'text-right' : ''}`}>
@@ -204,13 +204,13 @@ function Ceb() {
                       <div className={`text-text-secondary dark:text-text-dark-secondary text-xs mb-1 font-inter ${isRTL ? 'text-right' : ''}`}>
                         {t("tools.ceb.history.original")}
                       </div>
-                      <div className={`font-mono text-sm text-text dark:text-text-dark mb-2 ${isRTL ? 'text-right' : ''}`}>
+                      <div className={`ltr font-mono text-sm text-text dark:text-text-dark mb-2 ${isRTL ? 'text-right' : ''}`}>
                         {item.original}
                       </div>
                       <div className={`text-blue-400 dark:text-blue-300 text-xs mb-1 font-inter ${isRTL ? 'text-right' : ''}`}>
                         {t("tools.ceb.history.balanced")}
                       </div>
-                      <div className={`font-mono text-sm text-blue-300 dark:text-blue-200 ${isRTL ? 'text-right' : ''}`}>
+                      <div className={`ltr font-mono text-sm text-blue-300 dark:text-blue-200 ${isRTL ? 'text-right' : ''}`}>
                         {item.balanced}
                       </div>
                     </div>
@@ -246,7 +246,7 @@ function Ceb() {
                   <button
                     key={index}
                     onClick={() => handleExampleClick(eq)}
-                    className={`w-full p-3 bg-bg dark:bg-bg-dark-secondary hover:bg-blue-900/30 dark:hover:bg-blue-800/20 border border-border dark:border-border-dark hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-text-secondary dark:text-text-dark-secondary hover:text-blue-300 dark:hover:text-blue-200 font-mono text-sm ${isRTL ? 'text-right' : 'text-left'}`}
+                    className={`w-full p-3 bg-bg dark:bg-bg-dark-secondary hover:bg-blue-900/30 dark:hover:bg-blue-800/20 border border-border dark:border-border-dark hover:border-blue-500 dark:hover:border-blue-400 rounded-lg transition-all duration-200 text-text-secondary dark:text-text-dark-secondary hover:text-blue-300 dark:hover:text-blue-200 font-mono text-sm text-left`}
                   >
                     {eq}
                   </button>
