@@ -3,7 +3,6 @@
 import { getServerSession } from 'next-auth'
 import connectDB from '@/lib/mongoose'
 import Resource from '../../../../models/Resource'
-import Section from '../../../../models/Section'
 import Course from '../../../../models/Course'
 
 const handleError = (statusCode, message, error) => {
@@ -37,7 +36,7 @@ const handleSuccess = (statusCode, message, data = {}) => {
   )
 }
 
-// PUT: Reorder resources within a section
+// PUT: Reorder resources within a course
 export async function PUT(req) {
   try {
     const session = await getServerSession()
@@ -46,10 +45,10 @@ export async function PUT(req) {
       return handleError(401, 'Authentication required')
     }
 
-    const { sectionId, resourceOrders } = await req.json()
+    const { courseId, resourceOrders } = await req.json()
 
-    if (!sectionId) {
-      return handleError(400, 'Section ID is required')
+    if (!courseId) {
+      return handleError(400, 'Course ID is required')
     }
 
     if (!resourceOrders || !Array.isArray(resourceOrders) || resourceOrders.length === 0) {
@@ -65,28 +64,27 @@ export async function PUT(req) {
 
     await connectDB()
 
-    // Verify section exists and user owns the course
-    const section = await Section.findById(sectionId)
-      .populate('course')
+    // Verify course exists and user owns it
+    const course = await Course.findById(courseId)
 
-    if (!section || section.isDeleted || !section.isActive) {
-      return handleError(404, 'Section not found')
+    if (!course || course.isDeleted || !course.isActive) {
+      return handleError(404, 'Course not found')
     }
 
-    if (!section.course || !section.course.canEdit(session.user.id)) {
-      return handleError(403, 'Not authorized to reorder resources in this section')
+    if (course.userID && course.userID.toString() !== session.user.id) {
+      return handleError(403, 'Not authorized to reorder resources in this course')
     }
 
-    // Verify all resources belong to the section
+    // Verify all resources belong to the course
     const resourceIds = resourceOrders.map(item => item.resourceId)
     const resources = await Resource.find({
       _id: { $in: resourceIds },
-      sectionId: sectionId,
+      courseId: courseId,
       isDeleted: false
     })
 
     if (resources.length !== resourceIds.length) {
-      return handleError(400, 'Some resources do not belong to this section or do not exist')
+      return handleError(400, 'Some resources do not belong to this course or do not exist')
     }
 
     // Check for duplicate orders
@@ -96,17 +94,24 @@ export async function PUT(req) {
       return handleError(400, 'Duplicate order values are not allowed')
     }
 
-    // Reorder resources
-    await Resource.reorderResources(sectionId, resourceOrders)
+    // Reorder resources using bulk write
+    const bulkOps = resourceOrders.map(item => ({
+      updateOne: {
+        filter: { _id: item.resourceId },
+        update: { $set: { order: item.order } }
+      }
+    }))
+    
+    await Resource.bulkWrite(bulkOps)
 
     // Get updated resources to return
     const updatedResources = await Resource.find({
-      sectionId,
+      courseId,
       isDeleted: false
     }).sort({ order: 1 }).select('_id title type order')
 
     return handleSuccess(200, 'Resources reordered successfully', {
-      sectionId,
+      courseId,
       resources: updatedResources
     })
 

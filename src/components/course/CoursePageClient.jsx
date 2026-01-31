@@ -9,7 +9,7 @@ export default function CoursePageClient({ params, isAdmin }) {
   const { t, isRTL } = useTranslation();
   const { course } = use(params);
   const [courseData, setCourseData] = useState(null);
-  const [sections, setSections] = useState([]);
+  const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [deletingCourse, setDeletingCourse] = useState(false);
@@ -28,13 +28,13 @@ export default function CoursePageClient({ params, isAdmin }) {
         if (!courseResult.success) throw new Error(courseResult.message);
         setCourseData(courseResult.data);
 
-        // Fetch course sections
-        const sectionsResponse = await fetch(`/api/section?courseId=${course}`);
-        if (!sectionsResponse.ok) throw new Error('Failed to fetch sections');
-        const sectionsResult = await sectionsResponse.json();
+        // Fetch course resources
+        const resourcesResponse = await fetch(`/api/resource?courseId=${course}`);
+        if (!resourcesResponse.ok) throw new Error('Failed to fetch resources');
+        const resourcesResult = await resourcesResponse.json();
         
-        if (sectionsResult.success) {
-          setSections(sectionsResult.data || []);
+        if (resourcesResult.success) {
+          setResources((resourcesResult.data || []).sort((a, b) => (a.order || 0) - (b.order || 0)));
         }
         
       } catch (err) {
@@ -271,7 +271,7 @@ export default function CoursePageClient({ params, isAdmin }) {
                         <BookOpen className="h-5 w-5 text-special-light dark:text-special" />
                       </div>
                       <div className={isRTL ? 'text-right' : ''}>
-                        <div className="font-bold text-bg dark:text-text-dark">{sections.length}</div>
+                        <div className="font-bold text-bg dark:text-text-dark">{resources.length}</div>
                         <div className="text-sm">{t("coursePage.stats.sections")}</div>
                       </div>
                     </div>
@@ -364,7 +364,7 @@ export default function CoursePageClient({ params, isAdmin }) {
               </div>
               <div className="bg-bg-secondary dark:bg-bg-dark-secondary px-4 py-2 rounded-full border border-border dark:border-border-dark">
                 <span className="text-sm font-medium text-text dark:text-text-dark">
-                  {sections.length} {t("coursePage.sectionsArea.count")}
+                  {resources.length} {t("coursePage.sectionsArea.count")}
                 </span>
               </div>
             </div>
@@ -387,7 +387,7 @@ export default function CoursePageClient({ params, isAdmin }) {
             </div>
           </div>
 
-          {sections.length === 0 ? (
+          {resources.length === 0 ? (
             <div className="text-center py-24">
               <div className="w-24 h-24 bg-text-secondary/10 dark:bg-text-dark-secondary/10 rounded-3xl flex items-center justify-center mx-auto mb-8">
                 <BookOpen className="h-12 w-12 text-text-secondary dark:text-text-dark-secondary opacity-50" />
@@ -401,58 +401,45 @@ export default function CoursePageClient({ params, isAdmin }) {
             </div>
           ) : (
             <div className="space-y-6">
-              {sections.map((section, index) => (
+              {resources.map((resource, index) => (
                 <Link
-                  key={section._id}
-                  href={`/Courses/${course}/${section._id}`}
+                  key={resource._id}
+                  href={`/Courses/${course}/${resource._id}`}
                   className="group block bg-bg-secondary dark:bg-bg-dark-secondary rounded-2xl border border-border dark:border-border-dark shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-2 hover:border-special/30 dark:hover:border-special-dark/50"
                 >
                   <div className="p-8">
-                    <div className={`flex items-start gap-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                      {/* Enhanced Section Number */}
-                      <div className="flex-shrink-0 w-16 h-16 bg-special/10 dark:bg-special-dark/20 rounded-2xl flex items-center justify-center group-hover:bg-special/20 dark:group-hover:bg-special-dark/30 transition-all duration-300 group-hover:scale-110">
-                        <span className="text-xl font-bold text-special dark:text-special-light">
-                          {section.order || index + 1}
+                    <div className={`flex items-center gap-6 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                      {/* Enhanced Number */}
+                      <div className="flex-shrink-0 w-12 h-12 bg-special/10 dark:bg-special-dark/20 rounded-xl flex items-center justify-center group-hover:bg-special/20 dark:group-hover:bg-special-dark/30 transition-all duration-300">
+                        <span className="text-lg font-bold text-special dark:text-special-light">
+                          {resource.order || index + 1}
                         </span>
                       </div>
                       
-                      {/* Enhanced Section Content */}
+                      {/* Resource Content */}
                       <div className="flex-1 min-w-0">
-                        <div className={`flex items-start justify-between mb-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                          <h3 className={`text-2xl font-bold text-text dark:text-text-dark group-hover:text-special dark:group-hover:text-special-light transition-colors duration-300 ${isRTL ? 'text-right' : ''}`}>
-                            {section.title}
+                        <div className={`flex items-center justify-between gap-4 ${isRTL ? 'flex-row-reverse' : ''}`}>
+                          <h3 className={`text-xl font-semibold text-text dark:text-text-dark group-hover:text-special dark:group-hover:text-special-light transition-colors duration-300 truncate ${isRTL ? 'text-right' : ''}`}>
+                            {resource.title}
                           </h3>
-                          <div className={`flex items-center gap-3 text-special dark:text-special-light opacity-0 group-hover:opacity-100 transition-all duration-300 ${isRTL ? 'translate-x-4 group-hover:translate-x-0 flex-row-reverse' : '-translate-x-4 group-hover:translate-x-0'}`}>
-                            <span className="text-sm font-bold tracking-wide">{t("coursePage.sectionsArea.start")}</span>
-                            <div className="w-10 h-10 bg-special/20 dark:bg-special-dark/30 rounded-full flex items-center justify-center">
-                              <Play className="h-5 w-5" />
-                            </div>
+                          
+                          <div className={`flex items-center gap-2 text-text-secondary dark:text-text-dark-secondary text-sm`}>
+                             <span className="capitalize px-3 py-1 bg-bg dark:bg-bg-dark rounded-full border border-border dark:border-border-dark">
+                               {resource.type}
+                             </span>
                           </div>
                         </div>
                         
-                        {section.description && (
-                          <p className={`text-text-secondary dark:text-text-dark-secondary mb-6 line-clamp-2 text-lg leading-relaxed ${isRTL ? 'text-right' : ''}`}>
-                            {section.description}
+                        {resource.description && (
+                          <p className={`text-text-secondary dark:text-text-dark-secondary mt-2 line-clamp-1 text-base ${isRTL ? 'text-right' : ''}`}>
+                            {resource.description}
                           </p>
                         )}
-                        
-                        <div className={`flex items-center gap-8 text-text-secondary dark:text-text-dark-secondary ${isRTL ? 'flex-row-reverse' : ''}`}>
-                          {section.duration && (
-                            <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                              <div className="w-8 h-8 bg-text-secondary/10 dark:bg-text-dark-secondary/10 rounded-full flex items-center justify-center">
-                                <Clock className="h-4 w-4" />
-                              </div>
-                              <span className="font-medium">{section.duration} {t("coursePage.sectionsArea.minutes")}</span>
-                            </div>
-                          )}
-                          <div className={`flex items-center gap-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
-                            <div className="w-8 h-8 bg-text-secondary/10 dark:bg-text-dark-secondary/10 rounded-full flex items-center justify-center">
-                              <BookOpen className="h-4 w-4" />
-                            </div>
-                            <span className="font-medium">{t("coursePage.sectionsArea.section")} {section.order || index + 1}</span>
-                          </div>
-                        </div>
                       </div>
+                      
+                       <div className={`text-special dark:text-special-light opacity-0 group-hover:opacity-100 transition-all duration-300 ${isRTL ? 'rotate-180' : ''}`}>
+                         <Play className="h-5 w-5" />
+                       </div>
                     </div>
                   </div>
                 </Link>

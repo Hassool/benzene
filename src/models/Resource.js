@@ -14,17 +14,17 @@ const resourceSchema = new mongoose.Schema({
     trim: true,
     maxlength: [500, 'Resource description cannot exceed 500 characters']
   },
-  sectionId: {
+  courseId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Section',
-    required: [true, 'Section ID is required'],
+    ref: 'Course',
+    required: [true, 'Course ID is required'],
     validate: {
       validator: async function(v) {
-        const Section = mongoose.model('Section');
-        const section = await Section.findById(v);
-        return section && section.isActive && !section.isDeleted;
+        const Course = mongoose.model('Course');
+        const course = await Course.findById(v);
+        return course && course.isActive && !course.isDeleted;
       },
-      message: 'Invalid or inactive section'
+      message: 'Invalid or inactive course'
     }
   },
   type: {
@@ -62,8 +62,8 @@ const resourceSchema = new mongoose.Schema({
   }
 })
 
-// Compound index to ensure unique order within a section
-resourceSchema.index({ sectionId: 1, order: 1 }, { unique: true })
+// Compound index to ensure unique order within a course
+resourceSchema.index({ courseId: 1, order: 1 }, { unique: true })
 
 const Resource = mongoose.models.Resource || mongoose.model('Resource', resourceSchema)
 

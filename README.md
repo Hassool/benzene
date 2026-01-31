@@ -1,87 +1,100 @@
-# 🌿 Benzene 1.0
+# 🌿 Benzene
 
-**Benzene** is a **charity web app** built to help **high school students** learn different subjects easily and for free.  
-It provides lessons, tools, and quizzes — all designed to make studying simpler, more interactive, and more accessible.
+**Benzene** is a modern, open-source educational platform built to democratize high school education. It provides high-quality lessons, interactive science tools, and quizzes in a digital-first environment.
 
----
-
-## 🎯 Purpose
-
-The goal of Benzene is to give **every student** access to high-quality educational content and useful tools, no matter their background.  
-It’s a **non-profit project**, created to make learning available to everyone, everywhere.
+Designed to be accessible and community-driven, Benzene empowers students to learn at their own pace with tools that make complex subjects like Chemistry and Physics easier to understand.
 
 ---
 
-## 🧪 Features (v1.0)
+## 🚀 Features
 
-- 📘 **Lessons** in multiple formats:
-  - Documents  
-  - External links  
-  - Images  
-  - Videos  
+### 📚 Interactive Learning
+*   **Multimedia Lessons**: Support for documents, videos, and external resources.
+*   **Quizzes**: Teacher-created assessments to test knowledge.
+*   **Localized Content**: Built with internationalization in mind (supports Arabic/RTL).
 
-- 🧠 **Quizzes** created by teachers directly in the web app
+### 🛠️ Scientific Tools
+*   **🧪 Equation Balancer**: Automatically balance chemical equations.
+*   **⚖️ Unit Converter**: Convert between various scientific units.
+*   **📈 Graph Drawer**: Visualize mathematical functions.
+*   **⚛️ Periodic Table**: Interactive reference for elements.
 
-- 🧰 **Tools Section**:
-  - ⚖️ Equation Balancer  
-  - 🧪 Periodic Table  
-  - 📏 Unit Converter  
-  - 📈 Graph Drawer (for math functions)
-
----
-
-## 🚧 Upcoming Features
-
-- 🧩 **Duolingo-style learning system** (v1.1)
-- 🎨 **Visual animations** (v1.1)
-- 📱 **Android app** version (v1.2)
-- 🌍 **Complete Arabic translation**
+### 🔐 Platform Features
+*   **Secure Authentication**: NextAuth.js integration (Phone/Password & Social provider support).
+*   **Role-Based Access**: Specialized dashboards for Students and Admins.
+*   **Modern UI**: Built with React 19, TailwindCSS, and Framer Motion for smooth animations.
 
 ---
 
-## 💡 Inspiration
+## 🛠️ Tech Stack
 
-Benzene was inspired by **Mrs. Chirac**, a teacher whose passion for sharing knowledge and helping students left a lasting impact.  
-> “Benzene was inspired by Mrs. Chirac, a teacher whose passion for sharing knowledge continues to guide this project. Thank you.”
-
----
-
-## 🧑‍💻 Tech Stack
-
-- **Frontend:** React (Next.js)  
-- **Backend:** Node.js & Express  
-- **Database:** MongoDB  
-- **Hosting:** (e.g., Vercel / Render / Netlify — specify if applicable)
+*   **Framework**: [Next.js 15](https://nextjs.org/) (App Router)
+*   **Language**: JavaScript / React 19
+*   **Styling**: [TailwindCSS](https://tailwindcss.com/)
+*   **Database**: [MongoDB](https://www.mongodb.com/) (Mongoose)
+*   **Authentication**: [NextAuth.js](https://next-auth.js.org/)
+*   **Media**: Cloudinary (Image/Video hosting)
 
 ---
 
-## 🧭 Project Vision
+## 🏁 Getting Started
 
-Education should not be limited by money or access.  
-Benzene aims to grow into a **complete online learning ecosystem** for high schoolers — free, fun, and community-driven.
+Follow these steps to run the project locally.
+
+### Prerequisites
+
+*   Node.js 18+ 
+*   MongoDB Instance (Local or Atlas)
+
+### Installation
+
+1.  **Clone the repository**
+    ```bash
+    git clone https://github.com/yourusername/ttrak.git
+    cd ttrak
+    ```
+
+2.  **Install dependencies**
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Setup**
+    Create a `.env.local` file in the root directory and add the following variables:
+
+    ```env
+    # Database
+    MONGODB_URI=mongodb+srv://...
+
+    # Authentication
+    NEXTAUTH_SECRET=your_super_secret_key
+    NEXTAUTH_URL=http://localhost:3000
+    
+    # Admin Configuration
+    ADMINS=phone_number_1,phone_number_2
+    YACINE=primary_admin_phone_number
+    ```
+
+4.  **Run the development server**
+    ```bash
+    npm run dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 ---
 
-## 🧪 Contributing
+## 🤝 Contributing
 
-If you'd like to contribute:
-1. Fork the repository  
-2. Create a feature branch (`git checkout -b feature-name`)  
-3. Commit your changes  
-4. Push and submit a Pull Request
-
-Contributions, feedback, and ideas are all welcome.
-
----
-
-## 🐞 Feedback & Bug Reporting
-
-Benzene 1.0 is still under development.  
-If you find any bugs, missing translations, or have suggestions, please open an **issue** or contact the maintainers.
+Contributions are welcome! Please follow these steps:
+1.  Fork the project.
+2.  Create your feature branch (`git checkout -b feature/AmazingFeature`).
+3.  Commit your changes (`git commit -m 'Add some AmazingFeature'`).
+4.  Push to the branch (`git push origin feature/AmazingFeature`).
+5.  Open a Pull Request.
 
 ---
 
+## 📜 License
 
-### 🌐 Live Demo
-
-[🔗 Visit Benzene Web App](https://benzene-beta.vercel.app/) 
+This project is open-source and available under the MIT License.

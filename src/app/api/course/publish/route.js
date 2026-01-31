@@ -3,7 +3,7 @@
 import { getServerSession } from 'next-auth'
 import connectDB from '@/lib/mongoose'
 import Course from '../../../../models/Course'
-import Section from '../../../../models/Section'
+import Resource from '../../../../models/Resource'
 
 const handleError = (statusCode, message, error) => {
   console.error(message, error)
@@ -104,34 +104,19 @@ async function validateCourseForPublishing(courseId) {
   const issues = []
 
   try {
-    // Check if course has at least one published section
-    const publishedSections = await Section.find({
+    // Check if course has at least one published resource
+    const publishedResources = await Resource.find({
       courseId,
       isPublished: true,
       isActive: true,
       isDeleted: false
     })
 
-    if (publishedSections.length === 0) {
-      issues.push('Course must have at least one published section')
+    if (publishedResources.length === 0) {
+      issues.push('Course must have at least one published resource')
     }
 
-    // Check if each published section has at least one published resource
-    for (const section of publishedSections) {
-      const Resource = require('../../../../models/Resource').default
-      const publishedResources = await Resource.find({
-        sectionId: section._id,
-        isPublished: true,
-        isActive: true,
-        isDeleted: false
-      })
-
-      if (publishedResources.length === 0) {
-        issues.push(`Section "${section.title}" must have at least one published resource`)
-      }
-    }
-
-    // Get course details
+    // Get course details (reuse existing course object if possible, but finding again for safety)
     const course = await Course.findById(courseId)
 
     // Check required course fields
@@ -142,16 +127,16 @@ async function validateCourseForPublishing(courseId) {
     if (!course.description || course.description.trim().length < 10) {
       issues.push('Course must have a valid description (at least 10 characters)')
     }
-
+/*
     if (!course.learningObjectives || course.learningObjectives.length === 0) {
       issues.push('Course must have at least one learning objective')
     }
-
-    if (!course.category || !['programming', 'design', 'business', 'marketing', 'science', 'mathematics', 'language', 'other'].includes(course.category)) {
+*/
+    if (!course.category || !['1as', '2as', '3as', 'other'].includes(course.category)) {
       issues.push('Course must have a valid category')
     }
 
-    if (!course.level || !['beginner', 'intermediate', 'advanced'].includes(course.level)) {
+   /* if (!course.level || !['beginner', 'intermediate', 'advanced'].includes(course.level)) {
       issues.push('Course must have a valid level')
     }
 
@@ -162,7 +147,7 @@ async function validateCourseForPublishing(courseId) {
     if (course.price === undefined || course.price < 0) {
       issues.push('Course must have a valid price (0 or greater)')
     }
-
+*/
     return {
       isValid: issues.length === 0,
       issues

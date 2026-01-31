@@ -1,13 +1,13 @@
 // src/app/api/resource/route.js
 
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../auth/[...nextauth]/route' // ✅ Import authOptions
+import { authOptions } from '../auth/[...nextauth]/route'
 import connectDB from '@/lib/mongoose' 
 import Resource from '../../../models/Resource'
-import Section from '../../../models/Section'
+import Course from '../../../models/Course'
 import { createCrudRoutes } from '@/lib/crudHandler'
 
-const requiredFields = ['title', 'sectionId', 'type', 'content']
+const requiredFields = ['title', 'courseId', 'type', 'content']
 
 // Custom validation function for resource-specific rules
 const resourceValidation = async (data, operation) => {
@@ -122,7 +122,6 @@ const routes = createCrudRoutes(Resource, requiredFields, routeOptions);
 // Custom POST handler with teacher authentication
 export async function POST(req) {
   try {
-    // ✅ Pass authOptions to getServerSession
     const session = await getServerSession(authOptions);
     
     console.log('Resource POST - Session check:', { 
@@ -144,22 +143,22 @@ export async function POST(req) {
     console.log('Creating resource with data:', { 
       title: data.title, 
       type: data.type, 
-      sectionId: data.sectionId 
+      courseId: data.courseId 
     });
     
-    // Verify section exists and user owns the course through section
-    const section = await Section.findById(data.sectionId).populate('courseId');
-    if (!section || section.isDeleted) {
+    // Verify course exists and user owns it
+    const course = await Course.findById(data.courseId);
+    if (!course || course.isDeleted) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Section not found' }),
+        JSON.stringify({ success: false, msg: 'Course not found' }),
         { status: 404, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // Check if user can edit the course (assuming courseId has userID field)
-    if (section.courseId?.userID && section.courseId.userID.toString() !== session.user.id) {
+    // Check if user can edit the course
+    if (course.userID && course.userID.toString() !== session.user.id) {
       return new Response(
-        JSON.stringify({ success: false, msg: 'Not authorized to add resources to this section' }),
+        JSON.stringify({ success: false, msg: 'Not authorized to add resources to this course' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
       );
     }
@@ -175,7 +174,7 @@ export async function POST(req) {
     
     // If no order is specified, set it to the next available order
     if (!data.order) {
-      const maxOrder = await Resource.findOne({ sectionId: data.sectionId })
+      const maxOrder = await Resource.findOne({ courseId: data.courseId })
         .sort({ order: -1 })
         .select('order');
       data.order = maxOrder ? maxOrder.order + 1 : 1;
@@ -216,7 +215,7 @@ export async function GET(req) {
     
     const url = new URL(req.url);
     const id = url.searchParams.get('id');
-    const sectionId = url.searchParams.get('sectionId');
+    const courseId = url.searchParams.get('courseId');
     const type = url.searchParams.get('type');
     const published = url.searchParams.get('published');
     const freeOnly = url.searchParams.get('freeOnly') === 'true';
@@ -227,11 +226,8 @@ export async function GET(req) {
       // Get single resource
       const resource = await Resource.findById(id)
         .populate({
-          path: 'sectionId',
-          populate: {
-            path: 'courseId',
-            select: 'title userID'
-          }
+          path: 'courseId',
+          select: 'title userID'
         });
 
       if (!resource || resource.isDeleted) {
@@ -242,9 +238,8 @@ export async function GET(req) {
       }
 
       // Check access permissions for non-free resources
-      // ✅ Pass authOptions to getServerSession
       const session = await getServerSession(authOptions);
-      if (!resource.isFree && resource.sectionId && resource.sectionId.courseId) {
+      if (!resource.isFree && resource.courseId) {
         // Simple access check - you can enhance this based on your business logic
         if (!session?.user?.id) {
           return new Response(
@@ -273,8 +268,8 @@ export async function GET(req) {
     // Build query for multiple resources
     let query = { isActive: true, isDeleted: false };
 
-    if (sectionId) {
-      query.sectionId = sectionId;
+    if (courseId) {
+      query.courseId = courseId;
     }
 
     if (type) {
@@ -294,12 +289,8 @@ export async function GET(req) {
     const [resources, total] = await Promise.all([
       Resource.find(query)
         .populate({
-          path: 'sectionId',
-          select: 'title courseId',
-          populate: {
-            path: 'courseId',
-            select: 'title userID'
-          }
+          path: 'courseId',
+          select: 'title userID'
         })
         .sort({ order: 1 })
         .skip(skip)
@@ -344,7 +335,6 @@ export async function GET(req) {
 // Custom PATCH handler with ownership verification
 export async function PATCH(req) {
   try {
-    // ✅ Pass authOptions to getServerSession
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
@@ -369,10 +359,7 @@ export async function PATCH(req) {
     // Check if resource exists and user owns the course
     const resource = await Resource.findById(id)
       .populate({
-        path: 'sectionId',
-        populate: {
-          path: 'courseId'
-        }
+        path: 'courseId'
       });
 
     if (!resource || resource.isDeleted) {
@@ -383,7 +370,7 @@ export async function PATCH(req) {
     }
 
     // Check ownership
-    if (resource.sectionId?.courseId?.userID && resource.sectionId.courseId.userID.toString() !== session.user.id) {
+    if (resource.courseId?.userID && resource.courseId.userID.toString() !== session.user.id) {
       return new Response(
         JSON.stringify({ success: false, msg: 'Not authorized to edit this resource' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
@@ -424,7 +411,6 @@ export async function PATCH(req) {
 // Custom DELETE handler with ownership verification
 export async function DELETE(req) {
   try {
-    // ✅ Pass authOptions to getServerSession
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
@@ -449,10 +435,7 @@ export async function DELETE(req) {
     // Check if resource exists and user owns the course
     const resource = await Resource.findById(id)
       .populate({
-        path: 'sectionId',
-        populate: {
-          path: 'courseId'
-        }
+        path: 'courseId'
       });
 
     if (!resource || resource.isDeleted) {
@@ -463,7 +446,7 @@ export async function DELETE(req) {
     }
 
     // Check ownership
-    if (resource.sectionId?.courseId?.userID && resource.sectionId.courseId.userID.toString() !== session.user.id) {
+    if (resource.courseId?.userID && resource.courseId.userID.toString() !== session.user.id) {
       return new Response(
         JSON.stringify({ success: false, msg: 'Not authorized to delete this resource' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }

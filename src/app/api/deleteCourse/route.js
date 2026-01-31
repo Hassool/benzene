@@ -4,7 +4,6 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import connectDB from '@/lib/mongoose'
 import Course from '@/models/Course'
-import Section from '@/models/Section'
 import Resource from '@/models/Resource'
 import Quiz from '@/models/Quiz'
 import { deleteFromUrl } from '@/lib/deleteAsset'
@@ -89,40 +88,6 @@ const deleteResource = async (resource) => {
 };
 
 /**
- * Delete a section and all its resources
- */
-const deleteSection = async (section) => {
-  try {
-    console.log(`Processing section: ${section._id} (${section.title})`);
-    
-    // Find all resources in this section
-    const resources = await Resource.find({ 
-      sectionId: section._id,
-      isDeleted: false 
-    });
-    
-    console.log(`Found ${resources.length} resources in section ${section._id}`);
-    
-    // Delete all resources
-    for (const resource of resources) {
-      await deleteResource(resource);
-    }
-    
-    // Delete the section itself
-    const deleteResult = await Section.findByIdAndDelete(section._id);
-    console.log(`Successfully deleted section: ${section._id}`);
-    
-    return {
-      section: deleteResult,
-      resourcesDeleted: resources.length
-    };
-  } catch (error) {
-    console.error(`Error deleting section ${section._id}:`, error);
-    throw error;
-  }
-};
-
-/**
  * DELETE handler for complete course deletion
  */
 export async function DELETE(req) {
@@ -195,32 +160,28 @@ export async function DELETE(req) {
     // Initialize deletion statistics
     const deletionStats = {
       coursesDeleted: 0,
-      sectionsDeleted: 0,
       resourcesDeleted: 0,
       quizzesDeleted: 0,
       cloudinaryAssetsDeleted: 0
     };
 
-    // Find all sections in this course
-    const sections = await Section.find({ 
+    // Find all resources in this course
+    const resources = await Resource.find({ 
       courseId: courseId,
       isDeleted: false 
     });
     
-    console.log(`Found ${sections.length} sections in course ${courseId}`);
+    console.log(`Found ${resources.length} resources in course ${courseId}`);
     
-    if (sections.length > 0) {
-      // Process each section
-      for (const section of sections) {
+    if (resources.length > 0) {
+      // Process each resource
+      for (const resource of resources) {
         try {
-          const sectionResult = await deleteSection(section);
-          deletionStats.sectionsDeleted++;
-          deletionStats.resourcesDeleted += sectionResult.resourcesDeleted;
-          
-          console.log(`Successfully processed section ${section._id}`);
-        } catch (sectionError) {
-          console.error(`Failed to delete section ${section._id}:`, sectionError);
-          // Continue with other sections even if one fails
+          await deleteResource(resource);
+          deletionStats.resourcesDeleted++;
+        } catch (resourceError) {
+          console.error(`Failed to delete resource ${resource._id}:`, resourceError);
+          // Continue with other resources even if one fails
         }
       }
     }

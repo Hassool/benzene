@@ -1,6 +1,6 @@
 // app/api/quiz/route.js
 import { getServerSession } from 'next-auth'
-import { authOptions } from '../auth/[...nextauth]/route' // ✅ Import authOptions
+import { authOptions } from '../auth/[...nextauth]/route'
 import { createCrudRoutes } from '@/lib/crudHandler';
 import connectDB from '@/lib/mongoose';
 import Quiz from '@/models/Quiz';
@@ -92,7 +92,7 @@ export async function GET(req) {
     const limit = Math.min(parseInt(url.searchParams.get('limit')) || 10, 100);
 
     if (id) {
-      const quiz = await Quiz.findById(id).populate('ResourceID', 'title type sectionId');
+      const quiz = await Quiz.findById(id).populate('ResourceID', 'title type courseId');
       if (!quiz) {
         return new Response(JSON.stringify({
           success: false,
@@ -149,7 +149,6 @@ export async function GET(req) {
 // POST handler with authentication
 export async function POST(req) {
   try {
-    // ✅ Pass authOptions to getServerSession
     const session = await getServerSession(authOptions);
     
     console.log('Quiz POST - Session check:', { 
@@ -174,13 +173,10 @@ export async function POST(req) {
       order: data.order 
     });
 
-    // Verify user owns the resource through the resource's section and course
+    // Verify user owns the resource through the resource's course
     const resource = await Resource.findById(data.ResourceID)
       .populate({
-        path: 'sectionId',
-        populate: {
-          path: 'courseId'
-        }
+        path: 'courseId'
       });
 
     if (!resource) {
@@ -191,7 +187,7 @@ export async function POST(req) {
     }
 
     // Check if user owns the course
-    if (resource.sectionId?.courseId?.userID && resource.sectionId.courseId.userID.toString() !== session.user.id) {
+    if (resource.courseId?.userID && resource.courseId.userID.toString() !== session.user.id) {
       return new Response(
         JSON.stringify({ success: false, msg: 'Not authorized to create quizzes for this resource' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
@@ -233,7 +229,6 @@ export async function POST(req) {
 // PATCH handler with authentication
 export async function PATCH(req) {
   try {
-    // ✅ Pass authOptions to getServerSession
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
@@ -261,10 +256,7 @@ export async function PATCH(req) {
       .populate({
         path: 'ResourceID',
         populate: {
-          path: 'sectionId',
-          populate: {
-            path: 'courseId'
-          }
+          path: 'courseId'
         }
       });
 
@@ -276,7 +268,8 @@ export async function PATCH(req) {
     }
 
     // Check ownership
-    if (quiz.ResourceID?.sectionId?.courseId?.userID && quiz.ResourceID.sectionId.courseId.userID.toString() !== session.user.id) {
+    // Access courseId directly from ResourceID populated document
+    if (quiz.ResourceID?.courseId?.userID && quiz.ResourceID.courseId.userID.toString() !== session.user.id) {
       return new Response(
         JSON.stringify({ success: false, msg: 'Not authorized to update this quiz' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }
@@ -326,7 +319,6 @@ export async function PATCH(req) {
 // DELETE handler with authentication
 export async function DELETE(req) {
   try {
-    // ✅ Pass authOptions to getServerSession
     const session = await getServerSession(authOptions);
     
     if (!session?.user?.id) {
@@ -353,10 +345,7 @@ export async function DELETE(req) {
       .populate({
         path: 'ResourceID',
         populate: {
-          path: 'sectionId',
-          populate: {
-            path: 'courseId'
-          }
+          path: 'courseId'
         }
       });
 
@@ -368,7 +357,8 @@ export async function DELETE(req) {
     }
 
     // Check ownership
-    if (quiz.ResourceID?.sectionId?.courseId?.userID && quiz.ResourceID.sectionId.courseId.userID.toString() !== session.user.id) {
+    // Access courseId directly from ResourceID populated document
+    if (quiz.ResourceID?.courseId?.userID && quiz.ResourceID.courseId.userID.toString() !== session.user.id) {
       return new Response(
         JSON.stringify({ success: false, msg: 'Not authorized to delete this quiz' }),
         { status: 403, headers: { 'Content-Type': 'application/json' } }

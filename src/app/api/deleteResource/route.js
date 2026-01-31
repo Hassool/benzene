@@ -4,7 +4,6 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '../auth/[...nextauth]/route'
 import connectDB from '@/lib/mongoose'
 import Course from '@/models/Course'
-import Section from '@/models/Section'
 import Resource from '@/models/Resource'
 import Quiz from '@/models/Quiz'
 import { deleteFromUrl } from '@/lib/deleteAsset'
@@ -99,22 +98,8 @@ export async function DELETE(req) {
       );
     }
 
-    // Find the section to get the course
-    const section = await Section.findById(resource.sectionId);
-    
-    if (!section) {
-      return new Response(
-        JSON.stringify({ 
-          success: false, 
-          message: 'Associated section not found',
-          error: 'SECTION_NOT_FOUND' 
-        }),
-        { status: 404, headers: { 'Content-Type': 'application/json' } }
-      );
-    }
-
     // Find the course to check user permissions
-    const course = await Course.findById(section.courseId);
+    const course = await Course.findById(resource.courseId);
     
     if (!course) {
       return new Response(
@@ -200,9 +185,7 @@ export async function DELETE(req) {
           resourceId: resourceId,
           resourceTitle: resource.title || 'Untitled',
           resourceType: resource.type,
-          sectionId: resource.sectionId,
-          sectionTitle: section.title,
-          courseId: section.courseId,
+          courseId: resource.courseId,
           courseTitle: course.title,
           deletedAt: new Date().toISOString(),
           statistics: deletionStats

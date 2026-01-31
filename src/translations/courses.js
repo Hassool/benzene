@@ -188,7 +188,7 @@ const CoursesEN = {
         
         delete: {
             confirmTitle: "Delete Course",
-            confirmMessage: "Are you sure you want to delete this course? This action cannot be undone and will delete all sections, resources, and associated data.",
+            confirmMessage: "Are you sure you want to delete this course? This action cannot be undone and will delete all resources and associated data.",
             errorTitle: "Failed to delete course",
             dismiss: "Dismiss"
         }
@@ -385,7 +385,7 @@ const CoursesAR = {
         
         delete: {
             confirmTitle: "حذف الدورة",
-            confirmMessage: "هل أنت متأكد من حذف هذه الدورة؟ لا يمكن التراجع عن هذا الإجراء وسيتم حذف جميع الأقسام والموارد والبيانات المرتبطة.",
+            confirmMessage: "هل أنت متأكد من حذف هذه الدورة؟ لا يمكن التراجع عن هذا الإجراء وسيتم حذف جميع الموارد والبيانات المرتبطة.",
             errorTitle: "فشل حذف الدورة",
             dismiss: "إغلاق"
         }
