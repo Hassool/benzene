@@ -24,3 +24,12 @@ code, pre {
 .animate-shake {
   animation: shake 0.5s ease-in-out;
 }
+
+[dir="rtl"] .lucide-arrow-right,
+[dir="rtl"] .lucide-arrow-left,
+[dir="rtl"] .lucide-chevron-right,
+[dir="rtl"] .lucide-chevron-left,
+[dir="rtl"] .lucide-corner-down-right,
+[dir="rtl"] .lucide-corner-down-left {
+  transform: scaleX(-1);
+}

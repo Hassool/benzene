@@ -101,6 +101,26 @@ export const ToolsEN = {
     "exampleQuickAdd": "Quick Examples",
     "overlayTrace": "Move mouse to trace",
     "overlayPan": "Drag to pan • Scroll zoom"
+  },
+  "periodic_table": {
+    "title": "Periodic Table of Elements",
+    "alkali_metals": "Alkali Metals",
+    "alkaline_earth": "Alkaline Earth",
+    "transition_metals": "Transition Metals",
+    "nonmetals": "Nonmetals",
+    "metalloids": "Metalloids",
+    "halogens": "Halogens",
+    "noble_gases": "Noble Gases",
+    "lanthanoids": "Lanthanoids",
+    "atomic_number": "Atomic Number",
+    "atomic_mass": "Atomic Mass",
+    "electron_config": "Electronic Configuration",
+    "electronegativity": "Electronegativity",
+    "state": "Standard State",
+    "melting_point": "Melting Point",
+    "boiling_point": "Boiling Point",
+    "discovered": "Year Discovered",
+    "loading": "Loading..."
   }
 }
 
@@ -207,6 +227,26 @@ export const ToolsAR = {
     "exampleQuickAdd": "أمثلة سريعة",
     "overlayTrace": "حرك الماوس للتتبع",
     "overlayPan": "اسحب للتحريك • تمرير للتكبير"
+  },
+  "periodic_table": {
+    "title": "الجدول الدوري للعناصر",
+    "alkali_metals": "فلزات قلوية",
+    "alkaline_earth": "قلويات ترابية",
+    "transition_metals": "فلزات انتقالية",
+    "nonmetals": "لا فلزات",
+    "metalloids": "أشباه الفلزات",
+    "halogens": "الهالوجينات",
+    "noble_gases": "الغازات النبيلة",
+    "lanthanoids": "اللانثانيدات",
+    "atomic_number": "العدد الذري",
+    "atomic_mass": "الكتلة الذرية",
+    "electron_config": "التوزيع الإلكتروني",
+    "electronegativity": "السلبية الكهربية",
+    "state": "الحالة القياسية",
+    "melting_point": "نقطة الانصهار",
+    "boiling_point": "نقطة الغليان",
+    "discovered": "سنة الاكتشاف",
+    "loading": "جاري التحميل..."
   }
 }
 
@@ -313,5 +353,25 @@ export const ToolsFR = {
     "exampleQuickAdd": "Exemples Rapides",
     "overlayTrace": "Bougez la souris pour tracer",
     "overlayPan": "Glisser pour déplacer • Défilement pour zoomer"
+  },
+  "periodic_table": {
+    "title": "Tableau Périodique des Éléments",
+    "alkali_metals": "Métaux Alcalins",
+    "alkaline_earth": "Métaux Alcalino-terreux",
+    "transition_metals": "Métaux de Transition",
+    "nonmetals": "Non-métaux",
+    "metalloids": "Métalloïdes",
+    "halogens": "Halogènes",
+    "noble_gases": "Gaz Nobles",
+    "lanthanoids": "Lanthanides",
+    "atomic_number": "Numéro Atomique",
+    "atomic_mass": "Masse Atomique",
+    "electron_config": "Configuration Électronique",
+    "electronegativity": "Électronégativité",
+    "state": "État Standard",
+    "melting_point": "Point de Fusion",
+    "boiling_point": "Point d'Ébullition",
+    "discovered": "Année de Découverte",
+    "loading": "Chargement..."
   }
 }
