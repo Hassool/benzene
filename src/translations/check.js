@@ -92,4 +92,51 @@ const CheckAR = {
   }
 }
 
-export { CheckAR, CheckEN }
+const CheckFR = {
+  header: {
+    title: "Gestion des Utilisateurs",
+    subtitle: "Examiner et gérer les demandes d'inscription des utilisateurs"
+  },
+  filters: {
+    pending: "En Attente",
+    active: "Actif",
+    all: "Tous les Utilisateurs"
+  },
+  actions: {
+    refresh: "Actualiser",
+    activate: "Activer",
+    deactivate: "Désactiver",
+    delete: "Supprimer"
+  },
+  status: {
+    active: "Actif",
+    pending: "En Attente"
+  },
+  info: {
+    joined: "Rejoint le :",
+    lastLogin: "Dernière connexion :"
+  },
+  loading: {
+    main: "Chargement...",
+    users: "Chargement des utilisateurs..."
+  },
+  empty: {
+    noUsers: "Aucun utilisateur trouvé",
+    noFilteredUsers: "utilisateurs trouvés",
+    allProcessed: "Toutes les demandes d'utilisateurs ont été traitées.",
+    noMatch: "Aucun utilisateur ne correspond au filtre actuel."
+  },
+  confirm: {
+    deactivate: "Êtes-vous sûr de vouloir désactiver cet utilisateur ? Il ne pourra plus se connecter.",
+    delete: "Êtes-vous sûr de vouloir supprimer cet utilisateur ? Cette action est irréversible."
+  },
+  errors: {
+    loadFailed: "Échec du chargement des utilisateurs",
+    activateFailed: "Échec de l'activation de l'utilisateur",
+    deactivateFailed: "Échec de la désactivation de l'utilisateur",
+    deleteFailed: "Échec de la suppression de l'utilisateur",
+    tryAgain: "Veuillez réessayer."
+  }
+}
+
+export { CheckAR, CheckEN, CheckFR }

@@ -82,6 +82,25 @@ export const ToolsEN = {
       "time": "Time",
       "energy": "Energy"
     }
+  },
+  "FGD": {
+    "title": "Function Graph Drawer",
+    "functions": "Functions",
+    "addFunction": "Add function",
+    "functionLabel": "f(x) =",
+    "interactionMode": "Interaction Mode",
+    "pan": "Pan",
+    "trace": "Trace",
+    "view": "View",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "reset": "Reset",
+    "customDomain": "Custom Domain",
+    "min": "Min",
+    "max": "Max",
+    "exampleQuickAdd": "Quick Examples",
+    "overlayTrace": "Move mouse to trace",
+    "overlayPan": "Drag to pan • Scroll zoom"
   }
 }
 
@@ -169,5 +188,130 @@ export const ToolsAR = {
       "time": "الوقت",
       "energy": "الطاقة"
     }
+  },
+  "FGD": {
+    "title": "رَسّام الدوال",
+    "functions": "الدوال",
+    "addFunction": "إضافة دالة",
+    "functionLabel": "f(x) =",
+    "interactionMode": "وضع التفاعل",
+    "pan": "تحريك",
+    "trace": "تتبع",
+    "view": "عرض",
+    "zoomIn": "تكبير",
+    "zoomOut": "تصغير",
+    "reset": "إعادة تعيين",
+    "customDomain": "نطاق مخصص",
+    "min": "أدنى",
+    "max": "أقصى",
+    "exampleQuickAdd": "أمثلة سريعة",
+    "overlayTrace": "حرك الماوس للتتبع",
+    "overlayPan": "اسحب للتحريك • تمرير للتكبير"
+  }
+}
+
+export const ToolsFR = {
+  "ceb": {
+    "header": {
+      "title": "Équilibreur d'Équations Chimiques",
+      "poweredBy": "Propulsé par webqc.org",
+      "description": "Équilibrez les équations chimiques instantanément avec notre algorithme intelligent. Entrez votre équation non équilibrée et obtenez des coefficients stœchiométriques précis."
+    },
+    "form": {
+      "label": "Entrez l'Équation Chimique :",
+      "placeholder": "par ex., H2O2=H2O+O2",
+      "buttonBalance": "Équilibrer l'Équation",
+      "buttonBalancing": "Équilibrage..."
+    },
+    "result": {
+      "errorTitle": "Erreur",
+      "successTitle": "Équation Équilibrée"
+    },
+    "history": {
+      "title": "Historique Récent",
+      "original": "Original :",
+      "balanced": "Équilibré :"
+    },
+    "tips": {
+      "title": "Conseils",
+      "tip1": "Utilisez = pour séparer les réactifs et les produits",
+      "tip2": "Écrivez les formules chimiques clairement (par ex., H2SO4)",
+      "tip3": "Utilisez des parenthèses pour les composés complexes",
+      "tip4": "Essayez les exemples pour commencer"
+    },
+    "examples": {
+      "title": "Exemples d'Équations"
+    }
+  },
+  "unitConverter": {
+    "header": {
+      "title": "Convertisseur d'Unités Universel",
+      "description": "Convertissez entre différentes unités de mesure, y compris la masse, le volume, la température, la pression et la concentration pour tous vos calculs chimiques."
+    },
+    "form": {
+      "categoryLabel": "Catégorie de Conversion",
+      "valueLabel": "Valeur",
+      "valuePlaceholder": "Entrez la valeur",
+      "fromLabel": "De",
+      "toLabel": "À",
+      "unitsAvailable": "unités"
+    },
+    "actions": {
+      "swapButton": "Échanger",
+      "convertButton": "Convertir les Unités",
+      "converting": "Conversion...",
+      "clearHistory": "Effacer l'historique"
+    },
+    "result": {
+      "title": "Résultat de la Conversion"
+    },
+    "error": {
+      "title": "Erreur",
+      "fillAllFields": "Veuillez remplir tous les champs",
+      "invalidNumber": "Veuillez entrer un nombre valide",
+      "conversionFailed": "La conversion a échoué",
+      "networkError": "Erreur réseau pendant la conversion",
+      "loadCategoriesFailed": "Échec du chargement des catégories de conversion"
+    },
+    "history": {
+      "title": "Conversions Récentes"
+    },
+    "sidebar": {
+      "quickCategories": "Catégories Rapides",
+      "tipsTitle": "Conseils",
+      "tip1": "Sélectionnez d'abord la catégorie appropriée",
+      "tip2": "Utilisez le bouton d'échange pour inverser la conversion",
+      "tip3": "Cliquez sur les éléments de l'historique pour réutiliser les conversions",
+      "tip4": "Notation scientifique pour les valeurs très grandes/petites"
+    },
+    "categories": {
+      "mass": "Masse",
+      "volume": "Volume",
+      "temperature": "Température",
+      "pressure": "Pression",
+      "concentration": "Concentration",
+      "length": "Longueur",
+      "time": "Temps",
+      "energy": "Énergie"
+    }
+  },
+  "FGD": {
+    "title": "Traceur de Fonctions",
+    "functions": "Fonctions",
+    "addFunction": "Ajouter une fonction",
+    "functionLabel": "f(x) =",
+    "interactionMode": "Mode Interaction",
+    "pan": "Panoramique",
+    "trace": "Trace",
+    "view": "Vue",
+    "zoomIn": "Zoom Avant",
+    "zoomOut": "Zoom Arrière",
+    "reset": "Réinitialiser",
+    "customDomain": "Domaine Personnalisé",
+    "min": "Min",
+    "max": "Max",
+    "exampleQuickAdd": "Exemples Rapides",
+    "overlayTrace": "Bougez la souris pour tracer",
+    "overlayPan": "Glisser pour déplacer • Défilement pour zoomer"
   }
 }

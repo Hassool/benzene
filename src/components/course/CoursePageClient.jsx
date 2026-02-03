@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
 import { Clock, BookOpen, User, Calendar, AlertCircle, Play, Trash2, Loader2, Star, Award, ChevronRight } from "lucide-react";
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 
 export default function CoursePageClient({ params, isAdmin }) {
   const { t, isRTL } = useTranslation();

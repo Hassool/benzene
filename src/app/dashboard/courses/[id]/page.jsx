@@ -6,7 +6,7 @@ import { Copy, Check } from 'lucide-react'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import React, { useState } from 'react'
-import { useTranslation } from 'react-lite-translation'
+import { useTranslation } from 'l_i18n'
 
 function CoursePage() {
   const {t, isRTL} = useTranslation()

@@ -1,7 +1,7 @@
 "use client"
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import {  useTranslation } from 'react-lite-translation';
+import {  useTranslation } from 'l_i18n';
 
 const Popup = () => {
   const [showFact, setShowFact] = useState(false);

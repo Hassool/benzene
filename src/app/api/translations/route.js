@@ -25,16 +25,24 @@ export async function GET(request) {
     const lang = (searchParams.get("lang") || "en").toLowerCase();
     const moduleName = searchParams.get("module"); // optional
 
-    const supportedLangs = ["en", "ar"];
+    const supportedLangs = ["en", "ar", "fr"];
     const chosenLang = supportedLangs.includes(lang) ? lang : "en";
 
     function buildForLang(modConfig, lang) {
-      const base = modConfig.default || {};
-      if (lang === "en") return base;
-      // if there's a language override, deep merge it on top of base
-      const override = modConfig[lang];
-      if (!override) return base;
-      return deepMergeLocal(base, override);
+      // Direct access strategy since modules seem to be { en: {...}, ar: {...}, fr: {...} }
+      // If buildModuleConfig adds a 'default' key that points to 'en', we could use that,
+      // but let's be explicit and robust.
+      
+      // If the specific language exists, use it.
+      if (modConfig[lang]) return modConfig[lang];
+      
+      // Fallback to 'en' if the requested language is missing
+      if (modConfig['en']) return modConfig['en'];
+      
+      // Fallback to 'default' if it exists (l_i18n might add this)
+      if (modConfig.default) return modConfig.default;
+
+      return {}; 
     }
 
     if (moduleName) {
@@ -52,7 +60,7 @@ export async function GET(request) {
 
     return Response.json(payload, {
       status: 200,
-      headers: { "Cache-Control": "public, max-age=3600" }
+      headers: { "Cache-Control": "no-store, max-age=0" } // Disable cache for dev
     });
   } catch (err) {
     console.error("Translation API error:", err);

@@ -4,7 +4,7 @@ import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, Phone, Lock, AlertCircle } from "lucide-react";
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 import Link from "next/link";
 
 export default function SignIn() {

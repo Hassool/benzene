@@ -1,6 +1,6 @@
 'use client';
 
-import { useTranslation } from 'react-lite-translation';
+import { useTranslation } from 'l_i18n';
 
 export default function DynamicMain({ children }) {
   const { isRTL, isLoading } = useTranslation();

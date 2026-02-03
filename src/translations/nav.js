@@ -13,4 +13,12 @@ const NavAR = {
 }
 
 
-export {NavAR , NavEN}
+const NavFR = {
+    title: "BENZENE",
+    home: "ACCUEIL",
+    tools: "OUTILS",
+    courses: "COURS"
+}
+
+
+export {NavAR , NavEN, NavFR}

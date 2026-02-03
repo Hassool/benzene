@@ -5,7 +5,7 @@
 import { useEffect, useState } from "react";
 import { GiChemicalDrop } from "react-icons/gi";
 import { FiRefreshCw, FiCheck, FiAlertCircle } from "react-icons/fi";
-import { useTranslation } from 'react-lite-translation';
+import { useTranslation } from 'l_i18n';
 
 function Ceb() {
   const { t, isRTL } = useTranslation();

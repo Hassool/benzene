@@ -4,9 +4,9 @@ import NavBar from "@/components/nav/NavBar";
 import Footer from "@/components/Footer/Footer";
 import DynamicMain from "@/components/DynamicMain";
 import Popup from "@/components/PopUp";
-import { TranslationProvider } from "react-lite-translation";
 import { TRANSLATION_CONFIG } from "./lt.config";
 import { modules } from "@/translations/index";
+import { TranslationProvider } from "l_i18n";
 
 
 const geistSans = Geist({
@@ -38,7 +38,10 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${tajawal.variable} ${geistMono.variable} bg-bg dark:bg-bg-dark text-text dark:text-text-dark antialiased`}
       >
-        <TranslationProvider  config={TRANSLATION_CONFIG}  modules={modules}>
+        <TranslationProvider
+          config={TRANSLATION_CONFIG} 
+          modules={modules}
+        >
           <Popup/>
           <NavBar />
           <DynamicMain>

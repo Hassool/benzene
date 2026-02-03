@@ -7,7 +7,7 @@ import Resource from '../../../models/Resource'
 import Course from '../../../models/Course'
 import { createCrudRoutes } from '@/lib/crudHandler'
 
-const requiredFields = ['title', 'courseId', 'type', 'content']
+const requiredFields = ['title', 'courseId', 'type']
 
 // Custom validation function for resource-specific rules
 const resourceValidation = async (data, operation) => {
@@ -58,52 +58,57 @@ const resourceValidation = async (data, operation) => {
 };
 
 // Helper function to validate content based on resource type
+// Returns without error for optional content; only validates format when content is provided
 const validateContentByType = (type, content) => {
+  // If content is empty/null/undefined, allow it for most types
+  if (!content) {
+    // Quiz type never requires content - quizzes are stored in separate Quiz model
+    if (type === 'quiz') return;
+    // For other types, content is optional - warn but don't error
+    return;
+  }
+
+  const contentStr = typeof content === 'string' ? content : content?.url || content?.instructions || content?.content;
+  
   switch (type) {
     case 'video':
-      // For video, content can be a string URL or an object with url property
-      const videoUrl = typeof content === 'string' ? content : content?.url;
-      if (!videoUrl) throw new Error('Video resources must have a URL');
-      if (!/^https?:\/\/.+/.test(videoUrl)) {
+      if (contentStr && !/^https?:\/\/.+/.test(contentStr)) {
         throw new Error('Invalid video URL format');
       }
       break;
       
     case 'document':
-      const docUrl = typeof content === 'string' ? content : content?.url;
-      if (!docUrl) throw new Error('Document resources must have a URL');
+      // Document can be HTML content or URL - no strict format required
       break;
       
     case 'audio':
-      const audioUrl = typeof content === 'string' ? content : content?.url;
-      if (!audioUrl) throw new Error('Audio resources must have a URL');
+      if (contentStr && !/^https?:\/\/.+/.test(contentStr)) {
+        throw new Error('Invalid audio URL format');
+      }
       break;
       
     case 'quiz':
-      // For quiz, content structure is flexible - can be handled by Quiz model
+      // Quiz content is handled by Quiz model - no validation needed
       break;
       
     case 'assignment':
-      const instructions = typeof content === 'string' ? content : content?.instructions;
-      if (!instructions) throw new Error('Assignment resources must have instructions');
+      // Assignment instructions are optional
       break;
       
     case 'link':
-      const linkUrl = typeof content === 'string' ? content : content?.url;
-      if (!linkUrl) throw new Error('Link resources must have a URL');
-      if (!/^https?:\/\/.+/.test(linkUrl)) {
+      if (contentStr && !/^https?:\/\/.+/.test(contentStr)) {
         throw new Error('Invalid link URL format');
       }
       break;
       
     case 'text':
-      const textContent = typeof content === 'string' ? content : content?.content;
-      if (!textContent) throw new Error('Text resources must have content');
+      // Text content is optional
       break;
       
     case 'image':
-      const imageUrl = typeof content === 'string' ? content : content?.url;
-      if (!imageUrl) throw new Error('Image resources must have a URL');
+      if (contentStr && !/^https?:\/\/.+/.test(contentStr)) {
+        throw new Error('Invalid image URL format');
+      }
       break;
   }
 };

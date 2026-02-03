@@ -88,4 +88,49 @@ const ProfileAR = {
   }
 }
 
-export { ProfileAR, ProfileEN }
+const ProfileFR = {
+  header: {
+    title: "Mon Profil",
+    subtitle: "Gérez les informations et paramètres de votre compte",
+    administrator: "Administrateur"
+  },
+  view: {
+    memberSince: "Membre depuis",
+    fullName: "Nom Complet",
+    phoneNumber: "Numéro de Téléphone",
+    emailAddress: "Adresse Email",
+    lastLogin: "Dernière Connexion",
+    never: "Jamais",
+    editProfile: "Modifier Profil",
+    changePassword: "Changer Mot de Passe"
+  },
+  form: {
+    editProfile: "Modifier Profil",
+    fullName: "Nom Complet",
+    phoneNumber: "Numéro de Téléphone",
+    emailOptional: "Adresse Email (Optionnel)",
+    saveChanges: "Enregistrer",
+    saving: "Enregistrement...",
+    cancel: "Annuler"
+  },
+  password: {
+    title: "Changer Mot de Passe",
+    currentPassword: "Mot de Passe Actuel",
+    newPassword: "Nouveau Mot de Passe",
+    confirmPassword: "Confirmer le Nouveau Mot de Passe",
+    confirmPlaceholder: "Confirmez votre nouveau mot de passe",
+    passwordsNoMatch: "Les mots de passe ne correspondent pas",
+    updatePassword: "Mettre à Jour le Mot de Passe",
+    updating: "Mise à Jour...",
+    cancel: "Annuler"
+  },
+  strength: {
+    minLength: "8+ caractères",
+    lowercase: "Minuscule",
+    uppercase: "Majuscule",
+    number: "Chiffre",
+    specialChar: "Caractère spécial"
+  }
+}
+
+export { ProfileAR, ProfileEN, ProfileFR }

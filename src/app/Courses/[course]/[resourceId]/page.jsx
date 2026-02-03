@@ -2,43 +2,57 @@
 
 import Link from "next/link";
 import { useState, useEffect, use } from "react";
-import { Clock, BookOpen, AlertCircle, ArrowLeft } from "lucide-react";
+import { Clock, BookOpen, AlertCircle, ArrowLeft, ArrowRight } from "lucide-react";
 import ResourceCard from "@/components/Quiz/ResourceCard";
+import { useTranslation } from "l_i18n";
 
 export default function ResourcePage({ params }) {
   const { course, resourceId } = use(params);
+  const { t } = useTranslation();
+  
   const [resource, setResource] = useState(null);
+  const [allResources, setAllResources] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const fetchResourceData = async () => {
+    const fetchResources = async () => {
       try {
         setLoading(true);
-        
-        // Single resource fetch
-        const response = await fetch(`/api/resource?id=${resourceId}`);
-        if (!response.ok) throw new Error('Failed to fetch resource');
+        // Fetch all resources for course to determine navigation
+        const response = await fetch(`/api/resource?courseId=${course}`);
+        if (!response.ok) throw new Error('Failed to fetch resources');
         const result = await response.json();
         
         if (result.success && result.data) {
-           setResource(result.data);
+           setAllResources(result.data);
+           const current = result.data.find(r => r._id === resourceId);
+           if (current) {
+             setResource(current);
+           } else {
+             throw new Error('Resource not found');
+           }
         } else {
-           throw new Error(result.message || 'Resource not found');
+           throw new Error(result.message || 'Failed to load resources');
         }
         
       } catch (err) {
         setError(err.message);
-        console.error('Error fetching resource data:', err);
+        console.error('Error fetching resources:', err);
       } finally {
         setLoading(false);
       }
     };
 
     if (course && resourceId) {
-      fetchResourceData();
+      fetchResources();
     }
   }, [course, resourceId]);
+
+  // Determine previous and next resources
+  const currentIndex = allResources.findIndex(r => r._id === resourceId);
+  const prevResource = currentIndex > 0 ? allResources[currentIndex - 1] : null;
+  const nextResource = currentIndex >= 0 && currentIndex < allResources.length - 1 ? allResources[currentIndex + 1] : null;
 
   if (loading) {
     return (
@@ -64,7 +78,7 @@ export default function ResourcePage({ params }) {
               className="inline-flex items-center px-6 py-3 bg-special hover:bg-special-hover text-white rounded-lg transition-colors"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
-              Back to Course
+              {t("resCard.navigation.backToCourse")}
             </Link>
           </div>
         </div>
@@ -86,7 +100,7 @@ export default function ResourcePage({ params }) {
                 href={`/Courses/${course}`} 
                 className="hover:text-special transition-colors"
               >
-                Back to Course
+                {t("resCard.navigation.backToCourse")}
               </Link>
               <span>›</span>
               <span className="text-special font-medium">{resource.title}</span>
@@ -100,13 +114,51 @@ export default function ResourcePage({ params }) {
         </div>
 
         {/* Resource Content */}
-        <div>
+        <div className="mb-12">
            <ResourceCard 
              res={resource} 
-             isFirst={false}
-             resourceNumber={resource.order || 1}
-             totalResources={1}
+             isFirst={currentIndex === 0}
+             resourceNumber={resource.order || currentIndex + 1}
+             totalResources={allResources.length}
            />
+        </div>
+
+        {/* Navigation Buttons */}
+        <div className="flex justify-between items-center gap-4 border-t border-border dark:border-border-dark pt-8">
+           {prevResource ? (
+             <Link 
+               href={`/Courses/${course}/${prevResource._id}`}
+               className="flex items-center px-6 py-3 rounded-xl bg-bg-secondary dark:bg-bg-dark-secondary border border-border dark:border-border-dark hover:border-special text-text dark:text-text-dark transition-all group"
+             >
+               <ArrowLeft className="h-4 w-4 mr-2 group-hover:-translate-x-1 transition-transform" />
+               <div>
+                 <span className="block text-xs text-text-secondary dark:text-text-dark-secondary mb-0.5">{t("resCard.navigation.previousResource")}</span>
+                 <span className="font-medium truncate max-w-[200px] block">{prevResource.title}</span>
+               </div>
+             </Link>
+           ) : (
+             <div className="w-1" /> // Spacer
+           )}
+
+           {nextResource ? (
+             <Link 
+               href={`/Courses/${course}/${nextResource._id}`}
+               className="flex items-center px-6 py-3 rounded-xl bg-special text-white hover:bg-special-hover transition-all group text-right"
+             >
+               <div>
+                 <span className="block text-xs text-white/80 mb-0.5">{t("resCard.navigation.nextResource")}</span>
+                 <span className="font-medium truncate max-w-[200px] block">{nextResource.title}</span>
+               </div>
+               <ArrowRight className="h-4 w-4 ml-2 group-hover:translate-x-1 transition-transform" />
+             </Link>
+           ) : (
+             <Link
+               href={`/Courses/${course}`}
+               className="flex items-center px-6 py-3 rounded-xl bg-green-600 text-white hover:bg-green-700 transition-all font-medium"
+             >
+               {t("resCard.navigation.backToCourse")}
+             </Link>
+           )}
         </div>
       </div>
     </div>

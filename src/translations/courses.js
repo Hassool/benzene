@@ -192,6 +192,74 @@ const CoursesEN = {
             errorTitle: "Failed to delete course",
             dismiss: "Dismiss"
         }
+    },
+    
+    resourceCreation: {
+        pageTitle: "Manage Course Content",
+        title: "Course Resources",
+        items: "items",
+        addResource: "Add Resource",
+        noResources: "No resources yet",
+        noResourcesDesc: "Start by adding documents, videos, or quizzes.",
+        createFirst: "Create first resource",
+        order: "Order",
+        clickManageQuiz: "Click Manage Quiz to view questions",
+        manageQuiz: "Manage Quiz Questions",
+        editResource: "Edit Resource",
+        deleteResource: "Delete Resource",
+        backToResources: "Back to Resources",
+        addQuestion: "Add Question",
+        quizTitle: "Quiz",
+        loadingQuestions: "Loading questions...",
+        noQuestions: "No questions added yet.",
+        correct: "Correct",
+        
+        modal: {
+            addResource: "Add Resource",
+            editResource: "Edit Resource",
+            addQuestion: "Add Question",
+            editQuestion: "Edit Question",
+            title: "Title",
+            description: "Description",
+            type: "Type",
+            order: "Order",
+            cancel: "Cancel",
+            saveResource: "Save Resource",
+            saveQuestion: "Save Question",
+            question: "Question",
+            answers: "Answers",
+            optionPlaceholder: "Option",
+            correctAnswer: "Correct Answer",
+            selectCorrect: "Select correct answer",
+            uploading: "Uploading..."
+        },
+        
+        types: {
+            document: "Document",
+            video: "Video",
+            quiz: "Quiz",
+            image: "Image",
+            link: "Link"
+        },
+        
+        upload: {
+            uploadDocument: "Upload Document (PDF, DOC, PPT, etc.)",
+            uploadVideo: "Upload Video",
+            uploadImage: "Upload Image",
+            linkUrl: "Link URL",
+            quizInstructions: "Quiz Instructions",
+            dragDrop: "Drag and drop or click to upload",
+            chooseFile: "Choose File",
+            removeFile: "Remove File",
+            documentUploaded: "Document Uploaded",
+            videoFormats: "MP4, WebM, MOV up to 100MB",
+            imageFormats: "JPG, PNG, GIF, WebP up to 10MB",
+            documentFormats: "PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX",
+            quizPlaceholder: "Enter instructions for the quiz",
+            linkPlaceholder: "https://..."
+        },
+        
+        confirmDelete: "Are you sure?"
     }
 }
 
@@ -389,7 +457,340 @@ const CoursesAR = {
             errorTitle: "فشل حذف الدورة",
             dismiss: "إغلاق"
         }
+    },
+    
+    resourceCreation: {
+        pageTitle: "إدارة محتوى الدورة",
+        title: "موارد الدورة",
+        items: "عناصر",
+        addResource: "إضافة مورد",
+        noResources: "لا توجد موارد بعد",
+        noResourcesDesc: "ابدأ بإضافة مستندات أو فيديوهات أو اختبارات.",
+        createFirst: "إنشاء أول مورد",
+        order: "الترتيب",
+        clickManageQuiz: "انقر على إدارة الاختبار لعرض الأسئلة",
+        manageQuiz: "إدارة أسئلة الاختبار",
+        editResource: "تعديل المورد",
+        deleteResource: "حذف المورد",
+        backToResources: "العودة إلى الموارد",
+        addQuestion: "إضافة سؤال",
+        quizTitle: "اختبار",
+        loadingQuestions: "جاري تحميل الأسئلة...",
+        noQuestions: "لم تتم إضافة أسئلة بعد.",
+        correct: "صحيح",
+        
+        modal: {
+            addResource: "إضافة مورد",
+            editResource: "تعديل المورد",
+            addQuestion: "إضافة سؤال",
+            editQuestion: "تعديل السؤال",
+            title: "العنوان",
+            description: "الوصف",
+            type: "النوع",
+            order: "الترتيب",
+            cancel: "إلغاء",
+            saveResource: "حفظ المورد",
+            saveQuestion: "حفظ السؤال",
+            question: "السؤال",
+            answers: "الإجابات",
+            optionPlaceholder: "الخيار",
+            correctAnswer: "الإجابة الصحيحة",
+            selectCorrect: "اختر الإجابة الصحيحة",
+            uploading: "جاري الرفع..."
+        },
+        
+        types: {
+            document: "مستند",
+            video: "فيديو",
+            quiz: "اختبار",
+            image: "صورة",
+            link: "رابط"
+        },
+        
+        upload: {
+            uploadDocument: "رفع مستند (PDF, DOC, PPT, إلخ)",
+            uploadVideo: "رفع فيديو",
+            uploadImage: "رفع صورة",
+            linkUrl: "رابط URL",
+            quizInstructions: "تعليمات الاختبار",
+            dragDrop: "اسحب وأفلت أو انقر للرفع",
+            chooseFile: "اختر ملف",
+            removeFile: "إزالة الملف",
+            documentUploaded: "تم رفع المستند",
+            videoFormats: "MP4, WebM, MOV حتى 100 ميجابايت",
+            imageFormats: "JPG, PNG, GIF, WebP حتى 10 ميجابايت",
+            documentFormats: "PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX",
+            quizPlaceholder: "أدخل تعليمات الاختبار",
+            linkPlaceholder: "https://..."
+        },
+        
+        confirmDelete: "هل أنت متأكد؟"
     }
 }
 
-export { CoursesAR, CoursesEN }
+const CoursesFR = {
+    titles: "Nos Cours",
+    search: {
+        title: "Rechercher",
+        placeholder: "Rechercher des cours, instructeurs, modules..."
+    },
+    filters: {
+        title: "Filtres",
+        s: "Trier Par",
+        m: "Module",
+        c: "Année",
+        NF: "plus récent",
+        OF: "plus ancien",
+        clear: "Effacer les Filtres"
+    },
+    add: {
+        title: "Ajouter un Nouveau Cours",
+        subtitle: "Partagez votre expertise avec les étudiants",
+        loading: "Chargement...",
+        loginRequired: "Connexion Requise",
+        loginMessage: "Veuillez vous connecter pour ajouter un cours.",
+        successMessage: "Cours créé avec succès!",
+        
+        sections: {
+            basicInfo: "Informations de Base",
+            description: "Description du Cours",
+            image: "Image du Cours (Optionnel)",
+            publishing: "Options de Publication"
+        },
+        
+        fields: {
+            title: "Titre du Cours",
+            titlePlaceholder: "Exemple: Mathématiques pour 1ère Année Secondaire - Algèbre et Géométrie",
+            category: "Catégorie",
+            selectCategory: "Sélectionner une catégorie",
+            branch: "Filière",
+            selectBranch: "Sélectionner une filière",
+            module: "Matière",
+            selectModule: "Sélectionner une matière",
+            descriptionPlaceholder: "Décrivez le contenu, les méthodes d'enseignement et ce que les étudiants apprendront...",
+            imagePlaceholder: "Glissez et déposez une image ou cliquez pour sélectionner",
+            chooseImage: "Choisir une Image",
+            uploading: "Téléchargement...",
+            publishImmediately: "Publier le cours immédiatement",
+            publishNote: "Si sélectionné, le cours sera visible par tous. Sinon, il restera comme brouillon."
+        },
+        
+        categories: {
+            '1as': '1ère Année Secondaire (1AS)',
+            '2as': '2ème Année Secondaire (2AS)',
+            '3as': '3ème Année Secondaire (3AS)',
+            'other': 'Autre'
+        },
+        
+        branches: {
+            '1as': {
+                'common-core-science': 'Tronc Commun Sciences',
+                'common-core-arts': 'Tronc Commun Lettres',
+                'all': 'Toutes les Filières'
+            },
+            '2as': {
+                'common-core-science': 'Tronc Commun Sciences',
+                'common-core-arts': 'Tronc Commun Lettres',
+                'technical-math': 'Mathématiques Techniques',
+                'mathematics': 'Mathématiques',
+                'sciences': 'Sciences Expérimentales',
+                'management-economics': 'Gestion et Économie',
+                'languages': 'Langues Étrangères',
+                'literature-philosophy': 'Lettres et Philosophie',
+                'all': 'Toutes les Filières'
+            },
+            '3as': {
+                'common-core-science': 'Tronc Commun Sciences',
+                'common-core-arts': 'Tronc Commun Lettres',
+                'technical-math': 'Mathématiques Techniques',
+                'mathematics': 'Mathématiques',
+                'sciences': 'Sciences Expérimentales',
+                'management-economics': 'Gestion et Économie',
+                'languages': 'Langues Étrangères',
+                'literature-philosophy': 'Lettres et Philosophie',
+                'all': 'Toutes les Filières'
+            },
+            'other': {
+                'all': 'Toutes les Filières'
+            }
+        },
+        
+        modules: {
+            1: {
+                math: "Mathématiques",
+                science: "Sciences de la Nature et de la Vie",
+                physics: "Sciences Physiques",
+                arabic: "Langue Arabe",
+                EG: "Histoire et Géographie",
+                french: "Langue Française",
+                english: "Langue Anglaise",
+                islamic: "Éducation Islamique",
+                techno: "Technologie",
+                info: "Informatique",
+                gestion: "Gestion Comptable et Financière",
+            },
+            2: {
+                math: "Mathématiques",
+                science: "Sciences de la Nature et de la Vie",
+                physics: "Sciences Physiques",
+                arabic: "Langue Arabe",
+                philo: "Philosophie",
+                EG: "Histoire et Géographie",
+                french: "Langue Française",
+                english: "Langue Anglaise",
+                de: "Langue Allemande",
+                es: "Langue Espagnole",
+                it: "Langue Italienne",
+                islamic: "Éducation Islamique",
+                gp: "Génie des Procédés",
+                ge: "Génie Électrique",
+                gm: "Génie Mécanique",
+                gc: "Génie Civil",
+                gestion: "Gestion Comptable et Financière",
+                management: "Économie et Management",
+                law: "Droit",
+            },
+            3: {
+                math: "Mathématiques",
+                science: "Sciences de la Nature et de la Vie",
+                physics: "Sciences Physiques",
+                arabic: "Langue Arabe",
+                philo: "Philosophie",
+                EG: "Histoire et Géographie",
+                french: "Langue Française",
+                english: "Langue Anglaise",
+                de: "Langue Allemande",
+                es: "Langue Espagnole",
+                it: "Langue Italienne",
+                islamic: "Éducation Islamique",
+                gp: "Génie des Procédés",
+                ge: "Génie Électrique",
+                gm: "Génie Mécanique",
+                gc: "Génie Civil",
+                gestion: "Gestion Comptable et Financière",
+                management: "Économie et Management",
+                law: "Droit",
+            }
+        },
+        
+        buttons: {
+            create: "Créer le Cours",
+            saving: "Enregistrement..."
+        },
+        
+        validation: {
+            titleRequired: "Le titre est requis",
+            titleMinLength: "Le titre doit comporter au moins 3 caractères",
+            titleMaxLength: "Le titre ne peut pas dépasser 100 caractères",
+            descRequired: "La description est requise",
+            descMinLength: "La description doit comporter au moins 10 caractères",
+            descMaxLength: "La description ne peut pas dépasser 1000 caractères",
+            categoryRequired: "La catégorie est requise",
+            branchRequired: "La filière est requise",
+            moduleRequired: "La matière est requise",
+            imageInvalid: "Veuillez sélectionner une image valide",
+            imageSize: "La taille de l'image ne doit pas dépasser 5 Mo",
+            imageUploadError: "Erreur de téléchargement d'image",
+            submitError: "Une erreur est survenue",
+            connectionError: "Erreur de connexion. Veuillez réessayer."
+        }
+    },
+    
+    view: {
+        title: "Vos Cours",
+        subtitle: "Gérez et modifiez le contenu de vos cours",
+        loading: "Chargement de vos cours...",
+        accessRequired: "Accès Requis",
+        loginMessage: "Veuillez vous connecter pour voir vos cours.",
+        
+        empty: {
+            title: "Pas de Cours Encore",
+            message: "Commencez par créer votre premier cours pour le voir ici.",
+            stitle: "Créer une nouvelle leçon"
+        },
+        
+        course: {
+            updated: "Mis à jour récemment",
+            viewDetails: "Voir les Détails du Cours",
+            delete: "Supprimer le Cours",
+            deleting: "Suppression..."
+        },
+        
+        delete: {
+            confirmTitle: "Supprimer le Cours",
+            confirmMessage: "Êtes-vous sûr de vouloir supprimer ce cours ? Cette action est irréversible et supprimera toutes les ressources et données associées.",
+            errorTitle: "Échec de la suppression du cours",
+            dismiss: "Fermer"
+        }
+    },
+    
+    resourceCreation: {
+        pageTitle: "Gérer le Contenu du Cours",
+        title: "Ressources du Cours",
+        items: "éléments",
+        addResource: "Ajouter une Ressource",
+        noResources: "Pas encore de ressources",
+        noResourcesDesc: "Commencez par ajouter des documents, vidéos ou quiz.",
+        createFirst: "Créer la première ressource",
+        order: "Ordre",
+        clickManageQuiz: "Cliquez sur Gérer le Quiz pour voir les questions",
+        manageQuiz: "Gérer les Questions du Quiz",
+        editResource: "Modifier la Ressource",
+        deleteResource: "Supprimer la Ressource",
+        backToResources: "Retour aux Ressources",
+        addQuestion: "Ajouter une Question",
+        quizTitle: "Quiz",
+        loadingQuestions: "Chargement des questions...",
+        noQuestions: "Aucune question ajoutée.",
+        correct: "Correct",
+        
+        modal: {
+            addResource: "Ajouter une Ressource",
+            editResource: "Modifier la Ressource",
+            addQuestion: "Ajouter une Question",
+            editQuestion: "Modifier la Question",
+            title: "Titre",
+            description: "Description",
+            type: "Type",
+            order: "Ordre",
+            cancel: "Annuler",
+            saveResource: "Enregistrer la Ressource",
+            saveQuestion: "Enregistrer la Question",
+            question: "Question",
+            answers: "Réponses",
+            optionPlaceholder: "Option",
+            correctAnswer: "Réponse Correcte",
+            selectCorrect: "Sélectionner la bonne réponse",
+            uploading: "Téléchargement..."
+        },
+        
+        types: {
+            document: "Document",
+            video: "Vidéo",
+            quiz: "Quiz",
+            image: "Image",
+            link: "Lien"
+        },
+        
+        upload: {
+            uploadDocument: "Télécharger un Document (PDF, DOC, PPT, etc.)",
+            uploadVideo: "Télécharger une Vidéo",
+            uploadImage: "Télécharger une Image",
+            linkUrl: "URL du Lien",
+            quizInstructions: "Instructions du Quiz",
+            dragDrop: "Glissez-déposez ou cliquez pour télécharger",
+            chooseFile: "Choisir un Fichier",
+            removeFile: "Supprimer le Fichier",
+            documentUploaded: "Document Téléchargé",
+            videoFormats: "MP4, WebM, MOV jusqu'à 100 Mo",
+            imageFormats: "JPG, PNG, GIF, WebP jusqu'à 10 Mo",
+            documentFormats: "PDF, DOC, DOCX, PPT, PPTX, XLS, XLSX",
+            quizPlaceholder: "Entrez les instructions du quiz",
+            linkPlaceholder: "https://..."
+        },
+        
+        confirmDelete: "Êtes-vous sûr ?"
+    }
+}
+
+export { CoursesAR, CoursesEN, CoursesFR }

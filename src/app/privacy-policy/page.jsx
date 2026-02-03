@@ -1,7 +1,7 @@
 // src/app/privacy-policy/page.jsx
 "use client";
 
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 
 export default function PrivacyPolicyPage() {
   const { lang, changeLanguage, t } = useTranslation();

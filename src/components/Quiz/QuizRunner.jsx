@@ -3,8 +3,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { RotateCcw, CheckCircle, XCircle, Award } from "lucide-react";
+import { useTranslation } from "l_i18n";
 
 export default function QuizRunner({ quizzes }) {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selected, setSelected] = useState(null);
   const [verified, setVerified] = useState(false);
@@ -19,7 +21,7 @@ export default function QuizRunner({ quizzes }) {
     return (
       <div className="w-full p-6 text-center bg-bg dark:bg-bg-dark rounded-xl border border-border dark:border-border-dark">
         <p className="text-text-secondary dark:text-text-dark-secondary">
-          No quiz questions available.
+          {t("resCard.quizRunner.noQuestions")}
         </p>
       </div>
     );
@@ -71,11 +73,11 @@ export default function QuizRunner({ quizzes }) {
 
   const getScoreMessage = (score, total) => {
     const percentage = (score / total) * 100;
-    if (percentage >= 90) return "Excellent work! 🌟";
-    if (percentage >= 80) return "Great job! 👏";
-    if (percentage >= 70) return "Good effort! 👍";
-    if (percentage >= 60) return "Not bad! Keep practicing 📚";
-    return "Keep studying and try again! 💪";
+    if (percentage >= 90) return t("resCard.quizRunner.scoreMessages.excellent");
+    if (percentage >= 80) return t("resCard.quizRunner.scoreMessages.great");
+    if (percentage >= 70) return t("resCard.quizRunner.scoreMessages.good");
+    if (percentage >= 60) return t("resCard.quizRunner.scoreMessages.notBad");
+    return t("resCard.quizRunner.scoreMessages.keepStudying");
   };
 
   // Quiz completed
@@ -87,11 +89,11 @@ export default function QuizRunner({ quizzes }) {
           <div className="flex items-center justify-center gap-3 mb-3">
             <Award className="h-8 w-8 text-special" />
             <h3 className="text-2xl font-bold text-special font-montserrat">
-              Quiz Completed!
+              {t("resCard.quizRunner.quizCompleted")}
             </h3>
           </div>
           <p className={`text-lg font-semibold ${getScoreColor(progress, total)}`}>
-            Score: {progress} / {total} ({Math.round((progress / total) * 100)}%)
+            {t("resCard.quizRunner.score")}: {progress} / {total} ({Math.round((progress / total) * 100)}%)
           </p>
           <p className="text-text-secondary dark:text-text-dark-secondary mt-1">
             {getScoreMessage(progress, total)}
@@ -122,11 +124,11 @@ export default function QuizRunner({ quizzes }) {
                     </p>
                     <div className="text-xs space-y-1">
                       <p className={answer.isCorrect ? 'text-green-700 dark:text-green-300' : 'text-red-700 dark:text-red-300'}>
-                        Your answer: {answer.selected}
+                        {t("resCard.quizRunner.yourAnswer")}: {answer.selected}
                       </p>
                       {!answer.isCorrect && (
                         <p className="text-green-700 dark:text-green-300">
-                          Correct answer: {answer.correct}
+                          {t("resCard.quizRunner.correctAnswer")}: {answer.correct}
                         </p>
                       )}
                     </div>
@@ -142,7 +144,7 @@ export default function QuizRunner({ quizzes }) {
               className="flex items-center gap-2 px-6 py-3 rounded-lg bg-special text-white font-semibold hover:bg-special-hover transition-colors"
             >
               <RotateCcw className="h-4 w-4" />
-              Retake Quiz
+              {t("resCard.quizRunner.retakeQuiz")}
             </button>
           </div>
         </div>
@@ -156,10 +158,10 @@ export default function QuizRunner({ quizzes }) {
       <div className="bg-bg-secondary dark:bg-bg-dark-secondary p-4 border-b border-border dark:border-border-dark">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium text-text dark:text-text-dark">
-            Question {currentIndex + 1} of {total}
+            {t("resCard.quizRunner.question")} {currentIndex + 1} {t("resCard.quizRunner.of")} {total}
           </span>
           <span className="text-sm font-medium text-special">
-            Score: {progress}/{total}
+            {t("resCard.quizRunner.score")}: {progress}/{total}
           </span>
         </div>
         
@@ -176,21 +178,21 @@ export default function QuizRunner({ quizzes }) {
 
       {/* Question Content */}
       <div className="p-6">
-        <div className="relative min-h-[250px]">
+        <div className="min-h-[250px]">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentIndex}
-              initial={{ x: "100%", opacity: 0 }}
+              initial={{ x: 20, opacity: 0 }}
               animate={{ x: 0, opacity: 1 }}
-              exit={{ x: "-100%", opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeOut" }}
-              className={`absolute inset-0 flex flex-col ${
+              exit={{ x: -20, opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className={`flex flex-col ${
                 shake ? "animate-pulse" : ""
               }`}
             >
               <div className="mb-6">
                 <h4 className="text-lg font-semibold text-text dark:text-text-dark mb-2">
-                  Question {currentQuiz.order || currentIndex + 1}
+                  {t("resCard.quizRunner.question")} {currentQuiz.order || currentIndex + 1}
                 </h4>
                 <p className="text-xl font-medium text-text dark:text-text-dark leading-relaxed">
                   {currentQuiz.Question}
@@ -253,10 +255,10 @@ export default function QuizRunner({ quizzes }) {
             className="px-8 py-3 rounded-lg bg-special text-white font-semibold hover:bg-special-hover transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {!verified
-              ? "Check Answer"
+              ? t("resCard.quizRunner.checkAnswer")
               : currentIndex < total - 1
-              ? "Next Question →"
-              : "Finish Quiz"}
+              ? t("resCard.quizRunner.nextQuestion")
+              : t("resCard.quizRunner.finishQuiz")}
           </button>
         </div>
       </div>

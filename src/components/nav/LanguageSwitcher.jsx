@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 
 
 export default function LangSwitcher() {
@@ -8,36 +8,41 @@ export default function LangSwitcher() {
 
   const toggleLang = () => {
     if (loading) return; // Prevent switching while loading
-    const newLang = language === "en" ? "ar" : "en";
+    // Cycle: en -> fr -> ar -> en
+    let newLang = "en";
+    if (language === "en") newLang = "fr";
+    else if (language === "fr") newLang = "ar";
+    else if (language === "ar") newLang = "en";
+    
     setLanguage(newLang);
   };
+
+  const getLabel = () => {
+    switch(language) {
+      case 'en': return 'EN';
+      case 'fr': return 'FR';
+      case 'ar': return 'ع';
+      default: return 'EN';
+    }
+  }
 
   return (
     <button
       onClick={toggleLang}
       disabled={loading}
-      className={`relative flex items-center justify-between w-20 h-10 rounded-xl
+      className={`relative flex items-center justify-center w-12 h-10 rounded-xl
                  border-2 border-special bg-special/10 dark:border-text dark:bg-text/10
                  overflow-hidden transition-colors duration-300
                  ${loading ? "opacity-50 cursor-not-allowed" : "hover:bg-special/20"}`}
-      aria-label={`Switch to ${language === "en" ? "Arabic" : "English"}`}
+      aria-label={`Current language: ${language}`}
     >
-      {/* Highlight slider */}
-      <div
-        className={`absolute top-0 h-full w-1/2 rounded-lg bg-special dark:bg-text 
-                    transition-all duration-300 
-                    ${language === "ar" ? "left-1/2" : "left-0"}`}
-      />
-
-      {/* Labels on top */}
-      <div className="relative z-10 flex justify-between items-center w-full px-3 text-sm font-semibold">
-        <span className="text-text dark:text-bg">EN</span>
-        <span className="text-text dark:text-bg">ع</span>
-      </div>
+      <span className="text-text dark:text-bg font-bold z-10">
+        {getLabel()}
+      </span>
 
       {/* Loading indicator */}
       {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white/20 dark:bg-black/20">
+        <div className="absolute inset-0 flex items-center justify-center bg-white/20 dark:bg-black/20 z-20">
           <div className="w-3 h-3 border border-current border-t-transparent rounded-full animate-spin"></div>
         </div>
       )}

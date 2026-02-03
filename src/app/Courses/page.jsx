@@ -2,7 +2,7 @@
 import React from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 
 // helper: find the first array anywhere in an object (depth-limited)
 function findFirstArray(obj, maxDepth = 5, depth = 0) {

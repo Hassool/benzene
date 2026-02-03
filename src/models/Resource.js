@@ -62,8 +62,8 @@ const resourceSchema = new mongoose.Schema({
   }
 })
 
-// Compound index to ensure unique order within a course
-resourceSchema.index({ courseId: 1, order: 1 }, { unique: true })
+// Non-unique index for efficient sorting by order within a course
+resourceSchema.index({ courseId: 1, order: 1 })
 
 const Resource = mongoose.models.Resource || mongoose.model('Resource', resourceSchema)
 

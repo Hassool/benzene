@@ -3,7 +3,7 @@
 "use client"
 
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-lite-translation';
+import { useTranslation } from 'l_i18n';
 import { SiConvertio } from "react-icons/si";
 
 const UnitConverter = () => {

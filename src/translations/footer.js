@@ -63,4 +63,37 @@ const FooterAR = {
 }
 
 
-export {FooterAR , FooterEN}
+const FooterFR = {
+    nav : {
+        title:"Navigation",
+        n1:"Accueil",
+        n2:"Cours",
+        n3:"Outils",
+        n4:"Page d'honneur",
+        n5:"Tableau de bord"
+    },
+    legal : {
+        title:"Légal",
+        l1:"Politique de confidentialité",
+        l2:"Conditions d'utilisation",
+        l3:"Politique de cookies"
+    },
+    me : {
+        presnt:"Créé par",
+        p:"Conçu avec ❤️ et d'innombrables tasses de thé 🍵. Toujours repousser les limites du développement web.",
+        acton:"Visitez mon portfolio"
+    },
+    auth : {
+        title:"BENZENE",
+        p:"Autonomiser les apprenants avec des cours et des outils de pointe. Construit avec passion et innovation.",
+        auth : {
+            wb:"bon retour",
+            signin:"se connecter",
+            signout:"se déconnecter",
+            ra:"demander un compte"
+        }
+    }
+}
+
+
+export {FooterAR , FooterEN, FooterFR}

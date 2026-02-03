@@ -1,16 +1,16 @@
 "use client"
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Document, Page, pdfjs } from 'react-pdf';
 import QuizRunner from "./QuizRunner";
 import { AlertCircle, Play, FileText, ExternalLink, Image, Video, Download, Eye, ChevronLeft, ChevronRight, ZoomIn, ZoomOut } from "lucide-react";
 import { toast } from 'react-hot-toast';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 
-// Configure PDF.js worker - Version 4.4.168
-pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@4.4.168/build/pdf.worker.min.mjs`;
+// Configure PDF.js worker - Use the version from pdfjs-dist
+pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
 const isCloudinaryUrl = (url) => {
   return url && (url.includes('cloudinary.com') || url.includes('res.cloudinary.com'));
@@ -141,6 +141,25 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
     return resource.content?.url || resource.content?.content || '';
   };
 
+  // Memoize the file prop to prevent unnecessary re-renders
+  const pdfFile = useMemo(() => {
+    if (!res.content) return null;
+    return {
+      url: getProxiedPdfUrl(res.content),
+      httpHeaders: {
+        'Accept': 'application/pdf'
+      },
+      withCredentials: false
+    };
+  }, [res.content]);
+
+  // Memoize the options prop to prevent unnecessary re-renders
+  const pdfOptions = useMemo(() => ({
+    cMapUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/cmaps/`,
+    cMapPacked: true,
+    standardFontDataUrl: `https://unpkg.com/pdfjs-dist@${pdfjs.version}/standard_fonts/`,
+  }), []);
+
   return (
     <div className="bg-bg-secondary dark:bg-bg-dark-secondary border border-border dark:border-border-dark rounded-xl shadow-md overflow-hidden">
       <div className="p-6 pb-4">
@@ -261,13 +280,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                   <div className="overflow-auto bg-gray-100 dark:bg-gray-900" style={{ maxHeight: '700px' }}>
                     <div className="flex justify-center p-4">
                       <Document
-                        file={{
-                          url: getProxiedPdfUrl(res.content),
-                          httpHeaders: {
-                            'Accept': 'application/pdf'
-                          },
-                          withCredentials: false
-                        }}
+                        file={pdfFile}
                         onLoadSuccess={onDocumentLoadSuccess}
                         onLoadError={onDocumentLoadError}
                         loading={
@@ -292,11 +305,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                             </div>
                           </div>
                         }
-                        options={{
-                          cMapUrl: 'https://unpkg.com/pdfjs-dist@4.4.168/cmaps/',
-                          cMapPacked: true,
-                          standardFontDataUrl: 'https://unpkg.com/pdfjs-dist@4.4.168/standard_fonts/',
-                        }}
+                        options={pdfOptions}
                       >
                         <Page
                           pageNumber={pageNumber}
@@ -466,7 +475,7 @@ export default function ResourceCard({ res, isFirst, resourceNumber, totalResour
                       <div className="overflow-auto bg-gray-100 dark:bg-gray-900" style={{ maxHeight: '700px' }}>
                         <div className="flex justify-center p-4">
                           <Document
-                            file={res.content}
+                            file={pdfFile}
                             onLoadSuccess={onDocumentLoadSuccess}
                             onLoadError={onDocumentLoadError}
                             loading={

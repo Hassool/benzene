@@ -191,3 +191,100 @@ export const CoursePageAR = {
       "minutes": "دقيقة"
     }
   }
+
+export const CoursePageFR = {
+    "deleteModal": {
+      "title": "Supprimer la Ressource",
+      "confirmMessage": "Êtes-vous sûr de vouloir supprimer cette ressource",
+      "warningTitle": "Attention :",
+      "warningMessage": "Cette action est irréversible.",
+      "cancelButton": "Annuler",
+      "deleteButton": "Supprimer la Ressource",
+      "deletingButton": "Suppression..."
+    },
+    "header": {
+      "subtitle": "Gérez le contenu et les paramètres de votre cours",
+      "previewButton": "Aperçu",
+      "editCourseButton": "Modifier le Cours"
+    },
+    "overview": {
+      "title": "Aperçu du Cours",
+      "descriptionLabel": "Description"
+    },
+    "sections": {
+      "title": "Contenu du Cours",
+      "totalSections": "éléments",
+      "totalSection": "élément",
+      "total": "total",
+      "addSectionButton": "Ajouter du Contenu",
+      "errorMessage": "Impossible de charger le contenu :",
+      "noSectionsTitle": "Aucun contenu pour le moment",
+      "noSectionsMessage": "Commencez à construire votre cours en ajoutant votre première ressource.",
+      "createFirstSectionButton": "Ajouter la Première Ressource",
+      "published": "Publié",
+      "draft": "Brouillon",
+      "editTooltip": "Modifier",
+      "previewTooltip": "Aperçu",
+      "deleteTooltip": "Supprimer"
+    },
+    "details": {
+      "title": "Détails du Cours",
+      "categoryLabel": "Catégorie",
+      "moduleLabel": "Module",
+      "module": "Module",
+      "createdOn": "Créé le 15 mars 2024",
+      "lastUpdated": "Dernière mise à jour il y a 2 jours"
+    },
+    "quickActions": {
+      "title": "Actions Rapides",
+      "copyUrl": "Copier l'URL du Cours",
+      "copied": "Copié !"
+    },
+    "loading": {
+      "message": "Chargement...",
+      "title": "Chargement du Cours",
+      "subtitle": "Veuillez patienter pendant que nous récupérons le contenu..."
+    },
+    "errors": {
+      "loadingCourseTitle": "Erreur de Chargement du Cours",
+      "courseNotFoundTitle": "Cours Introuvable",
+      "courseNotFoundMessage": "Le cours que vous cherchez n'existe pas ou a été supprimé.",
+      "notFound": "Cours Introuvable",
+      "backToCourses": "Retour aux Cours",
+      "courseNotFound": "Cours introuvable",
+      "deleteFailed": "Échec de la suppression du cours",
+      "dismiss": "Fermer"
+    },
+    "breadcrumb": {
+      "courses": "Cours"
+    },
+    "deleteConfirm": {
+      "message": "Êtes-vous sûr de vouloir supprimer ce cours en entier ? Cette action est irréversible et supprimera toutes les ressources et données associées."
+    },
+    "buttons": {
+      "deleteCourse": "Supprimer le Cours",
+      "deleting": "Suppression...",
+      "deleteTooltip": "Supprimer le Cours (Admin)"
+    },
+    "category": {
+      "default": "COURS"
+    },
+    "stats": {
+      "sections": "Ressources",
+      "instructor": "Instructeur",
+      "created": "Créé",
+      "module": "Module"
+    },
+    "sectionsArea": {
+      "title": "Contenu du Cours",
+      "subtitle": "Explorez le parcours d'apprentissage structuré conçu pour une acquisition optimale des connaissances",
+      "count": "ressources",
+      "recommendationTitle": "Parcours d'Apprentissage Recommandé",
+      "recommendationText": "Pour une meilleure expérience d'apprentissage, nous recommandons de compléter les ressources dans l'ordre.",
+      "noSections": "Aucun contenu disponible",
+      "noSectionsText": "Ce cours n'a pas encore de contenu publié.",
+      "start": "COMMENCER",
+      "section": "Ressource",
+      "minutes": "min"
+    }
+}

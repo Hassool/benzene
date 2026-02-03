@@ -9,7 +9,7 @@ import { GoHome } from "react-icons/go";
 import NavLink from "./NavLink";
 import ThemeSwitcher from "./ThemeSwitcher";
 import LangSwitcher from "./LanguageSwitcher";
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 
 
 

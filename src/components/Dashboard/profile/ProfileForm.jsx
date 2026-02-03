@@ -1,5 +1,5 @@
 import { X, Save } from "lucide-react"
-import { useTranslation } from "react-lite-translation"
+import { useTranslation } from "l_i18n"
 
 const ProfileForm = ({ formData, onChange, onSave, onCancel, isLoading }) => {
   const { t } = useTranslation()

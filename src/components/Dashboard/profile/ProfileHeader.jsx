@@ -1,5 +1,5 @@
 import { Shield } from "lucide-react"
-import { useTranslation } from "react-lite-translation"
+import { useTranslation } from "l_i18n"
 
 const ProfileHeader = ({ isAdmin }) => {
   const { t } = useTranslation()

@@ -245,4 +245,127 @@ const MainAR = {
   }
 }
 
-export { MainAR, MainEN };
+const MainFR = {
+  hero: {
+    title: "Apprenez Tout",
+    titleHighlight: "de Façon Intelligente!",
+    subtitle: "Outils et cours éducatifs gratuits pour TOUS les lycéens en Algérie",
+    description: "Des Sciences à la Littérature, des Mathématiques aux Langues - Tout ce dont vous avez besoin pour réussir",
+    cta: "Commencez à Apprendre Gratuitement!",
+    ctaIcon: "🎯"
+  },
+  tracks: {
+    sciences: "Sciences",
+    mathematics: "Mathématiques",
+    literature: "Littérature",
+    languages: "Langues"
+  },
+  sections: {
+    toolsTitle: "Des Outils pour Chaque Élève",
+    tracksTitle: "Pour Chaque Filière du Lycée",
+    statsTitle: "L'Éducation pour Tous!",
+    honorTitle: "Dédié aux Enseignants Exceptionnels",
+    ctaTitle: "Prêt à Exceller au Lycée?"
+  },
+  tools: {
+    science: {
+      title: "Outils Scientifiques",
+      items: {
+        id1: { cont: "Équilibreur d'Équations" },
+        id2: { cont: "Tableau Périodique" },
+        id3: { cont: "Formules de Physique" },
+        id4: { cont: "Laboratoire Virtuel" }
+      }
+    },
+    math: {
+      title: "Outils Mathématiques",
+      items: {
+        id1: { cont: "Calculatrice Scientifique" },
+        id2: { cont: "Traceur de Graphiques" },
+        id3: { cont: "Assistant Statistique" },
+        id4: { cont: "Calculatrice de Géométrie" }
+      }
+    },
+    literature: {
+      title: "Outils Littéraires",
+      items: {
+        id1: { cont: "Assistant de Dissertation" },
+        id2: { cont: "Analyseur de Poésie" },
+        id3: { cont: "Générateur de Citations" },
+        id4: { cont: "Constructeur de Vocabulaire" }
+      }
+    },
+    language: {
+      title: "Outils Linguistiques",
+      items: {
+        id1: { cont: "Assistant de Conjugaison" },
+        id2: { cont: "Correcteur Grammatical" },
+        id3: { cont: "Pratique de Traduction" },
+        id4: { cont: "Guide de Prononciation" }
+      }
+    }
+  },
+  trackDetails: {
+    ccs: {
+      title: "Tronc Commun Sciences",
+      paths: {
+        id1: { cont: "Filière Sciences Expérimentales" },
+        id2: { cont: "Filière Mathématiques" },
+        id3: { cont: "Filières Techniques" },
+        id4: { cont: "Filière Gestion & Économie" }
+      }
+    },
+    ccl: {
+      title: "Tronc Commun Lettres",
+      paths: {
+        id1: { cont: "Filière Philosophie" },
+        id2: { cont: "Filière Langues Étrangères" },
+        id3: { cont: "Allemand, Espagnol, Turc" }
+      }
+    },
+    all: {
+      title: "Pour Tous les Élèves",
+      features: {
+        id1: { cont: "Accès Gratuit" },
+        id2: { cont: "Support Arabe & Anglais" },
+        id4: { cont: "Compatible Mobile" }
+      }
+    }
+  },
+  stats: {
+    free:  "Complètement Gratuit",
+    tools:  "Outils d'Apprentissage",
+    tracks:  "Filières Lycée",
+    love:  "Amour de l'Apprentissage"
+  },
+  honor: {
+    subtitle: "Cette plateforme existe grâce aux enseignants incroyables qui inspirent les élèves chaque jour. Merci de rendre l'apprentissage magique!",
+    quote: "Les grands enseignants inspirent la grandeur chez les autres",
+    special: {
+      title: "remerciements spéciaux",
+      letter: "Benzene a été inspiré par Mme Terrak, une enseignante dont la passion pour le partage des connaissances continue de guider ce projet. Merci."
+    }
+  },
+  cta: {
+    subtitle: "Rejoignez des milliers d'élèves algériens qui réussissent grâce à nos outils et cours gratuits!",
+    primaryBtn: "Commencez à Apprendre Maintenant!",
+    secondaryBtn: "Explorer Tous les Outils"
+  },
+  common: {
+    loading: "Chargement...",
+    error: "Quelque chose s'est mal passé",
+    save: "Enregistrer",
+    cancel: "Annuler",
+    submit: "Soumettre",
+    back: "Retour",
+    next: "Suivant",
+    previous: "Précédent"
+  },
+  footer: {
+    copyright: "© 2024 Benzen App. Tous droits réservés.",
+    privacy: "Politique de Confidentialité",
+    terms: "Conditions d'Utilisation"
+  }
+}
+
+export { MainAR, MainEN, MainFR };

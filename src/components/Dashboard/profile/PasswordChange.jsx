@@ -1,6 +1,6 @@
 import { X, Eye, EyeOff, Lock } from "lucide-react"
 import PasswordStrengthIndicator from "./PasswordStrengthIndicator"
-import { useTranslation } from "react-lite-translation"
+import { useTranslation } from "l_i18n"
 
 const PasswordChange = ({
   passwordData,

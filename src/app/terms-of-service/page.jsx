@@ -1,7 +1,7 @@
 // src/app/terms-of-service/page.jsx
 "use client";
 
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 
 export default function TermsOfServicePage() {
   const { lang, changeLanguage, t } = useTranslation();

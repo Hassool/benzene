@@ -4,7 +4,7 @@
 import { GiChemicalDrop, GiChemicalTank, GiTable } from "react-icons/gi";
 import { SiConvertio } from "react-icons/si";
 import Link from "next/link";
-import { useTranslation } from "react-lite-translation";
+import { useTranslation } from "l_i18n";
 import { FunctionSquare } from "lucide-react";
 
 const NavList = [
@@ -67,7 +67,7 @@ const NavList = [
 ];
 
 
-export default async function page() {
+export default function page() {
   const { t,isRTL, isLoading } = useTranslation();
 
   return (

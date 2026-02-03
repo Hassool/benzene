@@ -4,7 +4,7 @@
 import { useState } from "react"
 import { useSession } from "next-auth/react"
 import { Upload, Book, Image as ImageIcon, X, Check } from "lucide-react"
-import { useTranslation } from "react-lite-translation"
+import { useTranslation } from "l_i18n"
 
 export default function Addcourses() {
   const { t, lang } = useTranslation()

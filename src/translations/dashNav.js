@@ -44,4 +44,27 @@ const DashNavAR = {
   }
 }
 
-export { DashNavAR, DashNavEN };
+const DashNavFR = {
+  nav: {
+    home: "Accueil",
+    profile: "Profil",
+    courses: "Cours",
+    checkDemands: "Vérifier les Demandes",
+    dashboard: "Tableau de Bord",
+    subtitle: "Système de Gestion de l'Apprentissage",
+    navigation: "Navigation"
+  },
+  user: {
+    user: "Utilisateur",
+    administrator: "Administrateur",
+    admin: "Admin",
+    adminOnly: "Admin Uniquement",
+    settings: "Paramètres",
+    signOut: "Se Déconnecter"
+  },
+  common: {
+    loading: "Chargement..."
+  }
+}
+
+export { DashNavAR, DashNavEN, DashNavFR };
