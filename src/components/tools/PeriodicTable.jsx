@@ -353,7 +353,7 @@ export default function PeriodicTable() {
           onClick={() => setSelectedElement(null)}
         >
           <div 
-            className={`${getElementModalColors(selectedElement.groupBlock).bg} ${getElementModalColors(selectedElement.groupBlock).border} border-2 rounded-xl p-6 max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]`}
+            className={`${getElementModalColors(selectedElement.groupBlock).bg} ${getElementModalColors(selectedElement.groupBlock).border} border-2 rounded-xl p-4 md:p-6 max-w-lg w-full max-h-[85vh] overflow-y-auto shadow-2xl transform transition-all duration-300 scale-100 hover:scale-[1.02]`}
             onClick={(e) => e.stopPropagation()}
           >
             {/* Header with element symbol and close button */}

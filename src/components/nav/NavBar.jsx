@@ -13,7 +13,11 @@ import { useTranslation } from "l_i18n";
 
 
 
+import { useState } from "react";
+import { Menu, X } from "lucide-react";
+
 export default function NavBar() {
+  const [isOpen, setIsOpen] = useState(false);
 
   const { t,isRTL, isLoading } = useTranslation();
   const NavList = [
@@ -56,40 +60,55 @@ export default function NavBar() {
       </nav>
 
       {/* Mobile dropdown */}
-      <details className="md:hidden bg-bg dark:bg-bg-dark border-b border-border dark:border-border-dark z-50 group">
-        <summary className="flex items-center justify-between px-4 py-3 cursor-pointer list-none">
-          <div className="flex items-center gap-3">
-            <Image
-              className="rounded-lg"
-              src="/benzen.png"
-              alt="benzen logo"
-              width={40}
-              height={40}
-              priority
-            />
-            <span className="font-semibold text-text dark:text-text-dark font-montserrat">
-              BENZENE
-            </span>
-          </div>
-          <span className="text-text dark:text-text-dark">☰</span>
-        </summary>
-
-        {/* Transition wrapper */}
-        <div
-          className="overflow-hidden transition-all transition-ease duration-500 max-h-0 group-open:max-h-[600px]"
+      {/* Mobile Header */}
+      <div className="md:hidden bg-bg dark:bg-bg-dark border-b border-border dark:border-border-dark z-50 relative flex items-center justify-between px-4 py-3">
+        <div className="flex items-center gap-3">
+          <Image
+            className="rounded-lg"
+            src="/benzen.png"
+            alt="benzen logo"
+            width={40}
+            height={40}
+            priority
+          />
+          <span className="font-semibold text-text dark:text-text-dark font-montserrat">
+            {t('nav.title')}
+          </span>
+        </div>
+        <button 
+          onClick={() => setIsOpen(!isOpen)}
+          className="p-2 text-text dark:text-text-dark hover:bg-bg-secondary dark:hover:bg-bg-dark-secondary rounded-lg transition-colors"
         >
-          <div className="flex flex-col gap-2 px-4 py-3">
-            <div className="mb-4 flex justify-around">
-              <ThemeSwitcher />
-              <LangSwitcher />
-            </div>
+          {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
 
-            {NavList.map((item) => (
-              <NavLink key={item.name} item={item} r/>
-            ))}
+      {/* Mobile Menu Overlay */}
+      {isOpen && (
+        <div className="fixed inset-0 z-40 md:hidden">
+          {/* Backdrop */}
+          <div 
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"
+            onClick={() => setIsOpen(false)}
+          />
+          
+          {/* Drawer */}
+          <div className={`absolute top-[65px] ${isRTL ? 'right-0' : 'left-0'} w-full bg-bg dark:bg-bg-dark border-b border-border dark:border-border-dark shadow-xl transition-transform duration-300 ease-in-out`}>
+            <div className="flex flex-col p-4 space-y-4">
+              <div className="flex justify-around pb-4 border-b border-border dark:border-border-dark">
+                <ThemeSwitcher />
+                <LangSwitcher />
+              </div>
+
+              {NavList.map((item) => (
+                <div key={item.name} onClick={() => setIsOpen(false)}>
+                  <NavLink item={item} rr={isRTL} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
-      </details>
+      )}
 
     </>
   );

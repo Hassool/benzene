@@ -17,14 +17,16 @@ const COLORS = [
 ];
 
 // Canvas dimensions
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
+// Canvas dimensions
+const INITIAL_WIDTH = 800;
+const INITIAL_HEIGHT = 600;
 
 const page = () => {
   const { t } = useTranslation();
   const canvasRef = useRef(null);
   const containerRef = useRef(null);
-  const [dimensions, setDimensions] = useState({ width: CANVAS_WIDTH, height: CANVAS_HEIGHT });
+
+  const [dimensions, setDimensions] = useState({ width: INITIAL_WIDTH, height: INITIAL_HEIGHT });
   // Function state
   const [functions, setFunctions] = useState([
     { id: 1, expression: 'x^2', color: COLORS[0], visible: true }
@@ -72,17 +74,17 @@ const page = () => {
 
   // Convert canvas coordinates to graph coordinates
   const canvasToGraph = useCallback((canvasX, canvasY) => {
-    const graphX = (canvasX - CANVAS_WIDTH / 2) / scale + centerX;
-    const graphY = -(canvasY - CANVAS_HEIGHT / 2) / scale + centerY;
+    const graphX = (canvasX - dimensions.width / 2) / scale + centerX;
+    const graphY = -(canvasY - dimensions.height / 2) / scale + centerY;
     return { x: graphX, y: graphY };
-  }, [scale, centerX, centerY]);
+  }, [scale, centerX, centerY, dimensions]);
 
   // Convert graph coordinates to canvas coordinates
   const graphToCanvas = useCallback((graphX, graphY) => {
-    const canvasX = (graphX - centerX) * scale + CANVAS_WIDTH / 2;
-    const canvasY = -(graphY - centerY) * scale + CANVAS_HEIGHT / 2;
+    const canvasX = (graphX - centerX) * scale + dimensions.width / 2;
+    const canvasY = -(graphY - centerY) * scale + dimensions.height / 2;
     return { x: canvasX, y: canvasY };
-  }, [scale, centerX, centerY]);
+  }, [scale, centerX, centerY, dimensions]);
 
   // Evaluate function safely
   const evaluateFunction = useCallback((x, funcStr) => {
@@ -147,29 +149,29 @@ const page = () => {
     else if (scale > 100) gridSpacing = 0.2;
 
     // Vertical grid lines
-    for (let x = Math.floor(centerX - CANVAS_WIDTH / (2 * scale)) - 1; 
-         x <= Math.ceil(centerX + CANVAS_WIDTH / (2 * scale)) + 1; x += gridSpacing) {
-      const canvasX = (x - centerX) * scale + CANVAS_WIDTH / 2;
-      if (canvasX >= 0 && canvasX <= CANVAS_WIDTH) {
+    for (let x = Math.floor(centerX - dimensions.width / (2 * scale)) - 1; 
+         x <= Math.ceil(centerX + dimensions.width / (2 * scale)) + 1; x += gridSpacing) {
+      const canvasX = (x - centerX) * scale + dimensions.width / 2;
+      if (canvasX >= 0 && canvasX <= dimensions.width) {
         ctx.beginPath();
         ctx.moveTo(canvasX, 0);
-        ctx.lineTo(canvasX, CANVAS_HEIGHT);
+        ctx.lineTo(canvasX, dimensions.height);
         ctx.stroke();
       }
     }
 
     // Horizontal grid lines
-    for (let y = Math.floor(centerY - CANVAS_HEIGHT / (2 * scale)) - 1; 
-         y <= Math.ceil(centerY + CANVAS_HEIGHT / (2 * scale)) + 1; y += gridSpacing) {
-      const canvasY = -(y - centerY) * scale + CANVAS_HEIGHT / 2;
-      if (canvasY >= 0 && canvasY <= CANVAS_HEIGHT) {
+    for (let y = Math.floor(centerY - dimensions.height / (2 * scale)) - 1; 
+         y <= Math.ceil(centerY + dimensions.height / (2 * scale)) + 1; y += gridSpacing) {
+      const canvasY = -(y - centerY) * scale + dimensions.height / 2;
+      if (canvasY >= 0 && canvasY <= dimensions.height) {
         ctx.beginPath();
         ctx.moveTo(0, canvasY);
-        ctx.lineTo(CANVAS_WIDTH, canvasY);
+        ctx.lineTo(dimensions.width, canvasY);
         ctx.stroke();
       }
     }
-  }, [scale, centerX, centerY]);
+  }, [scale, centerX, centerY, dimensions]);
 
   // Draw axes
   const drawAxes = useCallback((ctx) => {
@@ -177,20 +179,20 @@ const page = () => {
     ctx.lineWidth = 2;
 
     // X-axis
-    const xAxisY = -(0 - centerY) * scale + CANVAS_HEIGHT / 2;
-    if (xAxisY >= 0 && xAxisY <= CANVAS_HEIGHT) {
+    const xAxisY = -(0 - centerY) * scale + dimensions.height / 2;
+    if (xAxisY >= 0 && xAxisY <= dimensions.height) {
       ctx.beginPath();
       ctx.moveTo(0, xAxisY);
-      ctx.lineTo(CANVAS_WIDTH, xAxisY);
+      ctx.lineTo(dimensions.width, xAxisY);
       ctx.stroke();
     }
 
     // Y-axis
-    const yAxisX = (0 - centerX) * scale + CANVAS_WIDTH / 2;
-    if (yAxisX >= 0 && yAxisX <= CANVAS_WIDTH) {
+    const yAxisX = (0 - centerX) * scale + dimensions.width / 2;
+    if (yAxisX >= 0 && yAxisX <= dimensions.width) {
       ctx.beginPath();
       ctx.moveTo(yAxisX, 0);
-      ctx.lineTo(yAxisX, CANVAS_HEIGHT);
+      ctx.lineTo(yAxisX, dimensions.height);
       ctx.stroke();
     }
 
@@ -204,30 +206,30 @@ const page = () => {
     else if (scale < 30) labelSpacing = 2;
     else if (scale > 60) labelSpacing = 0.5;
 
-    for (let x = Math.floor(centerX - CANVAS_WIDTH / (2 * scale)) - 1; 
-         x <= Math.ceil(centerX + CANVAS_WIDTH / (2 * scale)) + 1; x += labelSpacing) {
+    for (let x = Math.floor(centerX - dimensions.width / (2 * scale)) - 1; 
+         x <= Math.ceil(centerX + dimensions.width / (2 * scale)) + 1; x += labelSpacing) {
       if (Math.abs(x) < 0.0001) continue;
-      const canvasX = (x - centerX) * scale + CANVAS_WIDTH / 2;
-      if (canvasX >= 20 && canvasX <= CANVAS_WIDTH - 20) {
+      const canvasX = (x - centerX) * scale + dimensions.width / 2;
+      if (canvasX >= 20 && canvasX <= dimensions.width - 20) {
         ctx.fillText(Number(x.toFixed(1)).toString(), canvasX, xAxisY + 20);
       }
     }
 
     ctx.textAlign = 'right';
-    for (let y = Math.floor(centerY - CANVAS_HEIGHT / (2 * scale)) - 1; 
-         y <= Math.ceil(centerY + CANVAS_HEIGHT / (2 * scale)) + 1; y += labelSpacing) {
+    for (let y = Math.floor(centerY - dimensions.height / (2 * scale)) - 1; 
+         y <= Math.ceil(centerY + dimensions.height / (2 * scale)) + 1; y += labelSpacing) {
       if (Math.abs(y) < 0.0001) continue;
-      const canvasY = -(y - centerY) * scale + CANVAS_HEIGHT / 2;
-      if (canvasY >= 20 && canvasY <= CANVAS_HEIGHT - 20) {
+      const canvasY = -(y - centerY) * scale + dimensions.height / 2;
+      if (canvasY >= 20 && canvasY <= dimensions.height - 20) {
         ctx.fillText(Number(y.toFixed(1)).toString(), yAxisX - 10, canvasY + 4);
       }
     }
 
-    if (yAxisX >= 20 && yAxisX <= CANVAS_WIDTH - 20 && xAxisY >= 20 && xAxisY <= CANVAS_HEIGHT - 20) {
+    if (yAxisX >= 20 && yAxisX <= dimensions.width - 20 && xAxisY >= 20 && xAxisY <= dimensions.height - 20) {
       ctx.textAlign = 'right';
       ctx.fillText('0', yAxisX - 10, xAxisY - 10);
     }
-  }, [scale, centerX, centerY]);
+  }, [scale, centerX, centerY, dimensions]);
 
   // Draw single function
   const drawSingleFunction = useCallback((ctx, func) => {
@@ -244,8 +246,8 @@ const page = () => {
     const domainMin = useDomain && customDomain.min !== '' ? parseFloat(customDomain.min) : centerX - RENDER_RADIUS;
     const domainMax = useDomain && customDomain.max !== '' ? parseFloat(customDomain.max) : centerX + RENDER_RADIUS;
 
-    const visibleMinX = Math.max(centerX - CANVAS_WIDTH / (2 * scale), domainMin);
-    const visibleMaxX = Math.min(centerX + CANVAS_WIDTH / (2 * scale), domainMax);
+    const visibleMinX = Math.max(centerX - dimensions.width / (2 * scale), domainMin);
+    const visibleMaxX = Math.min(centerX + dimensions.width / (2 * scale), domainMax);
 
     for (let x = visibleMinX; x <= visibleMaxX; x += step) {
       const y = evaluateFunction(x, func.expression);
@@ -253,8 +255,8 @@ const page = () => {
       if (y !== null && y >= centerY - RENDER_RADIUS && y <= centerY + RENDER_RADIUS) {
         const canvasPos = graphToCanvas(x, y);
         
-        if (canvasPos.x >= -50 && canvasPos.x <= CANVAS_WIDTH + 50 &&
-            canvasPos.y >= -50 && canvasPos.y <= CANVAS_HEIGHT + 50) {
+        if (canvasPos.x >= -50 && canvasPos.x <= dimensions.width + 50 &&
+            canvasPos.y >= -50 && canvasPos.y <= dimensions.height + 50) {
           
           if (firstPoint || (lastValidY !== null && Math.abs(y - lastValidY) > 20)) {
             ctx.moveTo(canvasPos.x, canvasPos.y);
@@ -273,7 +275,7 @@ const page = () => {
       }
     }
     ctx.stroke();
-  }, [scale, centerX, centerY, useDomain, customDomain, evaluateFunction, graphToCanvas]);
+  }, [scale, centerX, centerY, useDomain, customDomain, evaluateFunction, graphToCanvas, dimensions]);
 
   // Draw Trace point
   const drawTrace = useCallback((ctx) => {
@@ -282,13 +284,13 @@ const page = () => {
     const { x: graphX } = tracePoint;
     
     // Draw vertical line at X
-    const canvasX = (graphX - centerX) * scale + CANVAS_WIDTH / 2;
+    const canvasX = (graphX - centerX) * scale + dimensions.width / 2;
     ctx.strokeStyle = 'rgba(0, 0, 0, 0.3)';
     ctx.setLineDash([5, 5]);
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(canvasX, 0);
-    ctx.lineTo(canvasX, CANVAS_HEIGHT);
+    ctx.lineTo(canvasX, dimensions.height);
     ctx.stroke();
     ctx.setLineDash([]);
 
@@ -313,7 +315,7 @@ const page = () => {
       }
     });
 
-  }, [traceMode, tracePoint, centerX, scale, functions, evaluateFunction, graphToCanvas]);
+  }, [traceMode, tracePoint, centerX, scale, functions, evaluateFunction, graphToCanvas, dimensions]);
 
   // Main render function
   const renderGraph = useCallback(() => {
@@ -321,7 +323,7 @@ const page = () => {
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
-    ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
+    ctx.clearRect(0, 0, dimensions.width, dimensions.height);
 
     drawGrid(ctx);
     drawAxes(ctx);
@@ -342,28 +344,28 @@ const page = () => {
 
       if (customDomain.min !== '') {
         const minX = parseFloat(customDomain.min);
-        const canvasX = (minX - centerX) * scale + CANVAS_WIDTH / 2;
-        if (canvasX >= -50 && canvasX <= CANVAS_WIDTH + 50) {
+        const canvasX = (minX - centerX) * scale + dimensions.width / 2;
+        if (canvasX >= -50 && canvasX <= dimensions.width + 50) {
           ctx.beginPath();
           ctx.moveTo(canvasX, 0);
-          ctx.lineTo(canvasX, CANVAS_HEIGHT);
+          ctx.lineTo(canvasX, dimensions.height);
           ctx.stroke();
         }
       }
 
       if (customDomain.max !== '') {
         const maxX = parseFloat(customDomain.max);
-        const canvasX = (maxX - centerX) * scale + CANVAS_WIDTH / 2;
-        if (canvasX >= -50 && canvasX <= CANVAS_WIDTH + 50) {
+        const canvasX = (maxX - centerX) * scale + dimensions.width / 2;
+        if (canvasX >= -50 && canvasX <= dimensions.width + 50) {
           ctx.beginPath();
           ctx.moveTo(canvasX, 0);
-          ctx.lineTo(canvasX, CANVAS_HEIGHT);
+          ctx.lineTo(canvasX, dimensions.height);
           ctx.stroke();
         }
       }
       ctx.setLineDash([]);
     }
-  }, [drawGrid, drawAxes, functions, drawSingleFunction, traceMode, drawTrace, useDomain, customDomain, centerX, scale]);
+  }, [drawGrid, drawAxes, functions, drawSingleFunction, traceMode, drawTrace, useDomain, customDomain, centerX, scale, dimensions]);
 
   // Mouse event handlers
   const handleMouseDown = (e) => {
@@ -587,11 +589,11 @@ const page = () => {
           {/* Graph Canvas */}
           <div className="lg:col-span-3">
             <div className="bg-bg-secondary dark:bg-bg-dark-secondary rounded-lg p-4 shadow-lg border border-border dark:border-border-dark">
-              <div className="relative">
+              <div className="relative h-[400px] lg:h-[600px]" ref={containerRef}>
                 <canvas
                   ref={canvasRef}
-                  width={CANVAS_WIDTH}
-                  height={CANVAS_HEIGHT}
+                  width={dimensions.width}
+                  height={dimensions.height}
                   className={`border-2 border-border dark:border-border-dark rounded-lg bg-white dark:bg-gray-900 ${traceMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'}`}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}

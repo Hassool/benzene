@@ -155,12 +155,12 @@ export default function ViewCourses() {
                   deletingCourseId === course._id ? 'opacity-50 pointer-events-none' : ''
                 }`}
               >
-                <div className="flex gap-6">
+                <div className="flex flex-col md:flex-row gap-6">
                   <div className="relative overflow-hidden rounded-xl shrink-0">
                     <img
                       src={course.thumbnail || "https://via.placeholder.com/150"}
                       alt={course.title}
-                      className="h-32 w-48 object-cover transition-transform duration-300 group-hover:scale-105"
+                      className="h-48 w-full md:h-32 md:w-48 object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                     {deletingCourseId === course._id && (
                       <div className="absolute inset-0 bg-black/50 flex items-center justify-center">

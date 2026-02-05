@@ -192,7 +192,7 @@ export default function ReviewPage() {
                     <h3 className="text-xl font-bold mb-4 font-rajdhani flex items-center gap-2">
                         <FiCpu /> {t("review.sections.apiFlow")}
                     </h3>
-                    <div className="mermaid text-sm">
+                    <div className="mermaid text-sm overflow-x-auto bg-white dark:bg-bg-dark rounded-lg">
 {`sequenceDiagram
     participant User
     participant Frontend
