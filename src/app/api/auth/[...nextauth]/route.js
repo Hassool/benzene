@@ -172,9 +172,17 @@ export const authOptions = {
           isYacine
         })
         
-        const isAdmin = user.phoneNumber && adminList.includes(user.phoneNumber)
-        console.log('Final results:', { isAdmin, isYacine })
-        console.log('=== ADMIN CHECK END ===')
+        // Admin check: Database OR Environment Variable
+        const dbAdmin = user.isAdmin === true
+        const envAdmin = user.phoneNumber && adminList.includes(user.phoneNumber)
+        const isAdmin = dbAdmin || envAdmin
+
+        console.log('Final Admin Check Results:', { 
+            dbAdmin, 
+            envAdmin, 
+            finalIsAdmin: isAdmin, 
+            isYacine 
+        })
         
         token.isAdmin = isAdmin
         token.isYacine = isYacine

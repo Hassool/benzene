@@ -54,7 +54,7 @@ export async function GET(request) {
 
     const [users, totalCount] = await Promise.all([
       User.find(query)
-        .select('fullName phoneNumber isActive lastLogin createdAt updatedAt')
+        .select('fullName phoneNumber isActive isAdmin lastLogin createdAt updatedAt')
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit),
@@ -122,27 +122,22 @@ export async function PUT(request) {
 
     await connectDB()
     const body = await request.json()
-    const { userId, isActive } = body
+    const updateData = {}
+    if (typeof isActive === 'boolean') updateData.isActive = isActive
+    if (typeof body.isAdmin === 'boolean') updateData.isAdmin = body.isAdmin
 
-    if (!userId) {
+    if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
-        { success: false, error: 'User ID is required' },
-        { status: 400 }
-      )
-    }
-
-    if (typeof isActive !== 'boolean') {
-      return NextResponse.json(
-        { success: false, error: 'isActive must be a boolean value' },
+        { success: false, error: 'No valid fields to update' },
         { status: 400 }
       )
     }
 
     const updatedUser = await User.findByIdAndUpdate(
       userId,
-      { isActive },
+      updateData,
       { new: true }
-    ).select('fullName phoneNumber isActive lastLogin createdAt updatedAt')
+    ).select('fullName phoneNumber isActive isAdmin lastLogin createdAt updatedAt')
 
     if (!updatedUser) {
       return NextResponse.json(

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useSession } from 'next-auth/react'
-import { UserRoundCheck, Check, Trash2, Clock, Users, UserCheck, AlertCircle, RefreshCw, Phone, Calendar } from 'lucide-react'
+import { UserRoundCheck, Check, Trash2, Clock, Users, UserCheck, AlertCircle, RefreshCw, Phone, Calendar, ShieldCheck, ShieldOff } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useTranslation } from "l_i18n"
 
@@ -292,8 +292,7 @@ export default function Page() {
                 key={user._id}
                 className="bg-bg dark:bg-bg-dark rounded-xl p-6 shadow-lg border-t-8 border-special dark:border-special-dark transition-all duration-300 hover:shadow-xl relative"
               >
-                {/* Status Badge */}
-                <div className="absolute top-4 right-4">
+                <div className="absolute top-4 right-4 flex flex-col gap-2 items-end">
                   {user.isActive ? (
                     <span className="flex items-center gap-1 px-2 py-1 bg-green-500/20 text-green-600 dark:text-green-400 text-xs rounded-full">
                       <UserCheck className="h-3 w-3" />
@@ -303,6 +302,13 @@ export default function Page() {
                     <span className="flex items-center gap-1 px-2 py-1 bg-orange-500/20 text-orange-600 dark:text-orange-400 text-xs rounded-full">
                       <Clock className="h-3 w-3" />
                       {t('check.status.pending')}
+                    </span>
+                  )}
+                  
+                  {user.isAdmin && (
+                    <span className="flex items-center gap-1 px-2 py-1 bg-purple-500/20 text-purple-600 dark:text-purple-400 text-xs rounded-full">
+                      <ShieldCheck className="h-3 w-3" />
+                      Admin
                     </span>
                   )}
                 </div>
@@ -339,7 +345,23 @@ export default function Page() {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex justify-center gap-2 pt-4 border-t border-border/20 dark:border-border-dark/20">
+                <div className="flex flex-wrap justify-center gap-2 pt-4 border-t border-border/20 dark:border-border-dark/20">
+                  {/* Admin Toggle Button */}
+                  {user.isActive && (
+                    <button
+                      onClick={() => handleToggleAdmin(user._id, user.isAdmin)}
+                      disabled={processingId === user._id}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed text-sm
+                        ${user.isAdmin 
+                          ? 'bg-purple-500/10 text-purple-600 hover:bg-purple-500/20' 
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-purple-500 hover:text-white'
+                        }`}
+                      title={user.isAdmin ? t('check.actions.removeAdmin') : t('check.actions.makeAdmin')}
+                    >
+                      {user.isAdmin ? <ShieldOff className="h-4 w-4" /> : <ShieldCheck className="h-4 w-4" />}
+                    </button>
+                  )}
+
                   {!user.isActive ? (
                     <button
                       onClick={() => handleActivate(user._id)}
