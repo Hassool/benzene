@@ -6,6 +6,8 @@ import { Trash2, Book, Clock, ArrowBigDownDash, ExternalLink, Loader2, AlertTria
 import Link from "next/link"
 import { useFetchData } from "@/lib/UseFetch"
 import { useTranslation } from "l_i18n"
+import CourseCardSkeleton from "@/components/Dashboard/skeletons/CourseCardSkeleton"
+import Skeleton from "@/components/ui/Skeleton"
 
 export default function ViewCourses() {
   const {t} = useTranslation()
@@ -74,10 +76,17 @@ export default function ViewCourses() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark flex items-center justify-center">
-        <div className="text-center p-8">
-          <Loader2 className="w-12 h-12 mx-auto text-special dark:text-special-dark animate-spin mb-4" />
-          <p className="text-text-secondary dark:text-text-dark-secondary">{t("courses.view.loading")}</p>
+      <div className="min-h-screen bg-gradient-light dark:bg-gradient-dark">
+        <div className="max-w-6xl mx-auto p-6">
+          <div className="mb-8">
+            <Skeleton className="h-10 w-48 mb-2" />
+            <Skeleton className="h-6 w-96" />
+          </div>
+          <div className="grid gap-6">
+            {[1, 2, 3].map((i) => (
+              <CourseCardSkeleton key={i} />
+            ))}
+          </div>
         </div>
       </div>
     )

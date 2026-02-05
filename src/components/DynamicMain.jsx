@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslation } from 'l_i18n';
+import Loading from '@/components/ui/Loading';
 
 export default function DynamicMain({ children }) {
   const { isRTL, isLoading } = useTranslation();
@@ -9,10 +10,7 @@ export default function DynamicMain({ children }) {
   if (isLoading) {
     return (
       <main className="md:ml-64 flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">Loading...</p>
-        </div>
+        <Loading />
       </main>
     );
   }

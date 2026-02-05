@@ -8,7 +8,7 @@ import ProfileForm from "@/components/Dashboard/profile/ProfileForm"
 import PasswordChange from "@/components/Dashboard/profile/PasswordChange"
 
 const ProfileEdit = () => {
-  const { data: session, update: updateSession } = useSession()
+  const { data: session, update: updateSession, status } = useSession()
   const { t } = useTranslation()
   const [isEditing, setIsEditing] = useState(false)
   const [isChangingPassword, setIsChangingPassword] = useState(false)
