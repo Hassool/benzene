@@ -1,19 +1,63 @@
-// src/app/api/balance/route.js
 import { NextResponse } from "next/server";
 import * as math from "mathjs";
 
-// Helper to parse a single molecule string into an object of elements and counts
-// e.g., "H2O" -> { H: 2, O: 1 }
+// Helper: Parse a molecule string into an element count object
+// Handles polyatomic ions/parentheses like "Ca(OH)2" -> { Ca: 1, O: 2, H: 2 }
+// Also handles "Ca3(PO4)2" -> { Ca: 3, P: 2, O: 8 }
 function parseMolecule(formula) {
-  const elements = {};
-  const regex = /([A-Z][a-z]*)(\d*)/g;
-  let match;
-  while ((match = regex.exec(formula)) !== null) {
-    const element = match[1];
-    const count = parseInt(match[2] || "1", 10);
-    elements[element] = (elements[element] || 0) + count;
+  const stack = [{}]; // Stack of element maps
+  let i = 0;
+  const len = formula.length;
+
+  while (i < len) {
+    const char = formula[i];
+
+    if (char === '(') {
+      // Start a new group
+      stack.push({});
+      i++;
+    } else if (char === ')') {
+      // End current group
+      if (stack.length < 2) throw new Error("Unmatched closing parenthesis");
+      
+      const currentGroup = stack.pop();
+      i++;
+      
+      // Check for multiplier after ')'
+      let start = i;
+      while (i < len && /[0-9]/.test(formula[i])) i++;
+      const multiplier = i > start ? parseInt(formula.substring(start, i), 10) : 1;
+
+      // Merge current group into the parent group (top of stack)
+      const parentGroup = stack[stack.length - 1];
+      for (const [el, count] of Object.entries(currentGroup)) {
+        parentGroup[el] = (parentGroup[el] || 0) + count * multiplier;
+      }
+    } else if (/[A-Z]/.test(char)) {
+      // Parse Element Name (e.g. H, He, Uuu)
+      let start = i;
+      i++; // Skip first uppercase
+      while (i < len && /[a-z]/.test(formula[i])) i++;
+      const element = formula.substring(start, i);
+
+      // Parse Count
+      start = i;
+      while (i < len && /[0-9]/.test(formula[i])) i++;
+      const count = i > start ? parseInt(formula.substring(start, i), 10) : 1;
+
+      // Add to current group
+      const currentGroup = stack[stack.length - 1];
+      currentGroup[element] = (currentGroup[element] || 0) + count;
+    } else {
+      // Invalid character? Ignore or throw. For now, we skip to be safe, or throw if strict.
+      // throw new Error(`Invalid character '${char}' at index ${i}`);
+      // Let's just advance to avoid infinite loop if garbage is passed
+      i++; 
+    }
   }
-  return elements;
+
+  if (stack.length !== 1) throw new Error("Unmatched opening parenthesis");
+  return stack[0];
 }
 
 // Function to solve Ax=0 for integer solutions
@@ -26,6 +70,7 @@ function solveStoichiometry(matrix) {
 
   // Gaussian elimination
   let lead = 0;
+  outer_loop:
   for (let r = 0; r < rows; r++) {
     if (cols <= lead) break;
     let i = r;
@@ -34,7 +79,9 @@ function solveStoichiometry(matrix) {
       if (rows === i) {
         i = r;
         lead++;
-        if (cols === lead) return null;
+        if (cols === lead) {
+           break outer_loop;
+        }
       }
     }
 
@@ -61,36 +108,8 @@ function solveStoichiometry(matrix) {
     lead++;
   }
 
-  // Find the free variable (simplest assumption: last column is free or we find the first non-pivot)
-  // For chemical equations, we accept 1 degree of freedom usually.
-  // We extract coefficients. 
-  // This simple Gaussian implementation assumes the last variable is free (which is typical for simple equations).
-  
-  // Extract solution based on last column being free variable = 1
-  let solution = [];
-  let pivotCols = [];
-  
-  // Identify pivot columns
-  for(let r=0; r<rows; r++) {
-      for(let c=0; c<cols; c++) {
-          if (!math.equal(m[r][c], 0)) {
-              pivotCols.push(c);
-              break;
-          }
-      }
-  }
-
-  // If system is inconsistent or has wrong rank, basic method might fail.
-  // But for simple "invertible-1" systems:
-  // x_i = - sum( M[i][j] * x_j ) for free j
-  
-  // Let's assume the last variable is 1. If it fails, we try setting other variables.
-  // Actually, we want a vector v such that M * v = 0.
-  // Since we reduced M, we can back substitute.
-  
-  // Simplified approach for common chemical equations:
-  // Assume last coef is 1, calculate others. If any neg or unsolvable, try last=2, etc? No.
-  // Better: Set free variable to 1.
+  // Extract solution assumes simple chemical equations (1 degree of freedom)
+  // We assume the last coefficient is 1 and solve back.
   
   const coeffs = new Array(cols).fill(math.fraction(0));
   coeffs[cols - 1] = math.fraction(1); // Set last one to 1 temporarily
@@ -110,31 +129,20 @@ function solveStoichiometry(matrix) {
       for (let j = pivotCol + 1; j < cols; j++) {
           sum = math.add(sum, math.multiply(m[i][j], coeffs[j]));
       }
-      // Since row is normalized, coef[pivot] + sum = 0 => coef[pivot] = -sum
       coeffs[pivotCol] = math.multiply(sum, -1);
   }
   
-  // Now we have fractional coefficients. Find LCM of denominators to make them integers.
+  // Find LCM of denominators to make them integers.
   let denoms = coeffs.map(c => c.d);
   let lcd = math.lcm(...denoms);
   
   let integerCoeffs = coeffs.map(c => math.multiply(c, lcd).n);
   
-  // Check if any coefficient is negative or zero (invalid solution for chemistry)
-  // Sometimes order matters, or we picked the wrong free variable. 
-  // But mostly this works for single reaction balancing.
-  
-  // Ensure all positive
+  // Check valid positive solution
   const allPositive = integerCoeffs.every(c => c > 0);
   if (!allPositive) {
-      // Try resolving with a different assumption if needed, but for standard equations this matrix method works
-      // The only case it gives negative is if the equation is impossible or written backwards?
-      // Actually, standard method: Reactants +, Products -. 
-      // Null space vector should be positive if we move products to RHS in A*x=0? 
-      // Wait, A*x=0 means sum(a_i * molecules) = 0.
-      // If we put Reactants as Positive cols and Products as Negative cols in the matrix definition,
-      // Then x will be positive.
-      return integerCoeffs.map(Math.abs); // Heuristic fix for sign if we flipped definition
+      // Attempt heuristic fix: absolute values (works if we just flipped LHS/RHS sign convention accidentally)
+      return integerCoeffs.map(Math.abs); 
   }
   
   return integerCoeffs;
@@ -145,28 +153,47 @@ export async function GET(req) {
   const equation = searchParams.get("equation");
 
   if (!equation) {
-    return NextResponse.json({ success: false, error: "No equation provided" }, { status: 400 });
+    return NextResponse.json({ 
+        success: false, 
+        errorCode: "ERR01", 
+        error: "No equation provided" 
+    }, { status: 400 });
   }
 
   try {
-    // 1. Parse equation side
-    if (!equation.includes("=")) throw new Error("Equation must contain '='");
+    // 1. Basic Syntax Check
+    if (!equation.includes("=")) {
+         throw { code: "ERR01", message: "Equation must contain '='" };
+    }
+
     const [lhsStr, rhsStr] = equation.split("=");
+    if (!lhsStr.trim() || !rhsStr.trim()) {
+        throw { code: "ERR01", message: "Equation must have both sides" };
+    }
     
     // Clean and split into molecules
     const parseSide = (str) => str.split("+").map(s => s.trim()).filter(s => s);
     const reactants = parseSide(lhsStr);
     const products = parseSide(rhsStr);
     
+    if (reactants.length === 0 || products.length === 0) {
+        throw { code: "ERR01", message: "Missing reactants or products" };
+    }
+
     const allMolecules = [...reactants, ...products];
     const uniqueElements = new Set();
-    const composition = []; // Array of {element: count} objects corresponding to molecules
+    const composition = []; 
 
     // Analyze all molecules
     allMolecules.forEach(mol => {
-      const comp = parseMolecule(mol);
-      composition.push(comp);
-      Object.keys(comp).forEach(el => uniqueElements.add(el));
+      try {
+          const comp = parseMolecule(mol);
+          if (Object.keys(comp).length === 0) throw new Error("Empty molecule");
+          composition.push(comp);
+          Object.keys(comp).forEach(el => uniqueElements.add(el));
+      } catch (e) {
+          throw { code: "ERR03", message: `Invalid molecule syntax: ${mol}` };
+      }
     });
 
     const elementsList = Array.from(uniqueElements);
@@ -174,8 +201,6 @@ export async function GET(req) {
     const n = allMolecules.length; // cols
 
     // Build Matrix
-    // Columns j < reactants.length are LHS (positive)
-    // Columns j >= reactants.length are RHS (negative) so that sum = 0
     const matrix = [];
     for (let i = 0; i < m; i++) {
         const row = [];
@@ -193,9 +218,16 @@ export async function GET(req) {
     }
 
     // Solve
-    const coeffs = solveStoichiometry(matrix);
+    let coeffs;
+    try {
+        coeffs = solveStoichiometry(matrix);
+    } catch (e) {
+        throw { code: "ERR02", message: "Mathematical error during balancing" };
+    }
     
-    if (!coeffs) throw new Error("Could not balance equation (no unique solution found)");
+    if (!coeffs) {
+        throw { code: "ERR02", message: "Could not balance equation (no unique solution found)" };
+    }
     
     // Construct balanced string
     const buildSide = (mols, coefs) => {
@@ -218,9 +250,14 @@ export async function GET(req) {
 
   } catch (err) {
     console.error("Balance Error:", err);
+    
+    const errorCode = err.code || "ERR02";
+    const errorMessage = err.message || "Failed to balance equation.";
+
     return NextResponse.json({ 
         success: false, 
-        error: "Failed to balance equation. Please check your syntax."
+        errorCode: errorCode,
+        error: errorMessage
     }, { status: 422 });
   }
 }
@@ -229,9 +266,13 @@ export async function POST(req) {
     try {
         const { equation } = await req.json();
         const url = new URL(req.url);
-        url.searchParams.set('equation', equation);
+        if (equation) url.searchParams.set('equation', equation);
         return GET({ url: url.toString() });
     } catch {
-        return NextResponse.json({ success: false, error: "Invalid request" }, { status: 400 });
+        return NextResponse.json({ 
+            success: false, 
+            errorCode: "ERR01", 
+            error: "Invalid JSON request" 
+        }, { status: 400 });
     }
 }

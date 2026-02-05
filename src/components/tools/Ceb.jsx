@@ -31,11 +31,17 @@ function Ceb() {
           ...prev.slice(0, 4) // Keep only last 5 entries
         ]);
       } else {
-        setError(data.error);
+        // Try to use the error code if available, otherwise fallback message or unknown
+        const errCode = data.errorCode;
+        if (errCode && t(`tools.ceb.errors.${errCode}`) !== `tools.ceb.errors.${errCode}`) {
+             setError(t(`tools.ceb.errors.${errCode}`));
+        } else {
+             setError(data.error || t("tools.ceb.errors.unknown"));
+        }
         setResult(null);
       }
     } catch (err) {
-      setError("Network error: " + err.message);
+      setError(t("tools.ceb.errors.network") + " (" + err.message + ")");
       setResult(null);
     }
     setLoading(false);

@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import { TbTools } from "react-icons/tb";
-import { MdOutlinePlayLesson } from "react-icons/md";
+import { MdOutlinePlayLesson, MdOutlineRateReview } from "react-icons/md";
 import { FaRegHeart } from "react-icons/fa";
 import { GoHome } from "react-icons/go";
 import NavLink from "./NavLink";
@@ -19,7 +19,8 @@ export default function NavBar() {
   const NavList = [
     { name: t('nav.home'), icon: <GoHome />, path: '/' },
     { name: t('nav.tools'), icon: <TbTools />, path: '/tools' },
-    { name: t('nav.courses'), icon: <MdOutlinePlayLesson />, path: '/Courses' }
+    { name: t('nav.courses'), icon: <MdOutlinePlayLesson />, path: '/Courses' },
+    { name: t('nav.review'), icon: <MdOutlineRateReview />, path: '/review' }
   ];
 
   return (

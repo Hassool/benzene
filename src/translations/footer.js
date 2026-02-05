@@ -5,7 +5,8 @@ const FooterEN = {
         n2:"Courses",
         n3:"Tools",
         n4:"Honor Page",
-        n5:"Dashboard"
+        n5:"Dashboard",
+        n6:"Review"
     },
     legal : {
         title:"Legal",
@@ -37,7 +38,8 @@ const FooterAR = {
         n2:"الدروس",
         n3:"الأدوات",
         n4:"التكريم",
-        n5:"لوحة القيادة"
+        n5:"لوحة القيادة",
+        n6:"مراجعة"
     },
     legal : {
         title:"قانون",
@@ -70,7 +72,8 @@ const FooterFR = {
         n2:"Cours",
         n3:"Outils",
         n4:"Page d'honneur",
-        n5:"Tableau de bord"
+        n5:"Tableau de bord",
+        n6:"Revue"
     },
     legal : {
         title:"Légal",

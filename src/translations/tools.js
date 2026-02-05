@@ -29,6 +29,13 @@ export const ToolsEN = {
     },
     "examples": {
       "title": "Example Equations"
+    },
+    "errors": {
+      "ERR01": "Invalid equation format. Please check your input.",
+      "ERR02": "Could not balance equation. It might be mathematically impossible.",
+      "ERR03": "Parsing error. Check your chemical formulas (e.g. Ca(OH)2).",
+      "network": "Network error. Please try again later.",
+      "unknown": "An unknown error occurred."
     }
   },
   "unitConverter": {
@@ -155,6 +162,13 @@ export const ToolsAR = {
     },
     "examples": {
       "title": "أمثلة المعادلات"
+    },
+    "errors": {
+      "ERR01": "تنسيق المعادلة غير صالح. يرجى التحقق من المدخلات.",
+      "ERR02": "لا يمكن موازنة المعادلة. قد تكون مستحيلة رياضياً.",
+      "ERR03": "خطأ في التحليل. تحقق من الصيغ الكيميائية (مثل Ca(OH)2).",
+      "network": "خطأ في الشبكة. يرجى المحاولة مرة أخرى لاحقاً.",
+      "unknown": "حدث خطأ غير معروف."
     }
   },
   "unitConverter": {
@@ -281,6 +295,13 @@ export const ToolsFR = {
     },
     "examples": {
       "title": "Exemples d'Équations"
+    },
+    "errors": {
+      "ERR01": "Format d'équation invalide. Veuillez vérifier votre entrée.",
+      "ERR02": "Impossible d'équilibrer l'équation. Elle peut être mathématiquement impossible.",
+      "ERR03": "Erreur d'analyse. Vérifiez vos formules chimiques (par ex. Ca(OH)2).",
+      "network": "Erreur réseau. Veuillez réessayer plus tard.",
+      "unknown": "Une erreur inconnue s'est produite."
     }
   },
   "unitConverter": {

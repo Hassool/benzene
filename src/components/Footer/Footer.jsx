@@ -16,6 +16,7 @@ export default function Footer() {
       { label: t('footer.nav.n2'), href: "/Courses" },
       { label: t('footer.nav.n3'), href: "/tools" },
       { label: t('footer.nav.n5'), href: "/dashboard" },
+      { label: t('footer.nav.n6'), href: "/review" },
     ],
     legal: [
       { label: t('footer.legal.l1'), href: "/privacy-policy" },

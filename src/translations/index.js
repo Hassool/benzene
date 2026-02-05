@@ -13,6 +13,8 @@ import { ResCardEN, ResCardAR, ResCardFR } from "./ResCard";
 import { CoursePageEn, CoursePageAR, CoursePageFR } from "./coursePage";
 import { ToolsEN, ToolsAR, ToolsFR } from "./tools";
 
+import { ReviewEN, ReviewAR, ReviewFR } from "./review";
+
 export const modules = buildModuleConfig({
     main:{ en : MainEN, ar: MainAR, fr: MainFR},
     nav:{ en : NavEN, ar: NavAR, fr: NavFR},
@@ -24,5 +26,6 @@ export const modules = buildModuleConfig({
 
     resCard:{ en : ResCardEN, ar: ResCardAR, fr: ResCardFR},
     coursePage:{ en : CoursePageEn, ar: CoursePageAR, fr: CoursePageFR},
-    tools:{ en : ToolsEN, ar: ToolsAR, fr: ToolsFR}
+    tools:{ en : ToolsEN, ar: ToolsAR, fr: ToolsFR},
+    review:{ en : ReviewEN, ar: ReviewAR, fr: ReviewFR}
 });

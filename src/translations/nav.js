@@ -2,14 +2,16 @@ const NavEN = {
     title: "BEZENE",
     home: "HOME",
     tools: "TOOLS",
-    courses: "COURSES"
+    courses: "COURSES",
+    review: "REVIEW"
 }
 
 const NavAR = {
     title: "بنزن",
     home: "الرئيسية",
     tools: "أدوات",
-    courses: "دروس "
+    courses: "دروس ",
+    review: "مراجعة"
 }
 
 
@@ -17,7 +19,8 @@ const NavFR = {
     title: "BENZENE",
     home: "ACCUEIL",
     tools: "OUTILS",
-    courses: "COURS"
+    courses: "COURS",
+    review: "REVUE"
 }
 
 
