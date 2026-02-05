@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { SiReact, SiNextdotjs, SiTailwindcss, SiMongodb, SiFramer, SiAuth0, SiCloudinary, SiSocketdotio } from "react-icons/si";
+import { SiReact, SiNextdotjs, SiTailwindcss, SiMongodb, SiFramer, SiAuth0, SiCloudinary, SiSocketdotio, SiGithub } from "react-icons/si";
 import { TbMathFunction, TbBrandOauth } from "react-icons/tb";
 import { FiCode, FiDatabase, FiLayout, FiCpu, FiPackage, FiGlobe } from "react-icons/fi";
 import DependencyCard from "@/components/review/DependencyCard";
@@ -101,6 +101,27 @@ export default function ReviewPage() {
             <p className="text-xl text-text-secondary dark:text-text-dark-secondary font-inter max-w-2xl mx-auto">
                 {t("review.header.description")}
             </p>
+        </motion.div>
+
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-col items-center justify-center gap-6 -mt-16"
+        >
+             <p className="text-xl text-text-secondary dark:text-text-dark-secondary font-inter max-w-2xl mx-auto text-center leading-relaxed">
+                {t("review.header.projectDescription")}
+            </p>
+            
+            <a 
+              href="https://github.com/Hassool/benzene" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="px-8 py-3 bg-gray-900 text-white dark:bg-white dark:text-gray-900 rounded-full font-bold font-montserrat flex items-center gap-3 hover:scale-105 transition-transform shadow-lg hover:shadow-xl"
+            >
+              <SiGithub className="text-2xl" />
+              {t("review.header.github")}
+            </a>
         </motion.div>
 
         {/* Section 1: Dependencies */}

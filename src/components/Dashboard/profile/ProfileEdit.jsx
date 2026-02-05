@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
+import { useTranslation } from "l_i18n"
 import ProfileHeader from "@/components/Dashboard/profile/ProfileHeader"
 import MessageAlert from "@/components/Dashboard/profile/MessageAlert"
 import ProfileView from "@/components/Dashboard/profile/ProfileView"
@@ -8,6 +9,7 @@ import PasswordChange from "@/components/Dashboard/profile/PasswordChange"
 
 const ProfileEdit = () => {
   const { data: session, update: updateSession } = useSession()
+  const { t } = useTranslation()
   const [isEditing, setIsEditing] = useState(false)
   const [isChangingPassword, setIsChangingPassword] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -100,12 +102,12 @@ const ProfileEdit = () => {
           },
         })
         setIsEditing(false)
-        showMessage("success", "Profile updated successfully")
+        showMessage("success", t("messages.profileUpdated", "Profile updated successfully"))
       } else {
-        showMessage("error", data.msg || "Failed to update profile")
+        showMessage("error", data.msg || t("messages.updateFailed", "Failed to update profile"))
       }
     } catch (err) {
-      showMessage("error", "Server error updating profile")
+      showMessage("error", t("messages.serverErrorProfile", "Server error updating profile"))
     } finally {
       setIsLoading(false)
     }
@@ -113,11 +115,11 @@ const ProfileEdit = () => {
 
   const handlePasswordUpdate = async () => {
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      showMessage("error", "New passwords do not match")
+      showMessage("error", t("messages.passwordMismatch", "New passwords do not match"))
       return
     }
     if (!passwordStrength.isValid) {
-      showMessage("error", "Password does not meet strength requirements")
+      showMessage("error", t("messages.passwordWeak", "Password does not meet strength requirements"))
       return
     }
 
@@ -136,12 +138,12 @@ const ProfileEdit = () => {
       if (data.success) {
         setIsChangingPassword(false)
         setPasswordData({ currentPassword: "", newPassword: "", confirmPassword: "" })
-        showMessage("success", "Password changed successfully")
+        showMessage("success", t("messages.passwordUpdated", "Password changed successfully"))
       } else {
-        showMessage("error", data.msg || "Failed to change password")
+        showMessage("error", data.msg || t("messages.passwordUpdateFailed", "Failed to change password"))
       }
     } catch (err) {
-      showMessage("error", "Server error changing password")
+      showMessage("error", t("messages.serverErrorPassword", "Server error changing password"))
     } finally {
       setIsLoading(false)
     }
@@ -162,7 +164,7 @@ const ProfileEdit = () => {
   // UI -------------------------
 
   if (!session) {
-    return <p className="text-center text-text-secondary">Please sign in to view your profile</p>
+    return <p className="text-center text-text-secondary">{t("common.loading", "Please sign in to view your profile")}</p>
   }
 
   return (

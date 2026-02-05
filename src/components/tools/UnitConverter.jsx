@@ -191,7 +191,7 @@ const UnitConverter = () => {
                 >
                   {categories.map(category => (
                     <option key={category.category} value={category.category} className="bg-bg dark:bg-bg-dark text-text dark:text-text-dark">
-                      {category.category.charAt(0).toUpperCase() + category.category.slice(1)} 
+                      {t(`tools.unitConverter.categories.${category.category}`, category.category)} 
                       ({category.units.length} {t('tools.unitConverter.form.unitsAvailable')})
                     </option>
                   ))}
@@ -376,7 +376,9 @@ const UnitConverter = () => {
                         : 'bg-bg dark:bg-bg-dark-secondary hover:bg-emerald-900/30 dark:hover:bg-emerald-800/20 border border-border dark:border-border-dark hover:border-emerald-500 dark:hover:border-emerald-400 text-text-secondary dark:text-text-dark-secondary hover:text-emerald-600 dark:hover:text-emerald-300'
                     } ${isRTL ? 'text-right' : 'text-left'}`}
                   >
-                    <div className={`font-medium capitalize font-montserrat ${isRTL ? 'text-right' : ''}`}>{category.category}</div>
+                    <div className={`font-medium capitalize font-montserrat ${isRTL ? 'text-right' : ''}`}>
+                      {t(`tools.unitConverter.categories.${category.category}`, category.category)}
+                    </div>
                     <div className={`text-xs text-text-secondary dark:text-text-dark-secondary font-inter ${isRTL ? 'text-right' : ''}`}>
                       {category.units.length} {t('tools.unitConverter.form.unitsAvailable')}
                     </div>

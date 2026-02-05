@@ -2,8 +2,13 @@
 
 import { motion } from "framer-motion";
 import { FiServer, FiArrowRight } from "react-icons/fi";
+import { useTranslation } from "l_i18n";
 
-const ApiDoc = ({ method, route, description, input, output, inputLabel = "Input", outputLabel = "Output" }) => {
+const ApiDoc = ({ method, route, description, input, output, inputLabel, outputLabel }) => {
+  const { t } = useTranslation();
+  
+  const finalInputLabel = inputLabel || t("review.api.input", "Input");
+  const finalOutputLabel = outputLabel || t("review.api.output", "Output");
   return (
     <div className="mb-8 p-6 bg-white dark:bg-bg-dark-secondary rounded-xl border border-border dark:border-border-dark shadow-sm">
       <div className="flex items-center gap-4 mb-4 flex-wrap">
@@ -27,7 +32,7 @@ const ApiDoc = ({ method, route, description, input, output, inputLabel = "Input
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {input && (
           <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-border dark:border-border-dark">
-            <h4 className="text-xs font-bold text-text-secondary dark:text-text-dark-secondary uppercase tracking-wider mb-2 font-mono">{inputLabel}</h4>
+            <h4 className="text-xs font-bold text-text-secondary dark:text-text-dark-secondary uppercase tracking-wider mb-2 font-mono">{finalInputLabel}</h4>
             <pre className="text-sm text-text dark:text-text-dark font-mono overflow-x-auto whitespace-pre-wrap">
               {JSON.stringify(input, null, 2)}
             </pre>
@@ -36,7 +41,7 @@ const ApiDoc = ({ method, route, description, input, output, inputLabel = "Input
         
         {output && (
           <div className="bg-gray-50 dark:bg-gray-900/50 p-4 rounded-lg border border-border dark:border-border-dark">
-            <h4 className="text-xs font-bold text-text-secondary dark:text-text-dark-secondary uppercase tracking-wider mb-2 font-mono">{outputLabel}</h4>
+            <h4 className="text-xs font-bold text-text-secondary dark:text-text-dark-secondary uppercase tracking-wider mb-2 font-mono">{finalOutputLabel}</h4>
             <pre className="text-sm text-text dark:text-text-dark font-mono overflow-x-auto whitespace-pre-wrap">
               {JSON.stringify(output, null, 2)}
             </pre>

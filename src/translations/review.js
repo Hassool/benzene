@@ -1,7 +1,9 @@
 export const ReviewEN = {
   header: {
     title: "Architecture Review",
-    description: "A technical deep dive into the stack, APIs, and design system powering this open source educational platform."
+    description: "A technical deep dive into the stack, APIs, and design system powering this open source educational platform.",
+    github: "View on GitHub",
+    projectDescription: "Benzene is an open-source educational platform designed to make learning chemistry interactive and accessible."
   },
   sections: {
     stack: "Tech Stack & Dependencies",
@@ -94,7 +96,9 @@ export const ReviewEN = {
 export const ReviewAR = {
   header: {
     title: "مراجعة الهيكلية",
-    description: "نظرة تقنية متعمقة في الحزمة البرمجية، واجهات برمجة التطبيقات، ونظام التصميم الذي يشغّل هذه المنصة التعليمية مفتوحة المصدر."
+    description: "نظرة تقنية متعمقة في الحزمة البرمجية، واجهات برمجة التطبيقات، ونظام التصميم الذي يشغّل هذه المنصة التعليمية مفتوحة المصدر.",
+    github: "عرض على GitHub",
+    projectDescription: "بنزن هي منصة تعليمية مفتوحة المصدر مصممة لجعل تعلم الكيمياء تفاعليًا ومتاحًا للجميع."
   },
   sections: {
     stack: "الحزمة التقنية والاعتمادات",
@@ -187,7 +191,9 @@ export const ReviewAR = {
 export const ReviewFR = {
   header: {
     title: "Revue d'Architecture",
-    description: "Une analyse technique approfondie de la stack, des API et du système de conception qui propulsent cette plateforme éducative open source."
+    description: "Une analyse technique approfondie de la stack, des API et du système de conception qui propulsent cette plateforme éducative open source.",
+    github: "Voir sur GitHub",
+    projectDescription: "Benzene est une plateforme éducative open source conçue pour rendre l'apprentissage de la chimie interactif et accessible."
   },
   sections: {
     stack: "Stack Technique & Dépendances",

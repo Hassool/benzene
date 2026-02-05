@@ -40,6 +40,16 @@ const ProfileEN = {
     uppercase: "Uppercase",
     number: "Number",
     specialChar: "Special char"
+  },
+  messages: {
+    profileUpdated: "Profile updated successfully",
+    updateFailed: "Failed to update profile",
+    serverErrorProfile: "Server error updating profile",
+    passwordMismatch: "New passwords do not match",
+    passwordWeak: "Password does not meet strength requirements",
+    passwordUpdated: "Password changed successfully",
+    passwordUpdateFailed: "Failed to change password",
+    serverErrorPassword: "Server error changing password"
   }
 }
 
@@ -85,6 +95,16 @@ const ProfileAR = {
     uppercase: "حرف كبير",
     number: "رقم",
     specialChar: "حرف خاص"
+  },
+  messages: {
+    profileUpdated: "تم تحديث الملف الشخصي بنجاح",
+    updateFailed: "فشل تحديث الملف الشخصي",
+    serverErrorProfile: "خطأ في الخادم أثناء تحديث الملف الشخصي",
+    passwordMismatch: "كلمات المرور الجديدة غير متطابقة",
+    passwordWeak: "كلمة المرور لا تفي بمتطلبات القوة",
+    passwordUpdated: "تم تغيير كلمة المرور بنجاح",
+    passwordUpdateFailed: "فشل تغيير كلمة المرور",
+    serverErrorPassword: "خطأ في الخادم أثناء تغيير كلمة المرور"
   }
 }
 
@@ -130,6 +150,16 @@ const ProfileFR = {
     uppercase: "Majuscule",
     number: "Chiffre",
     specialChar: "Caractère spécial"
+  },
+  messages: {
+    profileUpdated: "Profil mis à jour avec succès",
+    updateFailed: "Échec de la mise à jour du profil",
+    serverErrorProfile: "Erreur serveur lors de la mise à jour du profil",
+    passwordMismatch: "Les nouveaux mots de passe ne correspondent pas",
+    passwordWeak: "Le mot de passe ne respecte pas les exigences de force",
+    passwordUpdated: "Mot de passe changé avec succès",
+    passwordUpdateFailed: "Échec du changement de mot de passe",
+    serverErrorPassword: "Erreur serveur lors du changement de mot de passe"
   }
 }
 
