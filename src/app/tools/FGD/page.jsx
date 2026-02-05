@@ -587,14 +587,14 @@ const page = () => {
           </div>
 
           {/* Graph Canvas */}
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 min-w-0">
             <div className="bg-bg-secondary dark:bg-bg-dark-secondary rounded-lg p-4 shadow-lg border border-border dark:border-border-dark">
               <div className="relative h-[400px] lg:h-[600px]" ref={containerRef}>
                 <canvas
                   ref={canvasRef}
                   width={dimensions.width}
                   height={dimensions.height}
-                  className={`border-2 border-border dark:border-border-dark rounded-lg bg-white dark:bg-gray-900 ${traceMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'}`}
+                  className={`absolute inset-0 w-full h-full border-2 border-border dark:border-border-dark rounded-lg bg-white dark:bg-gray-900 ${traceMode ? 'cursor-crosshair' : 'cursor-grab active:cursor-grabbing'}`}
                   onMouseDown={handleMouseDown}
                   onMouseMove={handleMouseMove}
                   onMouseUp={handleMouseUp}
