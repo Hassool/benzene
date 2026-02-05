@@ -38,9 +38,9 @@ const extractUrlFromContent = (content, type) => {
  */
 const deleteResourceQuizzes = async (resourceId) => {
   try {
-    console.log(`Deleting quizzes for resource: ${resourceId}`);
+
     const deleteResult = await Quiz.deleteMany({ ResourceID: resourceId });
-    console.log(`Deleted ${deleteResult.deletedCount} quizzes for resource ${resourceId}`);
+
     return deleteResult.deletedCount;
   } catch (error) {
     console.error(`Error deleting quizzes for resource ${resourceId}:`, error);
@@ -127,10 +127,9 @@ export async function DELETE(req) {
       );
     }
 
-    console.log(`Deletion authorized for resource: ${resourceId} by ${isOwner ? 'owner' : 'admin'} (${session.user.phoneNumber})`);
-    console.log(`User: ${session.user.fullName || 'Unknown'}, Admin: ${isAdmin}, Owner: ${isOwner}`);
 
-    console.log(`Starting deletion process for resource: ${resourceId} (${resource.title || 'Untitled'})`);
+
+
     
     // Initialize deletion statistics
     const deletionStats = {
@@ -144,7 +143,7 @@ export async function DELETE(req) {
       try {
         const quizzesDeleted = await deleteResourceQuizzes(resourceId);
         deletionStats.quizzesDeleted = quizzesDeleted;
-        console.log(`Deleted ${quizzesDeleted} quizzes for resource ${resourceId}`);
+
       } catch (quizError) {
         console.error(`Failed to delete quizzes for resource ${resourceId}:`, quizError);
         // Continue with resource deletion even if quiz deletion fails
@@ -157,9 +156,9 @@ export async function DELETE(req) {
       
       if (url && isCloudinaryUrl(url)) {
         try {
-          console.log(`Deleting Cloudinary asset: ${url}`);
+
           await deleteFromUrl(url);
-          console.log(`Successfully deleted Cloudinary asset: ${url}`);
+
           deletionStats.cloudinaryAssetsDeleted = 1;
         } catch (cloudinaryError) {
           console.error(`Failed to delete Cloudinary asset ${url}:`, cloudinaryError);
@@ -173,7 +172,7 @@ export async function DELETE(req) {
     
     if (resourceDeleteResult) {
       deletionStats.resourcesDeleted = 1;
-      console.log(`Successfully deleted resource: ${resourceId}`);
+
     }
 
     // Return success response with deletion statistics

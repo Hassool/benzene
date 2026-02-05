@@ -38,9 +38,9 @@ const extractUrlFromContent = (content, type) => {
  */
 const deleteResourceQuizzes = async (resourceId) => {
   try {
-    console.log(`Deleting quizzes for resource: ${resourceId}`);
+
     const deleteResult = await Quiz.deleteMany({ ResourceID: resourceId });
-    console.log(`Deleted ${deleteResult.deletedCount} quizzes for resource ${resourceId}`);
+
     return deleteResult.deletedCount;
   } catch (error) {
     console.error(`Error deleting quizzes for resource ${resourceId}:`, error);
@@ -53,7 +53,7 @@ const deleteResourceQuizzes = async (resourceId) => {
  */
 const deleteResource = async (resource) => {
   try {
-    console.log(`Processing resource: ${resource._id} (${resource.type})`);
+
     
     // If resource type is quiz, delete all quizzes first
     if (resource.type === 'quiz') {
@@ -66,9 +66,9 @@ const deleteResource = async (resource) => {
       
       if (url && isCloudinaryUrl(url)) {
         try {
-          console.log(`Deleting Cloudinary asset: ${url}`);
+
           await deleteFromUrl(url);
-          console.log(`Successfully deleted Cloudinary asset: ${url}`);
+
         } catch (cloudinaryError) {
           console.error(`Failed to delete Cloudinary asset ${url}:`, cloudinaryError);
           // Continue with resource deletion even if Cloudinary deletion fails
@@ -78,7 +78,7 @@ const deleteResource = async (resource) => {
     
     // Delete the resource itself
     const deleteResult = await Resource.findByIdAndDelete(resource._id);
-    console.log(`Successfully deleted resource: ${resource._id}`);
+
     
     return deleteResult;
   } catch (error) {
@@ -152,10 +152,9 @@ export async function DELETE(req) {
       );
     }
 
-    console.log(`Deletion authorized for course: ${courseId} by ${isOwner ? 'owner' : 'admin'} (${session.user.phoneNumber})`);
-    console.log(`User: ${session.user.fullName || 'Unknown'}, Admin: ${isAdmin}, Owner: ${isOwner}`);
 
-    console.log(`Starting deletion process for course: ${courseId} (${course.title})`);
+
+
     
     // Initialize deletion statistics
     const deletionStats = {
@@ -171,7 +170,7 @@ export async function DELETE(req) {
       isDeleted: false 
     });
     
-    console.log(`Found ${resources.length} resources in course ${courseId}`);
+
     
     if (resources.length > 0) {
       // Process each resource
@@ -191,7 +190,7 @@ export async function DELETE(req) {
     
     if (courseDeleteResult) {
       deletionStats.coursesDeleted = 1;
-      console.log(`Successfully deleted course: ${courseId}`);
+
     }
 
     // Return success response with deletion statistics

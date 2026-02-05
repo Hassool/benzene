@@ -1,6 +1,6 @@
 'use client'
 
-import { Book, User, UserRoundCheck, Menu, X, Shield, ChevronDown, LogOut, Settings, Mail } from 'lucide-react'
+import { Book, User, UserRoundCheck, Menu, X, Shield, ChevronDown, LogOut, Settings, Mail, FileText } from 'lucide-react'
 import Link from 'next/link'
 import { useSession, signOut } from 'next-auth/react'
 import { useState, useEffect } from 'react'
@@ -21,7 +21,8 @@ function DashNav() {
   const NavList = [
     { name: t('dashNav.nav.home'), icon: <GoHome className="h-5 w-5" />, path: "/" },
     { name: t('dashNav.nav.profile'), path: "/dashboard", icon: <User className="h-5 w-5" /> },
-    { name: t('dashNav.nav.courses'), path: "/dashboard/courses", icon: <Book className="h-5 w-5" /> }
+    { name: t('dashNav.nav.courses'), path: "/dashboard/courses", icon: <Book className="h-5 w-5" /> },
+    { name: t('dashNav.nav.manageExams', 'Exams'), path: "/dashboard/exams", icon: <FileText className="h-5 w-5" /> }
   ]
 
   const AdminCheck = { 

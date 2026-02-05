@@ -60,11 +60,7 @@ export async function POST(req) {
     // IMPORTANT: Pass authOptions to getServerSession
     const session = await getServerSession(authOptions);
     
-    console.log('Server session check:', {
-      hasSession: !!session,
-      userId: session?.user?.id,
-      userEmail: session?.user?.email
-    });
+
     
     if (!session?.user?.id) {
       return new Response(

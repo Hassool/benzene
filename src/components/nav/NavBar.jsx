@@ -24,6 +24,7 @@ export default function NavBar() {
     { name: t('nav.home'), icon: <GoHome />, path: '/' },
     { name: t('nav.tools'), icon: <TbTools />, path: '/tools' },
     { name: t('nav.courses'), icon: <MdOutlinePlayLesson />, path: '/Courses' },
+    { name: t('nav.exams', 'Exams'), icon: <MdOutlinePlayLesson />, path: '/exams' },
     { name: t('nav.review'), icon: <MdOutlineRateReview />, path: '/review' }
   ];
 

@@ -113,7 +113,14 @@ const MainEN = {
     submit: "Submit",
     back: "Back",
     next: "Next",
-    previous: "Previous"
+    previous: "Previous",
+    select: "Select",
+    view: "View",
+    download: "Download",
+    create: "Create",
+    tryAgain: "Try Again",
+    search: "Search",
+    uploading: "Uploading..."
   },
   footer: {
     copyright: "© 2024 Benzen App. All rights reserved.",
@@ -236,7 +243,14 @@ const MainAR = {
     submit: "إرسال",
     back: "رجوع",
     next: "التالي",
-    previous: "السابق"
+    previous: "السابق",
+    select: "اختر",
+    view: "عرض",
+    download: "تنزيل",
+    create: "إنشاء",
+    tryAgain: "حاول مرة أخرى",
+    search: "بحث",
+    uploading: "جاري الرفع..."
   },
   footer: {
     copyright: "© 2024 تطبيق بنزين. جميع الحقوق محفوظة.",
@@ -359,7 +373,14 @@ const MainFR = {
     submit: "Soumettre",
     back: "Retour",
     next: "Suivant",
-    previous: "Précédent"
+    previous: "Précédent",
+    select: "Sélectionner",
+    view: "Voir",
+    download: "Télécharger",
+    create: "Créer",
+    tryAgain: "Réessayer",
+    search: "Rechercher",
+    uploading: "Téléchargement..."
   },
   footer: {
     copyright: "© 2024 Benzen App. Tous droits réservés.",

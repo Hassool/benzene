@@ -151,11 +151,6 @@ export async function POST(req) {
   try {
     const session = await getServerSession(authOptions);
     
-    console.log('Quiz POST - Session check:', { 
-      hasSession: !!session,
-      userId: session?.user?.id,
-      phoneNumber: session?.user?.phoneNumber 
-    });
     
     if (!session?.user?.id) {
       return new Response(
@@ -167,11 +162,6 @@ export async function POST(req) {
     await connectDB();
     
     const data = await req.json();
-    console.log('Creating quiz with data:', { 
-      Question: data.Question, 
-      ResourceID: data.ResourceID,
-      order: data.order 
-    });
 
     // Verify user owns the resource through the resource's course
     const resource = await Resource.findById(data.ResourceID)
@@ -206,7 +196,7 @@ export async function POST(req) {
     const populatedQuiz = await Quiz.findById(quiz._id)
       .populate('ResourceID', 'title type');
     
-    console.log('Quiz created successfully:', quiz._id);
+
 
     return new Response(JSON.stringify({
       success: true,

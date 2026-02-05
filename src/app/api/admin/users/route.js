@@ -11,15 +11,9 @@ export async function GET(request) {
     // Check authentication - must be admin
     const session = await getServerSession(authOptions)
     
-    console.log('Admin users GET request session check:', {
-      hasSession: !!session,
-      hasUser: !!session?.user,
-      isAdmin: session?.user?.isAdmin,
-      phoneNumber: session?.user?.phoneNumber
-    })
 
     if (!session?.user?.isAdmin) {
-      console.log('Unauthorized admin users request - not admin user')
+
       return NextResponse.json(
         { success: false, error: 'Unauthorized - Admin access required' },
         { status: 403 }
@@ -68,12 +62,6 @@ export async function GET(request) {
       User.countDocuments({ isDeleted: false })
     ])
 
-    console.log('Admin fetched users:', {
-      status,
-      count: users.length,
-      totalCount,
-      requestedBy: session.user.phoneNumber
-    })
 
     return NextResponse.json({
       success: true,
@@ -105,15 +93,9 @@ export async function PUT(request) {
     // Check authentication - must be admin
     const session = await getServerSession(authOptions)
     
-    console.log('Admin users PUT request session check:', {
-      hasSession: !!session,
-      hasUser: !!session?.user,
-      isAdmin: session?.user?.isAdmin,
-      phoneNumber: session?.user?.phoneNumber
-    })
 
     if (!session?.user?.isAdmin) {
-      console.log('Unauthorized admin users PUT request - not admin user')
+
       return NextResponse.json(
         { success: false, error: 'Unauthorized - Admin access required' },
         { status: 403 }
@@ -122,9 +104,11 @@ export async function PUT(request) {
 
     await connectDB()
     const body = await request.json()
+    const { userId, isActive, isAdmin } = body
+
     const updateData = {}
     if (typeof isActive === 'boolean') updateData.isActive = isActive
-    if (typeof body.isAdmin === 'boolean') updateData.isAdmin = body.isAdmin
+    if (typeof isAdmin === 'boolean') updateData.isAdmin = isAdmin
 
     if (Object.keys(updateData).length === 0) {
       return NextResponse.json(
@@ -146,17 +130,11 @@ export async function PUT(request) {
       )
     }
 
-    console.log('User updated by admin:', {
-      userId,
-      isActive,
-      updatedBy: session.user.phoneNumber,
-      userPhone: updatedUser.phoneNumber
-    })
 
     return NextResponse.json({
       success: true,
       data: updatedUser,
-      message: `User ${isActive ? 'activated' : 'deactivated'} successfully`
+      message: 'User updated successfully'
     })
   } catch (error) {
     console.error('Error updating user:', error)
@@ -173,15 +151,9 @@ export async function DELETE(request) {
     // Check authentication - must be admin
     const session = await getServerSession(authOptions)
     
-    console.log('Admin users DELETE request session check:', {
-      hasSession: !!session,
-      hasUser: !!session?.user,
-      isAdmin: session?.user?.isAdmin,
-      phoneNumber: session?.user?.phoneNumber
-    })
 
     if (!session?.user?.isAdmin) {
-      console.log('Unauthorized admin users DELETE request - not admin user')
+
       return NextResponse.json(
         { success: false, error: 'Unauthorized - Admin access required' },
         { status: 403 }
@@ -214,12 +186,6 @@ export async function DELETE(request) {
       )
     }
 
-    console.log('User deleted by admin:', {
-      userId,
-      deletedUser: deletedUser.fullName,
-      userPhone: deletedUser.phoneNumber,
-      deletedBy: session.user.phoneNumber
-    })
 
     return NextResponse.json({
       success: true,

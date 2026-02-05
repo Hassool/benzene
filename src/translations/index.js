@@ -14,6 +14,7 @@ import { CoursePageEn, CoursePageAR, CoursePageFR } from "./coursePage";
 import { ToolsEN, ToolsAR, ToolsFR } from "./tools";
 
 import { ReviewEN, ReviewAR, ReviewFR } from "./review";
+import { ExamsEN, ExamsAR, ExamsFR } from "./exams";
 
 export const modules = buildModuleConfig({
     main:{ en : MainEN, ar: MainAR, fr: MainFR},
@@ -27,5 +28,6 @@ export const modules = buildModuleConfig({
     resCard:{ en : ResCardEN, ar: ResCardAR, fr: ResCardFR},
     coursePage:{ en : CoursePageEn, ar: CoursePageAR, fr: CoursePageFR},
     tools:{ en : ToolsEN, ar: ToolsAR, fr: ToolsFR},
-    review:{ en : ReviewEN, ar: ReviewAR, fr: ReviewFR}
+    review:{ en : ReviewEN, ar: ReviewAR, fr: ReviewFR},
+    exams:{ en : ExamsEN, ar: ExamsAR, fr: ExamsFR}
 });

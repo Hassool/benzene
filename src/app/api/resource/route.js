@@ -129,11 +129,6 @@ export async function POST(req) {
   try {
     const session = await getServerSession(authOptions);
     
-    console.log('Resource POST - Session check:', { 
-      hasSession: !!session,
-      userId: session?.user?.id,
-      phoneNumber: session?.user?.phoneNumber 
-    });
     
     if (!session?.user?.id) {
       return new Response(
@@ -145,11 +140,6 @@ export async function POST(req) {
     await connectDB();
     
     const data = await req.json();
-    console.log('Creating resource with data:', { 
-      title: data.title, 
-      type: data.type, 
-      courseId: data.courseId 
-    });
     
     // Verify course exists and user owns it
     const course = await Course.findById(data.courseId);
@@ -189,7 +179,7 @@ export async function POST(req) {
     const resource = new Resource(data);
     await resource.save();
     
-    console.log('Resource created successfully:', resource._id);
+
     
     return new Response(
       JSON.stringify({

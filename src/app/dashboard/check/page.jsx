@@ -146,6 +146,46 @@ export default function Page() {
     }
   }
 
+  // Toggle Admin Status
+  const handleToggleAdmin = async (userId, currentStatus) => {
+    const action = currentStatus ? t('check.actions.removeAdmin') : t('check.actions.makeAdmin')
+    if (!confirm(`${t('check.confirm.generic')} ${action}?`)) {
+      return
+    }
+
+    setProcessingId(userId)
+    try {
+      const response = await fetch('/api/admin/users', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          userId,
+          isAdmin: !currentStatus
+        })
+      })
+
+      const data = await response.json()
+
+      if (data.success) {
+        // Update the user in the list
+        setUsers(prev => prev.map(user => 
+          user._id === userId 
+            ? { ...user, isAdmin: !currentStatus }
+            : user
+        ))
+      } else {
+        alert(`${t('check.errors.updateFailed')}: ${data.error}`)
+      }
+    } catch (error) {
+      console.error('Error toggling admin status:', error)
+      alert(`${t('check.errors.updateFailed')}. ${t('check.errors.tryAgain')}`)
+    } finally {
+      setProcessingId(null)
+    }
+  }
+
   // Delete user
   const handleDelete = async (userId) => {
     if (!confirm(t('check.confirm.delete'))) {
